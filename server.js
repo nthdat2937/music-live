@@ -9,7 +9,7 @@ const io = new Server(server);
 app.use(express.static('public')); 
 
 let playlist = []; 
-let currentVideoId = '5qap5aO4i9A'; // Bài mặc định ban đầu (Lofi 1 AM Study Session)
+let currentVideoId = 'M7lc1UVf-VE'; // Bài mặc định ban đầu (YouTube Test Video)
 
 // MẬT KHẨU ADMIN CỦA ÔNG CHỦ Ở ĐÂY NHA 🫪
 const ADMIN_PASSWORD = 'admin123'; 

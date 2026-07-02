@@ -327,17 +327,17 @@
     <div class="container">
         <h2>🎵 Trạm Phát Nhạc & Chat Live 🫪</h2>
 
-        <div id="login-section" class="login-box">
+        <form id="login-section" class="login-box" onsubmit="event.preventDefault(); joinRoom();">
             <p style="color: var(--text-muted); margin-bottom: 20px;">Vui lòng điền tên của bạn để tham gia phòng:</p>
             
-            <input type="text" id="username-input" placeholder="Nhập tên của bạn vào đây..." oninput="checkAdminName(this.value)" required>
+            <input type="text" id="username-input" placeholder="Nhập tên của bạn vào đây..." oninput="checkAdminName(this.value)" autocomplete="username" required>
             
             <div id="password-wrapper" class="hidden">
-                <input type="password" id="password-input" placeholder="Ôi chao! Admin đây rồi, nhập mật khẩu nhé! 😎">
+                <input type="password" id="password-input" placeholder="Ôi chao! Admin đây rồi, nhập mật khẩu nhé! 😎" autocomplete="current-password">
             </div>
 
-            <button onclick="joinRoom()">Vào Phòng Nghe Nhạc 🫪</button>
-        </div>
+            <button type="submit">Vào Phòng Nghe Nhạc 🫪</button>
+        </form>
 
         <div id="main-room" class="hidden">
             <div class="left-panel">
@@ -467,7 +467,7 @@
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('youtube-player', {
                 height: '100%', width: '100%', videoId: initialVideoId,
-                playerVars: { 'controls': 0, 'disablekb': 1, 'origin': window.location.origin },
+                playerVars: { 'controls': 0, 'disablekb': 1 },
                 events: {
                     'onReady': () => { player.setVolume(50); document.getElementById('status').innerText = "Trạm phát sẵn sàng! 🟢"; },
                     'onStateChange': (e) => {

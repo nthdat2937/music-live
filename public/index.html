@@ -165,19 +165,20 @@
         }
 
         .sync-btn {
-            width: 100%;
-            padding: 12px;
-            border-radius: 18px;
+            padding: 6px 12px;
+            border-radius: 16px;
             background-color: rgba(255, 255, 255, 0.1);
             color: var(--text-main);
             font-weight: 500;
+            font-size: 13px;
             border: none;
             cursor: pointer;
-            margin-top: 15px;
             transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
         }
         .sync-btn:hover { background-color: rgba(255, 255, 255, 0.2); }
-        .sync-btn.active { background-color: var(--accent); color: #000; }
+        .sync-btn.active { background-color: var(--accent); color: #000; font-weight: bold; }
 
         /* Right Column (Chat) */
         .right-column {
@@ -202,10 +203,13 @@
         }
 
         .chat-header {
-            padding: 16px 24px;
+            padding: 12px 16px;
             border-bottom: 1px solid var(--border-color);
             font-size: 16px;
-            font-weight: 400;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .chat-messages {
@@ -361,10 +365,6 @@
                         🔊 <input type="range" id="volume-slider" min="0" max="100" value="50" oninput="changeVolume(this.value)">
                     </div>
 
-                    <button id="sync-btn" class="sync-btn hidden active" onclick="forceSync()">
-                        ▶ Bật Nhạc / Đồng Bộ (Bắt buộc trên iPhone)
-                    </button>
-
                     <div id="admin-tools" class="admin-tools hidden">
                         <input type="text" id="song-input" placeholder="Dán link YouTube hoặc ID video...">
                         <button class="btn-add" onclick="addSong()">Thêm vào hàng đợi</button>
@@ -383,7 +383,12 @@
 
         <!-- Right: Chat -->
         <div class="right-column">
-            <div class="chat-header">Trò chuyện trực tiếp</div>
+            <div class="chat-header">
+                <span>Trò chuyện trực tiếp</span>
+                <button id="sync-btn" class="sync-btn hidden active" onclick="forceSync()">
+                    ▶ Bật Nhạc
+                </button>
+            </div>
             
             <div class="chat-messages" id="chat-box-ui">
                 <!-- Messages will appear here -->

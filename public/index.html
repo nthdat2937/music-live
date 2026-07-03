@@ -63,6 +63,7 @@
             flex-direction: column;
             flex: 1;
             overflow: hidden; /* Do not scroll the whole body */
+            min-height: 0;
         }
 
         @media(min-width: 900px) {
@@ -187,6 +188,7 @@
             background: var(--bg-color);
             margin-top: 0;
             border: none;
+            min-height: 0; /* Force container to shrink so chat can scroll */
         }
 
         @media(min-width: 900px) {

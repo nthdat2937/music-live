@@ -53,6 +53,11 @@ io.on('connection', (socket) => {
     });
 
     // --- LOGIC PLAYLIST & ĐIỀU KHIỂN ---
+    socket.on('requestSync', () => {
+        // Yêu cầu admin gửi lại tiến độ video hiện tại
+        socket.broadcast.emit('memberRequestSync');
+    });
+
     socket.on('adminAddSong', (videoId) => {
         if (socket.role === 'admin') {
             playlist.push(videoId);

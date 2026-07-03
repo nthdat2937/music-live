@@ -167,6 +167,10 @@
                             oninput="changeVolume(this.value)"></label>
                 </div>
 
+                <button id="sync-btn" class="hidden" onclick="forceSync()" style="background-color: #ff9800; width: 100%; margin-top: 15px; padding: 12px; font-size: 16px; border-radius: 8px; border: none; color: white; font-weight: bold; cursor: pointer; transition: 0.3s;">
+                    🎧 Bật Nhạc / Đồng Bộ (Bắt buộc trên iPhone)
+                </button>
+
                 <div id="admin-tools" class="hidden" style="margin-top: 10px; display: flex; gap: 5px;">
                     <input type="text" id="song-input" placeholder="Dán link YouTube..."
                         style="flex:1; padding: 5px; border-radius: 5px; border:1px solid #ccc;">
@@ -227,6 +231,11 @@
                 return;
             }
 
+            // Kích hoạt player ngay khi click để iOS/Safari cho phép phát nhạc (rất quan trọng)
+            if (player && typeof player.playVideo === 'function') {
+                player.playVideo();
+            }
+
             socket.emit('joinRoom', { name, isAdmin, password });
         }
 
@@ -241,12 +250,18 @@
                 if (myRole === 'admin') {
                     document.getElementById('admin-tools').classList.remove('hidden');
                     document.getElementById('player-container').style.pointerEvents = 'auto';
+                } else {
+                    document.getElementById('sync-btn').classList.remove('hidden');
                 }
 
                 initialVideoId = res.currentVideoId;
                 if (player && player.loadVideoById) {
                     player.loadVideoById(initialVideoId);
                     player.pauseVideo();
+                    
+                    if (myRole === 'member') {
+                        setTimeout(() => socket.emit('requestSync'), 1000);
+                    }
                 }
                 updatePlaylistUI(res.playlist);
             } else {
@@ -307,6 +322,24 @@
             const ul = document.getElementById('playlist-ui');
             ul.innerHTML = list.length === 0 ? '<li>Chưa có bài nào chờ.</li>' : list.map((id, i) => `<li>🎵 Bài ${i + 1}: [ID: ${id}]</li>`).join('');
         }
+
+        function forceSync() {
+            if (player && player.playVideo) {
+                player.playVideo();
+                socket.emit('requestSync');
+                document.getElementById('sync-btn').innerText = "🔄 Đã Bật Nhạc - Nhấn Lại Nếu Bị Lệch";
+            }
+        }
+
+        socket.on('memberRequestSync', () => {
+            if (myRole === 'admin' && player) {
+                if (player.getPlayerState() === YT.PlayerState.PLAYING) {
+                    socket.emit('adminPlay', player.getCurrentTime());
+                } else if (player.getPlayerState() === YT.PlayerState.PAUSED) {
+                    socket.emit('adminPause');
+                }
+            }
+        });
 
         socket.on('memberPlay', (time) => { if (myRole === 'member' && player) { if (Math.abs(player.getCurrentTime() - time) > 1) player.seekTo(time); player.playVideo(); } });
         socket.on('memberPause', () => { if (myRole === 'member' && player) player.pauseVideo(); });

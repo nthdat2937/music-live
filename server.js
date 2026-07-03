@@ -6,13 +6,13 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-app.use(express.static('public')); 
+app.use(express.static('public'));
 
-let playlist = []; 
-let currentVideoId = 'M7lc1UVf-VE'; // Bài mặc định ban đầu (YouTube Test Video)
+let playlist = [];
+let currentVideoId = 'jfKfPfyJRdk'; // Bài mặc định ban đầu
 
 // MẬT KHẨU ADMIN CỦA ÔNG CHỦ Ở ĐÂY NHA 🫪
-const ADMIN_PASSWORD = 'admin123'; 
+const ADMIN_PASSWORD = 'admin123';
 
 io.on('connection', (socket) => {
     console.log('🔌 Một kết nối mới: ' + socket.id);
@@ -39,7 +39,7 @@ io.on('connection', (socket) => {
             socket.username = username;
             socket.role = 'member';
             socket.emit('authResult', { success: true, role: 'member', currentVideoId, playlist });
-            
+
             // Thông báo cho cả phòng có người mới vào
             io.emit('newMessage', { name: 'Hệ thống 🤖', text: `👋 Chào mừng [${socket.username}] đã tham gia phòng nhạc!` });
         }
@@ -62,9 +62,9 @@ io.on('connection', (socket) => {
 
     socket.on('adminNextSong', () => {
         if (socket.role === 'admin' && playlist.length > 0) {
-            currentVideoId = playlist.shift(); 
-            io.emit('changeVideo', currentVideoId); 
-            io.emit('updatePlaylist', playlist); 
+            currentVideoId = playlist.shift();
+            io.emit('changeVideo', currentVideoId);
+            io.emit('updatePlaylist', playlist);
         }
     });
 

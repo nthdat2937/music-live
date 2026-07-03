@@ -23,6 +23,7 @@
             margin: 0;
             padding: 0;
             height: 100vh;
+            height: 100dvh;
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -82,7 +83,7 @@
             border-bottom: 1px solid var(--border-color);
         }
         @media(min-width: 900px) {
-            .left-column { flex: 1; max-height: none; border-bottom: none; padding-right: 8px; }
+            .left-column { flex: 1; max-height: none; border-bottom: none; padding-right: 8px; overflow-y: auto; }
         }
 
         .video-container {
@@ -225,6 +226,7 @@
 
         .chat-input-area {
             padding: 16px;
+            padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
             border-top: 1px solid var(--border-color);
         }
 

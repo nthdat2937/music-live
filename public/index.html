@@ -4,200 +4,386 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trạm Nhạc Live & Chat 🫪</title>
+    <title>Trạm Nhạc Live 🫪</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-color: #0f0f0f;
+            --panel-bg: #212121;
+            --text-main: #f1f1f1;
+            --text-muted: #aaaaaa;
+            --accent: #3ea6ff;
+            --border-color: #3d3d3d;
+        }
+
         body {
-            font-family: sans-serif;
-            background-color: #e8f5e9;
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
             margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .container {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 650px;
-            text-align: center;
-        }
-
-        /* Giao diện Đăng nhập */
-        .login-box {
-            padding: 20px;
-        }
-
-        input[type="text"],
-        input[type="password"] {
-            width: 80%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 15px;
-            transition: 0.3s;
-        }
-
-        button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            background-color: #2e7d32;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 15px;
-        }
-
-        button:hover {
-            background-color: #1b5e20;
-            transform: scale(1.02);
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        /* Giao diện chính sau khi vào phòng */
-        #status {
-            font-weight: bold;
-            color: #555;
-        }
-
-        #player-container {
-            margin-top: 15px;
-            border-radius: 10px;
+            padding: 0;
+            height: 100vh;
             overflow: hidden;
-            pointer-events: none;
+            display: flex;
+            flex-direction: column;
         }
 
-        .control-panel {
-            margin-top: 15px;
-            padding: 15px;
-            background: #f5f5f5;
-            border-radius: 10px;
-            text-align: left;
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #717171; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a0a0a0; }
+
+        .navbar {
+            height: 56px;
+            background-color: var(--bg-color);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            border-bottom: 1px solid var(--border-color);
+            flex-shrink: 0;
+            z-index: 100;
+        }
+        .navbar .logo { font-size: 20px; font-weight: bold; display: flex; align-items: center; gap: 8px; letter-spacing: -0.5px;}
+        .navbar .logo .live-badge {
+            background-color: #cc0000;
+            color: white;
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 500;
+            margin-left: 5px;
         }
 
-        /* Khung Chat */
-        .chat-section {
-            margin-top: 20px;
-            text-align: left;
-        }
+        .hidden { display: none !important; }
 
-        .chat-box {
-            background: #fafafa;
-            border: 1px solid #ddd;
-            height: 180px;
+        .main-layout {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
             overflow-y: auto;
-            padding: 10px;
-            border-radius: 8px;
+            overflow-x: hidden;
+        }
+
+        @media(min-width: 900px) {
+            .main-layout {
+                flex-direction: row;
+                padding: 24px;
+                gap: 24px;
+                box-sizing: border-box;
+                overflow: hidden; /* Prevent body scroll on desktop */
+            }
+        }
+
+        .left-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            overflow-y: auto; /* Scrollable content on left */
+            padding: 16px;
+        }
+        @media(min-width: 900px) {
+            .left-column { padding: 0; padding-right: 8px; }
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .video-container #youtube-player {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            pointer-events: none; /* Member cannot touch */
+        }
+
+        .video-info {
+            margin-top: 16px;
+        }
+
+        .video-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin: 0 0 12px 0;
+        }
+
+        .channel-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .channel-avatar {
+            width: 40px; height: 40px; border-radius: 50%; background: #ff0000; 
+            display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 18px;
+        }
+
+        .channel-details { display: flex; flex-direction: column; }
+        .channel-name { font-weight: 500; font-size: 16px; display: flex; align-items: center; gap: 5px; }
+        .channel-name span { color: var(--text-muted); font-size: 12px; }
+        .channel-sub { font-size: 12px; color: var(--text-muted); }
+
+        /* Control Panel */
+        .control-box {
+            background: var(--panel-bg);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 12px;
+        }
+
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+        
+        .volume-control input[type="range"] {
+            accent-color: var(--text-main);
+        }
+
+        .sync-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 18px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.2s;
+        }
+        .sync-btn:hover { background-color: rgba(255, 255, 255, 0.2); }
+        .sync-btn.active { background-color: var(--accent); color: #000; }
+
+        /* Right Column (Chat) */
+        .right-column {
+            width: 100%;
+            height: 500px; /* Mobile height */
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-color);
+            margin-top: 16px;
+        }
+
+        @media(min-width: 900px) {
+            .right-column {
+                width: 350px;
+                flex-shrink: 0;
+                height: 100%; /* Fill available height */
+                margin-top: 0;
+            }
+        }
+
+        .chat-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 16px;
+            font-weight: 400;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .chat-message {
+            font-size: 13px;
+            line-height: 20px;
+            word-wrap: break-word;
+        }
+        .chat-message .chat-author {
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-right: 8px;
+        }
+        .chat-message.admin-msg .chat-author { color: #fbbc04; } /* Highlight admin */
+        .chat-message.system-msg .chat-author { color: var(--accent); font-style: italic; }
+
+        .chat-input-area {
+            padding: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            align-items: center;
+            background: var(--panel-bg);
+            border-radius: 18px;
+            padding: 4px 16px;
+        }
+
+        .chat-input-wrapper input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            padding: 8px 0;
+            outline: none;
             font-size: 14px;
         }
 
-        .chat-input-row {
-            display: flex;
-            gap: 5px;
-            margin-top: 8px;
+        .chat-input-wrapper button {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 18px;
+            padding: 4px 8px;
+            transition: 0.2s;
         }
+        .chat-input-wrapper button:hover { color: var(--text-main); }
 
-        #chat-input {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
+        /* Login Overlay */
+        .login-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: var(--bg-color); display: flex; justify-content: center; align-items: center; z-index: 1000;
         }
+        .login-card {
+            background: var(--panel-bg);
+            padding: 40px 30px; border-radius: 12px; width: 90%; max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .login-card h2 { margin-top: 0; margin-bottom: 8px; font-weight: 400; font-size: 24px; }
+        .login-card p { color: var(--text-muted); margin-bottom: 24px; font-size: 14px; }
+        
+        .login-input {
+            width: 100%; padding: 12px 16px; margin-bottom: 16px; border-radius: 8px;
+            background: transparent; border: 1px solid var(--border-color); color: white;
+            box-sizing: border-box; outline: none; font-size: 15px; transition: 0.2s;
+        }
+        .login-input:focus { border-color: var(--accent); }
+        
+        .login-btn {
+            width: 100%; padding: 12px; border-radius: 18px; background: var(--text-main); color: var(--bg-color);
+            font-weight: 500; font-size: 15px; border: none; cursor: pointer; transition: 0.2s;
+        }
+        .login-btn:hover { background: #d0d0d0; }
 
-        .playlist-box {
-            background: white;
-            padding: 8px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-            max-height: 80px;
-            overflow-y: auto;
-            font-size: 13px;
-        }
+        .admin-tools { display: flex; gap: 8px; margin-top: 15px; }
+        .admin-tools input { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: transparent; color: white; outline: none; }
+        .admin-tools button { padding: 8px 16px; border-radius: 18px; border: none; font-weight: 500; cursor: pointer; color: #000; }
+        .btn-add { background: var(--text-main); }
+        .btn-add:hover { background: #d0d0d0; }
+        .btn-next { background: var(--panel-bg); color: var(--text-main) !important; border: 1px solid var(--border-color) !important; }
+        .btn-next:hover { background: #333; }
 
-        ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
+        .playlist-header { font-size: 14px; font-weight: 500; margin-bottom: 8px; color: var(--text-muted); }
+        .playlist-ui {
+            max-height: 150px; overflow-y: auto; font-size: 14px;
+            background: rgba(0,0,0,0.2); border-radius: 8px; padding: 10px;
         }
-
-        li {
-            padding: 4px 0;
-            border-bottom: 1px solid #eee;
-        }
+        .playlist-ui div { padding: 8px 0; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 8px; }
+        .playlist-ui div:last-child { border-bottom: none; }
+        .playlist-ui .song-idx { color: var(--text-muted); font-size: 12px; width: 20px;}
+        .playlist-ui .song-id { font-family: monospace; }
     </style>
 </head>
 
 <body>
 
-    <div class="container">
-        <h2>🎵 Trạm Phát Nhạc & Chat Live 🫪</h2>
+    <!-- Login Screen -->
+    <div id="login-section" class="login-overlay">
+        <div class="login-card">
+            <h2>Tham gia luồng trực tiếp</h2>
+            <p>Vui lòng cho biết tên của bạn</p>
 
-        <div id="login-section" class="login-box">
-            <p>Vui lòng điền tên của bạn để tham gia phòng:</p>
-
-            <input type="text" id="username-input" placeholder="Nhập tên của bạn vào đây..."
-                oninput="checkAdminName(this.value)" required>
+            <input type="text" id="username-input" class="login-input" placeholder="Tên hiển thị..."
+                oninput="checkAdminName(this.value)" onkeypress="if(event.key === 'Enter') joinRoom()" required>
 
             <div id="password-wrapper" class="hidden">
-                <input type="password" id="password-input" placeholder="Ôi chao! Admin đây rồi, nhập mật khẩu nhé! 😎">
+                <input type="password" id="password-input" class="login-input" placeholder="Mật khẩu Admin" onkeypress="if(event.key === 'Enter') joinRoom()">
             </div>
 
-            <button onclick="joinRoom()">Vào Phòng Nghe Nhạc 🫪</button>
+            <button class="login-btn" onclick="joinRoom()">Tham Gia Ngay</button>
         </div>
+    </div>
 
-        <div id="main-room" class="hidden">
-            <h3 id="welcome-title"></h3>
-            <p id="status">Đang tải trình phát YouTube...</p>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo">🎵 Trạm Nhạc <span class="live-badge">TRỰC TIẾP</span></div>
+    </div>
 
-            <div id="player-container">
+    <!-- Main Layout -->
+    <div id="main-room" class="main-layout hidden">
+        
+        <!-- Left: Video & Info -->
+        <div class="left-column">
+            <div class="video-container" id="player-container">
                 <div id="youtube-player"></div>
             </div>
 
-            <div class="control-panel">
-                <div style="display:flex; justify-content: space-between; align-items:center;">
-                    <label>🔊 Âm lượng: <input type="range" id="volume-slider" min="0" max="100" value="50"
-                            oninput="changeVolume(this.value)"></label>
+            <div class="video-info">
+                <h1 class="video-title" id="welcome-title">Thưởng thức âm nhạc cùng mọi người</h1>
+                
+                <div class="channel-info">
+                    <div class="channel-avatar">N</div>
+                    <div class="channel-details">
+                        <div class="channel-name">nthdat <span>• Admin</span></div>
+                        <div class="channel-sub" id="status">Đang kết nối luồng phát...</div>
+                    </div>
                 </div>
 
-                <button id="sync-btn" class="hidden" onclick="forceSync()" style="background-color: #ff9800; width: 100%; margin-top: 15px; padding: 12px; font-size: 16px; border-radius: 8px; border: none; color: white; font-weight: bold; cursor: pointer; transition: 0.3s;">
-                    🎧 Bật Nhạc / Đồng Bộ (Bắt buộc trên iPhone)
-                </button>
+                <div class="control-box">
+                    <div class="volume-control">
+                        🔊 <input type="range" id="volume-slider" min="0" max="100" value="50" oninput="changeVolume(this.value)">
+                    </div>
 
-                <div id="admin-tools" class="hidden" style="margin-top: 10px; display: flex; gap: 5px;">
-                    <input type="text" id="song-input" placeholder="Dán link YouTube..."
-                        style="flex:1; padding: 5px; border-radius: 5px; border:1px solid #ccc;">
-                    <button onclick="addSong()"
-                        style="background-color: #f57c00; padding: 5px 10px; margin-top: 0;">Thêm</button>
-                    <button onclick="nextSong()"
-                        style="background-color: #388e3c; padding: 5px 10px; margin-top: 0;">Qua Bài ⏭️</button>
-                </div>
+                    <button id="sync-btn" class="sync-btn hidden active" onclick="forceSync()">
+                        ▶ Bật Nhạc / Đồng Bộ (Bắt buộc trên iPhone)
+                    </button>
 
-                <h4 style="margin: 10px 0 5px 0;">📝 Danh Sách Chờ</h4>
-                <div class="playlist-box">
-                    <ul id="playlist-ui">
-                        <li>Trống</li>
-                    </ul>
-                </div>
-            </div>
+                    <div id="admin-tools" class="admin-tools hidden">
+                        <input type="text" id="song-input" placeholder="Dán link YouTube hoặc ID video...">
+                        <button class="btn-add" onclick="addSong()">Thêm vào hàng đợi</button>
+                        <button class="btn-next" onclick="nextSong()">Qua Bài ⏭</button>
+                    </div>
 
-            <div class="chat-section">
-                <h4>💬 Phòng Trò Chuyện Chéo</h4>
-                <div class="chat-box" id="chat-box-ui"></div>
-                <div class="chat-input-row">
-                    <input type="text" id="chat-input" placeholder="Nhập tin nhắn..."
-                        onkeypress="if(event.key === 'Enter') sendChat()">
-                    <button onclick="sendChat()" style="background-color: #0288d1; margin-top: 0;">Gửi</button>
+                    <div style="margin-top: 20px;">
+                        <div class="playlist-header">HÀNG ĐỢI PHÁT TIẾP THEO</div>
+                        <div class="playlist-ui" id="playlist-ui">
+                            <div>Chưa có bài nào chờ.</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <!-- Right: Chat -->
+        <div class="right-column">
+            <div class="chat-header">Trò chuyện trực tiếp</div>
+            
+            <div class="chat-messages" id="chat-box-ui">
+                <!-- Messages will appear here -->
+            </div>
+
+            <div class="chat-input-area">
+                <div class="chat-input-wrapper">
+                    <input type="text" id="chat-input" placeholder="Trò chuyện công khai..."
+                        onkeypress="if(event.key === 'Enter') sendChat()">
+                    <button onclick="sendChat()">➤</button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
@@ -208,30 +394,29 @@
         let player;
         let myRole = '';
         let initialVideoId = 'jfKfPfyJRdk';
+        let myUsername = '';
 
-        // Tự động kiểm tra tên để hiện mật khẩu
         function checkAdminName(name) {
-            // Dùng toLowerCase() để dù nhập nthdat hay NTHDAT thì đều hiểu là ông chủ
             if (name.trim().toLowerCase() === 'nthdat') {
                 document.getElementById('password-wrapper').classList.remove('hidden');
             } else {
                 document.getElementById('password-wrapper').classList.add('hidden');
-                document.getElementById('password-input').value = ''; // Xóa trắng mật khẩu nếu đổi tên khác
+                document.getElementById('password-input').value = '';
             }
         }
 
-        // Gửi thông tin đăng nhập lên server
         function joinRoom() {
             const name = document.getElementById('username-input').value;
             const password = document.getElementById('password-input').value;
             const isAdmin = name.trim().toLowerCase() === 'nthdat';
 
             if (!name.trim()) {
-                alert("Vui lòng nhập tên trước đã nha ông chủ! 🫪");
+                alert("Vui lòng nhập tên hiển thị!");
                 return;
             }
 
-            // Kích hoạt player ngay khi click để iOS/Safari cho phép phát nhạc (rất quan trọng)
+            myUsername = name.trim();
+
             if (player && typeof player.playVideo === 'function') {
                 player.playVideo();
             }
@@ -239,15 +424,14 @@
             socket.emit('joinRoom', { name, isAdmin, password });
         }
 
-        // Nhận kết quả xác thực từ server
         socket.on('authResult', (res) => {
             if (res.success) {
                 myRole = res.role;
                 document.getElementById('login-section').classList.add('hidden');
                 document.getElementById('main-room').classList.remove('hidden');
-                document.getElementById('welcome-title').innerText = myRole === 'admin' ? "👑 Bảng Điều Khiển Của Admin nthdat" : "🎧 Thưởng thức âm nhạc cùng mọi người";
-
+                
                 if (myRole === 'admin') {
+                    document.getElementById('welcome-title').innerText = "Bảng Điều Khiển Của Admin";
                     document.getElementById('admin-tools').classList.remove('hidden');
                     document.getElementById('player-container').style.pointerEvents = 'auto';
                 } else {
@@ -269,7 +453,7 @@
             }
         });
 
-        // --- HÀM CHAT ---
+        // --- CHAT LOGIC ---
         function sendChat() {
             const input = document.getElementById('chat-input');
             if (input.value.trim() !== "") {
@@ -280,11 +464,18 @@
 
         socket.on('newMessage', (data) => {
             const chatBox = document.getElementById('chat-box-ui');
-            chatBox.innerHTML += `<div><strong>${data.name}:</strong> ${data.text}</div>`;
+            const isSystem = data.name.includes('Hệ thống');
+            const isAdminMsg = data.name.includes('Admin');
+            
+            let msgClass = 'chat-message';
+            if (isSystem) msgClass += ' system-msg';
+            if (isAdminMsg) msgClass += ' admin-msg';
+
+            chatBox.innerHTML += `<div class="${msgClass}"><span class="chat-author">${data.name}</span><span class="chat-text">${data.text}</span></div>`;
             chatBox.scrollTop = chatBox.scrollHeight;
         });
 
-        // --- YOUTUBE API PLAYER ---
+        // --- YOUTUBE API ---
         function extractVideoID(url) {
             const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
             const match = url.match(regExp);
@@ -293,10 +484,13 @@
 
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('youtube-player', {
-                height: '220', width: '100%', videoId: initialVideoId,
-                playerVars: { 'controls': 0, 'disablekb': 1, 'origin': window.location.origin },
+                height: '100%', width: '100%', videoId: initialVideoId,
+                playerVars: { 'controls': 0, 'disablekb': 1, 'origin': window.location.origin, 'rel': 0 },
                 events: {
-                    'onReady': () => { player.setVolume(50); document.getElementById('status').innerText = "Trạm phát sẵn sàng! 🟢"; },
+                    'onReady': () => { 
+                        player.setVolume(50); 
+                        document.getElementById('status').innerText = "Trạng thái: Đang phát trực tiếp 🟢"; 
+                    },
                     'onStateChange': (e) => {
                         if (myRole === 'admin') {
                             if (e.data == YT.PlayerState.PLAYING) socket.emit('adminPlay', player.getCurrentTime());
@@ -319,15 +513,21 @@
         socket.on('changeVideo', (id) => { if (player && player.loadVideoById) player.loadVideoById(id); });
 
         function updatePlaylistUI(list) {
-            const ul = document.getElementById('playlist-ui');
-            ul.innerHTML = list.length === 0 ? '<li>Chưa có bài nào chờ.</li>' : list.map((id, i) => `<li>🎵 Bài ${i + 1}: [ID: ${id}]</li>`).join('');
+            const ui = document.getElementById('playlist-ui');
+            if (list.length === 0) {
+                ui.innerHTML = '<div>Chưa có bài nào chờ.</div>';
+            } else {
+                ui.innerHTML = list.map((id, i) => `<div><span class="song-idx">${i+1}</span><span class="song-id">${id}</span></div>`).join('');
+            }
         }
 
         function forceSync() {
             if (player && player.playVideo) {
                 player.playVideo();
                 socket.emit('requestSync');
-                document.getElementById('sync-btn').innerText = "🔄 Đã Bật Nhạc - Nhấn Lại Nếu Bị Lệch";
+                const btn = document.getElementById('sync-btn');
+                btn.innerText = "🔄 Đã Đồng Bộ (Nhấn lại nếu mất tiếng)";
+                btn.classList.remove('active');
             }
         }
 
@@ -345,5 +545,4 @@
         socket.on('memberPause', () => { if (myRole === 'member' && player) player.pauseVideo(); });
     </script>
 </body>
-
 </html>

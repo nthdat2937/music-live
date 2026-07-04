@@ -313,6 +313,13 @@
         .playlist-ui div:last-child { border-bottom: none; }
         .playlist-ui .song-idx { color: var(--text-muted); font-size: 12px; width: 20px;}
         .playlist-ui .song-id { font-family: monospace; }
+
+        .chat-message { position: relative; padding: 4px 0; border-radius: 4px; border-bottom: 1px solid transparent; }
+        .chat-message:hover { background: rgba(255,255,255,0.05); }
+        .chat-actions { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); display: none; gap: 4px; }
+        .chat-message:hover .chat-actions { display: flex; }
+        .action-btn { background: var(--panel-bg); border: 1px solid var(--border-color); color: white; border-radius: 4px; cursor: pointer; font-size: 11px; padding: 2px 6px; }
+        .action-btn:hover { background: #333; }
     </style>
 </head>
 
@@ -384,12 +391,21 @@
         <!-- Right: Chat -->
         <div class="right-column">
             <div class="chat-header">
-                <span>Trò chuyện trực tiếp</span>
-                <button id="sync-btn" class="sync-btn hidden active" onclick="forceSync()">
-                    ▶ Bật Nhạc
-                </button>
+                <span>Trò chuyện trực tiếp <span id="viewer-count" style="color:var(--text-muted); font-size:13px; margin-left: 8px;">(👁️ 1)</span></span>
+                <div style="display:flex; gap: 8px;">
+                    <button id="sound-btn" class="sync-btn" onclick="toggleSound()" title="Bật/Tắt âm thanh chat">🔊</button>
+                    <button id="sync-btn" class="sync-btn hidden active" onclick="forceSync()">▶ Bật Nhạc</button>
+                </div>
             </div>
             
+            <div id="pinned-message-container" class="hidden" style="background: rgba(255,255,255,0.05); padding: 10px 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 13px;">
+                <div style="display:flex; flex-direction: column; gap: 4px; overflow: hidden;">
+                    <span style="color: var(--accent); font-weight: 500; font-size: 12px;">📌 Ghim bởi <span id="pin-author">Admin</span></span>
+                    <span id="pin-text" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px;">Nội dung ghim</span>
+                </div>
+                <button id="unpin-btn" class="hidden" style="background:transparent; border:none; color:var(--text-muted); cursor:pointer;" onclick="unpinMessage()">❌</button>
+            </div>
+
             <div class="chat-messages" id="chat-box-ui">
                 <!-- Messages will appear here -->
             </div>
@@ -468,12 +484,36 @@
                     }
                 }
                 updatePlaylistUI(res.playlist);
+                if (res.pinnedMessage) updatePinnedMessageUI(res.pinnedMessage);
             } else {
                 alert(res.message);
             }
         });
 
         // --- CHAT LOGIC ---
+        let soundEnabled = true;
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('sound-btn').innerText = soundEnabled ? '🔊' : '🔇';
+        }
+
+        function playChatSound() {
+            if (!soundEnabled) return;
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(800, ctx.currentTime);
+                gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.1);
+            } catch (e) {}
+        }
+
         function sendChat() {
             const input = document.getElementById('chat-input');
             if (input.value.trim() !== "") {
@@ -482,18 +522,64 @@
             }
         }
 
+        function updatePinnedMessageUI(msg) {
+            const container = document.getElementById('pinned-message-container');
+            if (msg) {
+                container.classList.remove('hidden');
+                document.getElementById('pin-author').innerText = msg.name;
+                document.getElementById('pin-text').innerText = msg.text;
+                if (myRole === 'admin') document.getElementById('unpin-btn').classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+            }
+        }
+
+        socket.on('updatePinnedMessage', updatePinnedMessageUI);
+
+        socket.on('messageDeleted', (msgId) => {
+            const el = document.getElementById('msg-' + msgId);
+            if (el) el.remove();
+        });
+
+        socket.on('viewersUpdate', (count) => {
+            document.getElementById('viewer-count').innerText = `(👁️ ${count})`;
+        });
+
         socket.on('newMessage', (data) => {
             const chatBox = document.getElementById('chat-box-ui');
-            const isSystem = data.name.includes('Hệ thống');
-            const isAdminMsg = data.name.includes('Admin');
+            const isSystem = data.role === 'system';
+            const isAdminMsg = data.role === 'admin';
             
             let msgClass = 'chat-message';
             if (isSystem) msgClass += ' system-msg';
             if (isAdminMsg) msgClass += ' admin-msg';
 
-            chatBox.innerHTML += `<div class="${msgClass}"><span class="chat-author">${data.name}</span><span class="chat-text">${data.text}</span></div>`;
+            let actionsHtml = '';
+            if (myRole === 'admin' && !isSystem) {
+                const safeName = (data.name||'').replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                const safeText = (data.text||'').replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                actionsHtml = `<div class="chat-actions">
+                    <button class="action-btn" onclick="pinMessage('${safeName}', '${safeText}')">📌</button>
+                    <button class="action-btn" onclick="deleteMessage('${data.id}')">🗑️</button>
+                </div>`;
+            }
+
+            chatBox.innerHTML += `<div class="${msgClass}" id="msg-${data.id}">
+                <span class="chat-author">${data.name}</span>
+                <span class="chat-text">${data.text}</span>
+                ${actionsHtml}
+            </div>`;
             chatBox.scrollTop = chatBox.scrollHeight;
+
+            if (data.senderId !== socket.id && !isSystem) {
+                playChatSound();
+            }
         });
+
+        function pinMessage(name, text) { socket.emit('adminPinMessage', { name, text }); }
+        function unpinMessage() { socket.emit('adminUnpinMessage'); }
+        function deleteMessage(id) { socket.emit('adminDeleteMessage', id); }
+        function removeSong(index) { socket.emit('adminRemoveSong', index); }
 
         // --- YOUTUBE API ---
         function extractVideoID(url) {
@@ -537,7 +623,17 @@
             if (list.length === 0) {
                 ui.innerHTML = '<div>Chưa có bài nào chờ.</div>';
             } else {
-                ui.innerHTML = list.map((id, i) => `<div><span class="song-idx">${i+1}</span><span class="song-id">${id}</span></div>`).join('');
+                ui.innerHTML = list.map((song, i) => `
+                    <div style="display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border-color);">
+                        <span class="song-idx" style="color: var(--text-muted); font-size: 12px; width: 20px;">${i+1}</span>
+                        <img src="${song.thumbnail}" alt="thumb" style="width: 80px; height: 45px; object-fit: cover; border-radius: 4px;">
+                        <div class="song-info" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+                            <span class="song-title" title="${song.title}" style="font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${song.title}</span>
+                            <span class="song-id-text" style="font-size: 11px; color: var(--text-muted);">${song.id}</span>
+                        </div>
+                        ${myRole === 'admin' ? `<button style="background: #cc0000; color: white; border: none; border-radius: 4px; cursor: pointer; padding: 4px 8px; font-size: 12px;" onclick="removeSong(${i})">🗑️</button>` : ''}
+                    </div>
+                `).join('');
             }
         }
 

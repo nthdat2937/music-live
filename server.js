@@ -10,10 +10,9 @@ const io = new Server(server);
 app.use(express.static('public'));
 
 let playlist = [];
-let currentVideoId = 'jfKfPfyJRdk'; // Bài mặc định ban đầu
+let currentVideoId = 'jfKfPfyJRdk';
 let pinnedMessage = null;
 
-// MẬT KHẨU ADMIN CỦA ÔNG CHỦ Ở ĐÂY NHA 🫪
 const ADMIN_PASSWORD = 'admin123';
 
 function getYoutubeInfo(videoId) {
@@ -46,7 +45,7 @@ io.on('connection', (socket) => {
                 socket.username = username + ' 😎 (Admin)';
                 socket.role = 'admin';
                 socket.emit('authResult', { success: true, role: 'admin', currentVideoId, playlist, pinnedMessage });
-                io.emit('newMessage', { id: 'sys-'+Date.now(), name: 'Hệ thống 🤖', text: `👑 Admin [${socket.username}] đã lên sàn điều khiển nhạc!`, role: 'system' });
+                io.emit('newMessage', { id: 'sys-' + Date.now(), name: 'Hệ thống 🤖', text: `👑 Admin [${socket.username}] đã lên sàn điều khiển nhạc!`, role: 'system' });
             } else {
                 socket.emit('authResult', { success: false, message: 'Sai mật khẩu Admin rồi ông chủ ơi! ❌' });
             }
@@ -54,19 +53,19 @@ io.on('connection', (socket) => {
             socket.username = username;
             socket.role = 'member';
             socket.emit('authResult', { success: true, role: 'member', currentVideoId, playlist, pinnedMessage });
-            io.emit('newMessage', { id: 'sys-'+Date.now(), name: 'Hệ thống 🤖', text: `👋 Chào mừng [${socket.username}] đã tham gia phòng nhạc!`, role: 'system' });
+            io.emit('newMessage', { id: 'sys-' + Date.now(), name: 'Hệ thống 🤖', text: `👋 Chào mừng [${socket.username}] đã tham gia phòng nhạc!`, role: 'system' });
         }
     });
 
     // --- LOGIC CHATBOX ---
     socket.on('sendMessage', (msg) => {
         if (msg.trim() !== '') {
-            io.emit('newMessage', { 
-                id: Date.now() + '-' + Math.random().toString(36).substr(2,9), 
+            io.emit('newMessage', {
+                id: Date.now() + '-' + Math.random().toString(36).substr(2, 9),
                 senderId: socket.id,
-                name: socket.username || 'Ẩn danh', 
-                text: msg, 
-                role: socket.role || 'member' 
+                name: socket.username || 'Ẩn danh',
+                text: msg,
+                role: socket.role || 'member'
             });
         }
     });
@@ -78,14 +77,14 @@ io.on('connection', (socket) => {
             io.emit('updatePinnedMessage', pinnedMessage);
         }
     });
-    
+
     socket.on('adminUnpinMessage', () => {
         if (socket.role === 'admin') {
             pinnedMessage = null;
             io.emit('updatePinnedMessage', null);
         }
     });
-    
+
     socket.on('adminDeleteMessage', (msgId) => {
         if (socket.role === 'admin') {
             io.emit('messageDeleted', msgId);
@@ -127,11 +126,11 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         io.emit('viewersUpdate', io.engine.clientsCount);
         if (socket.username) {
-            io.emit('newMessage', { id: 'sys-'+Date.now(), name: 'Hệ thống 🤖', text: `🏃‍♂️ [${socket.username}] đã rời phòng.`, role: 'system' });
+            io.emit('newMessage', { id: 'sys-' + Date.now(), name: 'Hệ thống 🤖', text: `🏃‍♂️ [${socket.username}] đã rời phòng.`, role: 'system' });
         }
     });
 });
 
 server.listen(3000, () => {
-    console.log('🚀 Trạm nhạc của ông chủ chạy tại http://localhost:3000');
+    console.log('🚀 Trạm nhạc chạy tại http://localhost:3000');
 });

@@ -151,7 +151,7 @@ io.on('connection', (socket) => {
         }
     });
 
-    // --- LOGIC CHATBOX ---
+
     socket.on('sendMessage', (msg) => {
         const msgId = Date.now() + '-' + Math.random().toString(36).substr(2, 9);
         const senderName = socket.username || 'Ẩn danh';
@@ -194,7 +194,7 @@ io.on('connection', (socket) => {
     });
 
 
-    // --- ADMIN CHAT TOOLS ---
+
     socket.on('adminPinMessage', (msgObj) => {
         if (socket.role === 'admin') {
             pinnedMessage = msgObj;
@@ -215,7 +215,7 @@ io.on('connection', (socket) => {
         }
     });
 
-    // --- LOGIC PLAYLIST & ĐIỀU KHIỂN ---
+
     socket.on('requestSync', () => {
         socket.broadcast.emit('memberRequestSync');
     });

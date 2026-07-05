@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trạm Nhạc Live 🫪</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <style>
         :root {
             --bg-color: #0f0f0f;
@@ -270,13 +272,21 @@
             z-index: 500;
             animation: chatSlideUp 0.25s ease-out;
         }
+
         .right-column.chat-open {
             display: flex;
         }
 
         @keyframes chatSlideUp {
-            from { opacity: 0; transform: translateY(100%); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(100%);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @media(min-width: 900px) {
@@ -309,21 +319,39 @@
             align-items: center;
             justify-content: center;
             font-size: 26px;
-            box-shadow: 0 4px 16px rgba(62,166,255,0.4), 0 2px 6px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 16px rgba(62, 166, 255, 0.4), 0 2px 6px rgba(0, 0, 0, 0.3);
             transition: transform 0.2s, box-shadow 0.2s;
         }
-        .chat-bubble-btn:hover { transform: scale(1.1); }
-        .chat-bubble-btn:active { transform: scale(0.92); }
+
+        .chat-bubble-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .chat-bubble-btn:active {
+            transform: scale(0.92);
+        }
+
         .chat-bubble-btn.chat-is-open {
             background: linear-gradient(135deg, #555, #333);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
-        .chat-bubble-btn.chat-is-open .bubble-icon-chat { display: none; }
-        .chat-bubble-btn.chat-is-open .bubble-icon-close { display: block; }
-        .chat-bubble-btn .bubble-icon-close { display: none; }
+
+        .chat-bubble-btn.chat-is-open .bubble-icon-chat {
+            display: none;
+        }
+
+        .chat-bubble-btn.chat-is-open .bubble-icon-close {
+            display: block;
+        }
+
+        .chat-bubble-btn .bubble-icon-close {
+            display: none;
+        }
 
         @media(min-width: 900px) {
-            .chat-bubble-btn { display: none !important; }
+            .chat-bubble-btn {
+                display: none !important;
+            }
         }
 
         /* Unread Badge */
@@ -346,12 +374,23 @@
             border: 2px solid var(--bg-color);
             animation: badgePop 0.3s ease-out;
         }
-        .chat-badge.hidden-badge { display: none; }
+
+        .chat-badge.hidden-badge {
+            display: none;
+        }
 
         @keyframes badgePop {
-            from { transform: scale(0); }
-            50% { transform: scale(1.3); }
-            to { transform: scale(1); }
+            from {
+                transform: scale(0);
+            }
+
+            50% {
+                transform: scale(1.3);
+            }
+
+            to {
+                transform: scale(1);
+            }
         }
 
         .chat-header {
@@ -377,9 +416,15 @@
             transition: 0.2s;
             display: inline-flex;
         }
-        .chat-close-btn:hover { color: var(--text-main); }
+
+        .chat-close-btn:hover {
+            color: var(--text-main);
+        }
+
         @media(min-width: 900px) {
-            .chat-close-btn { display: none; }
+            .chat-close-btn {
+                display: none;
+            }
         }
 
         .chat-messages {
@@ -666,13 +711,20 @@
             flex-direction: column;
             height: 320px;
             animation: pickerSlideUp 0.2s ease-out;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
             overflow: hidden;
         }
 
         @keyframes pickerSlideUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .picker-tabs {
@@ -680,6 +732,7 @@
             border-bottom: 1px solid var(--border-color);
             flex-shrink: 0;
         }
+
         .picker-tab {
             flex: 1;
             padding: 10px;
@@ -693,8 +746,16 @@
             transition: 0.2s;
             border-bottom: 2px solid transparent;
         }
-        .picker-tab:hover { color: var(--text-main); background: rgba(255,255,255,0.05); }
-        .picker-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+        .picker-tab:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .picker-tab.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
 
         /* Emoji Grid */
         .emoji-grid {
@@ -705,6 +766,7 @@
             overflow-y: auto;
             flex: 1;
         }
+
         .emoji-item {
             font-size: 22px;
             padding: 6px;
@@ -714,8 +776,15 @@
             transition: 0.15s;
             user-select: none;
         }
-        .emoji-item:hover { background: rgba(255,255,255,0.1); transform: scale(1.2); }
-        .emoji-item:active { transform: scale(0.9); }
+
+        .emoji-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.2);
+        }
+
+        .emoji-item:active {
+            transform: scale(0.9);
+        }
 
         .emoji-category-label {
             grid-column: 1 / -1;
@@ -735,6 +804,7 @@
             min-height: 0;
             overflow: hidden;
         }
+
         .gif-search-bar {
             display: flex;
             align-items: center;
@@ -742,9 +812,10 @@
             gap: 8px;
             border-bottom: 1px solid var(--border-color);
         }
+
         .gif-search-bar input {
             flex: 1;
-            background: rgba(255,255,255,0.08);
+            background: rgba(255, 255, 255, 0.08);
             border: 1px solid var(--border-color);
             border-radius: 18px;
             color: var(--text-main);
@@ -753,7 +824,11 @@
             font-size: 13px;
             transition: 0.2s;
         }
-        .gif-search-bar input:focus { border-color: var(--accent); }
+
+        .gif-search-bar input:focus {
+            border-color: var(--accent);
+        }
+
         .gif-search-bar .powered-by {
             font-size: 10px;
             color: var(--text-muted);
@@ -769,6 +844,7 @@
             flex: 1;
             min-height: 0;
         }
+
         .gif-results-loading {
             grid-column: 1 / -1;
             text-align: center;
@@ -776,16 +852,22 @@
             color: var(--text-muted);
             font-size: 13px;
         }
+
         .gif-result-item {
             cursor: pointer;
             border-radius: 8px;
             overflow: hidden;
-            background: rgba(255,255,255,0.05);
+            background: rgba(255, 255, 255, 0.05);
             height: 120px;
             position: relative;
             transition: 0.2s;
         }
-        .gif-result-item:hover { transform: scale(1.03); box-shadow: 0 0 0 2px var(--accent); }
+
+        .gif-result-item:hover {
+            transform: scale(1.03);
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+
         .gif-result-item img {
             width: 100%;
             height: 100%;
@@ -805,8 +887,15 @@
             border-radius: 50%;
             line-height: 1;
         }
-        .chat-input-wrapper .picker-btn:hover { color: var(--text-main); background: rgba(255,255,255,0.08); }
-        .chat-input-wrapper .picker-btn.active { color: var(--accent); }
+
+        .chat-input-wrapper .picker-btn:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .chat-input-wrapper .picker-btn.active {
+            color: var(--accent);
+        }
 
         /* Inline GIF Suggestions (TikTok-style) */
         .gif-suggest-strip {
@@ -822,12 +911,25 @@
             animation: suggestSlideUp 0.15s ease-out;
             scrollbar-width: none;
         }
-        .gif-suggest-strip::-webkit-scrollbar { display: none; }
-        .gif-suggest-strip.active { display: flex; }
+
+        .gif-suggest-strip::-webkit-scrollbar {
+            display: none;
+        }
+
+        .gif-suggest-strip.active {
+            display: flex;
+        }
 
         @keyframes suggestSlideUp {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .gif-suggest-item {
@@ -837,12 +939,20 @@
             border-radius: 8px;
             overflow: hidden;
             cursor: pointer;
-            background: rgba(255,255,255,0.05);
+            background: rgba(255, 255, 255, 0.05);
             transition: 0.15s;
             position: relative;
         }
-        .gif-suggest-item:hover { transform: scale(1.08); box-shadow: 0 0 0 2px var(--accent); }
-        .gif-suggest-item:active { transform: scale(0.95); }
+
+        .gif-suggest-item:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+
+        .gif-suggest-item:active {
+            transform: scale(0.95);
+        }
+
         .gif-suggest-item img {
             width: 100%;
             height: 100%;
@@ -879,13 +989,27 @@
                 <div style="display: flex; gap: 6px; flex-wrap: wrap; flex: 1;">
                     <input type="color" id="name-color-input" value="#3ea6ff"
                         style="width: 36px; height: 36px; border: none; border-radius: 8px; cursor: pointer; background: transparent; padding: 0;">
-                    <button type="button" onclick="document.getElementById('name-color-input').value='#3ea6ff'" style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; background: #3ea6ff;" title="Xanh dương"></button>
-                    <button type="button" onclick="document.getElementById('name-color-input').value='#ff6b6b'" style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; background: #ff6b6b;" title="Đỏ"></button>
-                    <button type="button" onclick="document.getElementById('name-color-input').value='#51cf66'" style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; background: #51cf66;" title="Xanh lá"></button>
-                    <button type="button" onclick="document.getElementById('name-color-input').value='#ffd43b'" style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; background: #ffd43b;" title="Vàng"></button>
-                    <button type="button" onclick="document.getElementById('name-color-input').value='#cc5de8'" style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; background: #cc5de8;" title="Tím"></button>
-                    <button type="button" onclick="document.getElementById('name-color-input').value='#ff922b'" style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; background: #ff922b;" title="Cam"></button>
-                    <button type="button" onclick="document.getElementById('name-color-input').value='#f1f1f1'" style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--border-color); cursor: pointer; background: #f1f1f1;" title="Trắng"></button>
+                    <button type="button" onclick="document.getElementById('name-color-input').value='#3ea6ff'"
+                        style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; background: #3ea6ff;"
+                        title="Xanh dương"></button>
+                    <button type="button" onclick="document.getElementById('name-color-input').value='#ff6b6b'"
+                        style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; background: #ff6b6b;"
+                        title="Đỏ"></button>
+                    <button type="button" onclick="document.getElementById('name-color-input').value='#51cf66'"
+                        style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; background: #51cf66;"
+                        title="Xanh lá"></button>
+                    <button type="button" onclick="document.getElementById('name-color-input').value='#ffd43b'"
+                        style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; background: #ffd43b;"
+                        title="Vàng"></button>
+                    <button type="button" onclick="document.getElementById('name-color-input').value='#cc5de8'"
+                        style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; background: #cc5de8;"
+                        title="Tím"></button>
+                    <button type="button" onclick="document.getElementById('name-color-input').value='#ff922b'"
+                        style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; background: #ff922b;"
+                        title="Cam"></button>
+                    <button type="button" onclick="document.getElementById('name-color-input').value='#f1f1f1'"
+                        style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--border-color); cursor: pointer; background: #f1f1f1;"
+                        title="Trắng"></button>
                 </div>
             </div>
 
@@ -921,15 +1045,22 @@
                 </div>
 
                 <div class="control-box">
-                    <div class="volume-control">
-                        🔊 <input type="range" id="volume-slider" min="0" max="100" value="50"
+                    <div class="volume-control" style="display:flex;align-items:center;gap:4px;">
+                        <span class="material-symbols-outlined" style="font-size: 20px;">volume_up</span>
+                        <input type="range" id="volume-slider" min="0" max="100" value="50"
                             oninput="changeVolume(this.value)">
                     </div>
 
                     <div id="admin-tools" class="admin-tools hidden">
-                        <input type="text" id="song-input" placeholder="Dán link YouTube hoặc ID video...">
-                        <button class="btn-add" onclick="addSong()">Thêm vào hàng đợi</button>
-                        <button class="btn-next" onclick="nextSong()">Qua Bài ⏭</button>
+                        <input type="text" id="song-input" placeholder="Dán link YouTube, ID hoặc Tên bài hát...">
+                        <button class="btn-add" onclick="addSong()"
+                            style="display:flex;align-items:center;gap:4px;justify-content:center;">
+                            <span class="material-symbols-outlined" style="font-size:18px;">add</span> Thêm vào hàng đợi
+                        </button>
+                        <button class="btn-next" onclick="nextSong()"
+                            style="display:flex;align-items:center;gap:4px;justify-content:center;">
+                            Qua Bài <span class="material-symbols-outlined" style="font-size:18px;">skip_next</span>
+                        </button>
                     </div>
 
                     <div style="margin-top: 20px;">
@@ -945,12 +1076,20 @@
         <div class="right-column">
             <div class="chat-header">
                 <span>Trò chuyện trực tiếp <span id="viewer-count"
-                        style="color:var(--text-muted); font-size:13px; margin-left: 8px;">(👁️ 1)</span></span>
+                        style="color:var(--text-muted); font-size:13px; margin-left: 8px;">(<span
+                            class="material-symbols-outlined"
+                            style="font-size:14px; vertical-align:text-bottom;">visibility</span> 1)</span></span>
                 <div style="display:flex; gap: 8px; align-items: center;">
-                    <button id="sound-btn" class="sync-btn" onclick="toggleSound()"
-                        title="Bật/Tắt âm thanh chat">🔊</button>
-                    <button id="sync-btn" class="sync-btn hidden active" onclick="forceSync()">▶ Bật Nhạc</button>
-                    <button class="chat-close-btn" onclick="toggleChatBubble()" title="Đóng chat">✕</button>
+                    <button id="sound-btn" class="sync-btn" onclick="toggleSound()" title="Bật/Tắt âm thanh chat"
+                        style="display:flex;align-items:center;justify-content:center;"><span
+                            class="material-symbols-outlined" style="font-size:18px;">volume_up</span></button>
+                    <button id="sync-btn" class="sync-btn hidden active" onclick="forceSync()"
+                        style="display:flex;align-items:center;gap:4px;justify-content:center;"><span
+                            class="material-symbols-outlined" style="font-size:18px;">play_arrow</span> Bật
+                        Nhạc</button>
+                    <button class="chat-close-btn" onclick="toggleChatBubble()" title="Đóng chat"
+                        style="display:flex;align-items:center;justify-content:center;"><span
+                            class="material-symbols-outlined" style="font-size:20px;">close</span></button>
                 </div>
             </div>
 
@@ -964,8 +1103,9 @@
                         dung ghim</span>
                 </div>
                 <button id="unpin-btn" class="hidden"
-                    style="background:transparent; border:none; color:var(--text-muted); cursor:pointer;"
-                    onclick="unpinMessage()">❌</button>
+                    style="background:transparent; border:none; color:var(--text-muted); cursor:pointer; display:flex; align-items:center; justify-content:center;"
+                    onclick="unpinMessage()"><span class="material-symbols-outlined"
+                        style="font-size: 20px;">close</span></button>
             </div>
 
             <div class="chat-messages" id="chat-box-ui">
@@ -976,7 +1116,8 @@
                 <!-- Emoji & GIF Picker Popup -->
                 <div id="picker-popup" class="picker-overlay hidden">
                     <div class="picker-tabs">
-                        <button class="picker-tab active" id="tab-emoji" onclick="switchPickerTab('emoji')">😊 Emoji</button>
+                        <button class="picker-tab active" id="tab-emoji" onclick="switchPickerTab('emoji')">😊
+                            Emoji</button>
                         <button class="picker-tab" id="tab-gif" onclick="switchPickerTab('gif')">GIF</button>
                     </div>
                     <div id="emoji-panel" class="emoji-grid">
@@ -984,7 +1125,8 @@
                     </div>
                     <div id="gif-panel" class="gif-panel hidden">
                         <div class="gif-search-bar">
-                            <input type="text" id="gif-search-input" placeholder="Tìm GIF..." oninput="debouncedGifSearch()" onkeypress="if(event.key==='Enter') searchGifs()">
+                            <input type="text" id="gif-search-input" placeholder="Tìm GIF..."
+                                oninput="debouncedGifSearch()" onkeypress="if(event.key==='Enter') searchGifs()">
                             <span class="powered-by">Powered by Tenor</span>
                         </div>
                         <div class="gif-results" id="gif-results">
@@ -997,19 +1139,23 @@
                 <div id="gif-suggest-strip" class="gif-suggest-strip"></div>
 
                 <div class="chat-input-wrapper">
-                    <button class="picker-btn" id="emoji-toggle-btn" onclick="togglePicker()" title="Emoji & GIF">😊</button>
+                    <button class="picker-btn" id="emoji-toggle-btn" onclick="togglePicker()"
+                        title="Emoji & GIF">😊</button>
                     <input type="text" id="chat-input" placeholder="Trò chuyện công khai..."
-                        onkeypress="if(event.key === 'Enter') sendChat()"
-                        oninput="onChatInputChange()">
-                    <button onclick="sendChat()">➤</button>
+                        onkeypress="if(event.key === 'Enter') sendChat()" oninput="onChatInputChange()">
+                    <button onclick="sendChat()"
+                        style="display:flex;align-items:center;justify-content:center;padding:0 8px;"><span
+                            class="material-symbols-outlined" style="font-size:20px;">send</span></button>
                 </div>
             </div>
         </div>
 
         <!-- Chat Bubble Button (mobile only) -->
         <button id="chat-bubble-btn" class="chat-bubble-btn" onclick="toggleChatBubble()">
-            <span class="bubble-icon-chat">💬</span>
-            <span class="bubble-icon-close">✕</span>
+            <span class="bubble-icon-chat" style="display:flex;align-items:center;justify-content:center;"><span
+                    class="material-symbols-outlined" style="font-size:28px;">chat</span></span>
+            <span class="bubble-icon-close" style="display:flex;align-items:center;justify-content:center;"><span
+                    class="material-symbols-outlined" style="font-size:28px;">close</span></span>
             <span id="chat-badge" class="chat-badge hidden-badge">0</span>
         </button>
 
@@ -1026,7 +1172,6 @@
         let myUsername = '';
         let myNameColor = '#3ea6ff';
 
-        // Restore saved user data from localStorage & auto-join
         (function restoreSavedUser() {
             const savedName = localStorage.getItem('musiclive_username');
             const savedColor = localStorage.getItem('musiclive_namecolor');
@@ -1037,7 +1182,6 @@
             if (savedColor) {
                 document.getElementById('name-color-input').value = savedColor;
             }
-            // Auto-join if saved name exists (skip login for non-admin)
             if (savedName && savedName.trim().toLowerCase() !== 'nthdat') {
                 setTimeout(() => joinRoom(), 300);
             }
@@ -1066,7 +1210,6 @@
             myUsername = name.trim();
             myNameColor = nameColor;
 
-            // Save to localStorage
             localStorage.setItem('musiclive_username', myUsername);
             localStorage.setItem('musiclive_namecolor', myNameColor);
 
@@ -1108,11 +1251,11 @@
             }
         });
 
-        // --- CHAT LOGIC ---
+
         let soundEnabled = true;
         function toggleSound() {
             soundEnabled = !soundEnabled;
-            document.getElementById('sound-btn').innerText = soundEnabled ? '🔊' : '🔇';
+            document.getElementById('sound-btn').innerHTML = soundEnabled ? '<span class="material-symbols-outlined" style="font-size:18px;">volume_up</span>' : '<span class="material-symbols-outlined" style="font-size:18px;">volume_off</span>';
         }
 
         function playChatSound() {
@@ -1161,7 +1304,7 @@
         });
 
         socket.on('viewersUpdate', (count) => {
-            document.getElementById('viewer-count').innerText = `(👁️ ${count})`;
+            document.getElementById('viewer-count').innerHTML = `(<span class="material-symbols-outlined" style="font-size:14px; vertical-align:text-bottom;">visibility</span> ${count})`;
         });
 
         socket.on('newMessage', (data) => {
@@ -1183,20 +1326,16 @@
                 </div>`;
             }
 
-            // Check if user is scrolled near the bottom (within 150px threshold) BEFORE appending
             const isScrolledToBottom = chatBox.scrollHeight - chatBox.clientHeight <= chatBox.scrollTop + 150;
             const shouldScroll = isScrolledToBottom || data.senderId === socket.id;
 
-            // Handle GIF messages
             let contentHtml = '';
             if (data.gifUrl) {
-                // When GIF loads, its height expands. Force a re-scroll if needed.
                 contentHtml = `<img class="chat-gif" src="${escapeHtml(data.gifUrl)}" alt="GIF" loading="lazy" onload="if(${shouldScroll}) { const cb = document.getElementById('chat-box-ui'); cb.scrollTop = cb.scrollHeight; }">`;
             } else {
                 contentHtml = `<span class="chat-text">${escapeHtml(data.text || '')}</span>`;
             }
 
-            // Determine author color
             let authorStyle = '';
             if (!isSystem && data.nameColor) {
                 authorStyle = `style="color: ${escapeHtml(data.nameColor)}"`;
@@ -1207,15 +1346,11 @@
                 ${contentHtml}
                 ${actionsHtml}
             </div>`;
-            
-            // Use insertAdjacentHTML instead of innerHTML += to prevent resetting the scroll position!
+
             chatBox.insertAdjacentHTML('beforeend', msgHtml);
-            
-            // Auto-scroll ONLY if they were already at the bottom, or if it's their own message
+
             if (shouldScroll) {
-                // Scroll immediately
                 chatBox.scrollTop = chatBox.scrollHeight;
-                // setTimeout ensures browser has calculated the new height (for text wrapping)
                 setTimeout(() => {
                     chatBox.scrollTop = chatBox.scrollHeight;
                 }, 100);
@@ -1223,7 +1358,6 @@
 
             if (data.senderId !== socket.id && !isSystem) {
                 playChatSound();
-                // Track unread if chat bubble is closed on mobile
                 if (!chatBubbleOpen && window.innerWidth < 900) {
                     unreadCount++;
                     updateChatBadge();
@@ -1236,7 +1370,7 @@
         function deleteMessage(id) { socket.emit('adminDeleteMessage', id); }
         function removeSong(index) { socket.emit('adminRemoveSong', index); }
 
-        // --- YOUTUBE API ---
+
         function extractVideoID(url) {
             const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
             const match = url.match(regExp);
@@ -1286,7 +1420,7 @@
                             <span class="song-title" title="${song.title}" style="font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${song.title}</span>
                             <span class="song-id-text" style="font-size: 11px; color: var(--text-muted);">${song.id}</span>
                         </div>
-                        ${myRole === 'admin' ? `<button style="background: #cc0000; color: white; border: none; border-radius: 4px; cursor: pointer; padding: 4px 8px; font-size: 12px;" onclick="removeSong(${i})">🗑️</button>` : ''}
+                        ${myRole === 'admin' ? `<button style="background: #cc0000; color: white; border: none; border-radius: 4px; cursor: pointer; padding: 4px 8px; font-size: 12px; display: flex; align-items: center; justify-content: center;" onclick="removeSong(${i})"><span class="material-symbols-outlined" style="font-size: 16px;">delete</span></button>` : ''}
                     </div>
                 `).join('');
             }
@@ -1297,7 +1431,7 @@
                 player.playVideo();
                 socket.emit('requestSync');
                 const btn = document.getElementById('sync-btn');
-                btn.innerText = "🔄 Đã Đồng Bộ (Nhấn lại nếu mất tiếng)";
+                btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px;vertical-align:text-bottom;margin-right:4px;">sync</span> Đã Đồng Bộ (Nhấn lại nếu mất tiếng)';
                 btn.classList.remove('active');
             }
         }
@@ -1315,7 +1449,7 @@
         socket.on('memberPlay', (time) => { if (myRole === 'member' && player) { if (Math.abs(player.getCurrentTime() - time) > 1) player.seekTo(time); player.playVideo(); } });
         socket.on('memberPause', () => { if (myRole === 'member' && player) player.pauseVideo(); });
 
-        // --- EMOJI & GIF PICKER LOGIC ---
+
         function escapeHtml(str) {
             if (!str) return '';
             return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
@@ -1381,7 +1515,6 @@
             }
         }
 
-        // Close picker when clicking outside
         document.addEventListener('click', (e) => {
             const popup = document.getElementById('picker-popup');
             const toggleBtn = document.getElementById('emoji-toggle-btn');
@@ -1392,8 +1525,8 @@
             }
         });
 
-        // --- GIF SEARCH (Tenor API v2) ---
-        const TENOR_API_KEY = 'AIzaSyAyimkuYQYF_FXVALexPuGQctUWRURdCYQ'; // Free public key for Tenor
+
+        const TENOR_API_KEY = 'AIzaSyAyimkuYQYF_FXVALexPuGQctUWRURdCYQ';
         const TENOR_CLIENT_KEY = 'music_live_chat';
         let trendingLoaded = false;
 
@@ -1451,16 +1584,14 @@
 
         function sendGif(gifUrl) {
             socket.emit('sendMessage', { type: 'gif', gifUrl: gifUrl });
-            // Close picker
             pickerVisible = false;
             document.getElementById('picker-popup').classList.add('hidden');
             document.getElementById('emoji-toggle-btn').classList.remove('active');
         }
 
-        // Initialize emoji grid on load
         populateEmojiGrid();
 
-        // --- INLINE GIF SUGGESTIONS (TikTok-style) ---
+
         let inlineSuggestTimeout = null;
         let lastSuggestQuery = '';
 
@@ -1468,7 +1599,6 @@
             const input = document.getElementById('chat-input');
             const text = input.value.trim();
 
-            // Don't show suggestions if picker is open
             if (pickerVisible) return;
 
             if (!text || text.length < 2) {
@@ -1477,7 +1607,6 @@
                 return;
             }
 
-            // Use last word as search query
             const words = text.split(/\s+/);
             const query = words[words.length - 1];
 
@@ -1513,7 +1642,6 @@
                     </div>`;
                 }).join('');
             strip.classList.add('active');
-            // Scroll to start
             strip.scrollLeft = 0;
         }
 
@@ -1530,7 +1658,7 @@
             hideGifSuggestions();
         }
 
-        // --- CHAT BUBBLE LOGIC (mobile) ---
+
         let chatBubbleOpen = false;
         let unreadCount = 0;
 
@@ -1544,10 +1672,8 @@
                 bubbleBtn.classList.add('chat-is-open');
                 unreadCount = 0;
                 updateChatBadge();
-                // Scroll to bottom of chat
                 const chatBox = document.getElementById('chat-box-ui');
                 setTimeout(() => { chatBox.scrollTop = chatBox.scrollHeight; }, 100);
-                // Focus input
                 setTimeout(() => { document.getElementById('chat-input').focus(); }, 200);
             } else {
                 chatPanel.classList.remove('chat-open');

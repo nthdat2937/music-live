@@ -54,10 +54,60 @@
             background-color: var(--bg-color);
             display: flex;
             align-items: center;
+            justify-content: space-between;
             padding: 0 24px;
             border-bottom: 1px solid var(--border-color);
             flex-shrink: 0;
             z-index: 100;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .navbar-user {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .navbar-user .user-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #51cf66;
+            flex-shrink: 0;
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 6px 14px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 70, 70, 0.15);
+            border-color: rgba(255, 70, 70, 0.4);
+            color: #ff6b6b;
+        }
+
+        .logout-btn .material-symbols-outlined {
+            font-size: 16px;
         }
 
         .navbar .logo {
@@ -629,7 +679,7 @@
 
         .playlist-ui div {
             padding: 8px 0;
-            border-bottom: 1px solid var(--border-color);
+            /* border-bottom: 1px solid var(--border-color); */
             display: flex;
             align-items: center;
             gap: 8px;
@@ -1030,6 +1080,15 @@
 
     <div class="navbar">
         <div class="logo">2937.ML <span class="live-badge">TRỰC TIẾP</span></div>
+        <div id="navbar-right" class="navbar-right hidden">
+            <div class="navbar-user">
+                <span class="user-dot"></span>
+                <span id="navbar-username"></span>
+            </div>
+            <button class="logout-btn" onclick="logout()" title="Đăng xuất để đổi tên">
+                <span class="material-symbols-outlined">logout</span>
+            </button>
+        </div>
     </div>
 
     <div id="main-room" class="main-layout hidden">
@@ -1236,6 +1295,13 @@
                 document.getElementById('login-section').classList.add('hidden');
                 document.getElementById('main-room').classList.remove('hidden');
 
+                // Show user info in navbar
+                const navRight = document.getElementById('navbar-right');
+                navRight.classList.remove('hidden');
+                const navUsername = document.getElementById('navbar-username');
+                navUsername.textContent = myUsername;
+                navUsername.style.color = myNameColor;
+
                 if (myRole === 'admin') {
                     document.body.classList.add('admin-mode');
                     document.getElementById('welcome-title').innerText = "Bảng Điều Khiển Của Admin";
@@ -1261,6 +1327,40 @@
             }
         });
 
+
+        function logout() {
+            // Clear saved user data
+            localStorage.removeItem('musiclive_username');
+            localStorage.removeItem('musiclive_namecolor');
+
+            // Reset state
+            myRole = '';
+            myUsername = '';
+            myNameColor = '#3ea6ff';
+
+            // Hide main room, show login
+            document.getElementById('main-room').classList.add('hidden');
+            document.getElementById('login-section').classList.remove('hidden');
+            document.getElementById('navbar-right').classList.add('hidden');
+
+            // Reset admin mode
+            document.body.classList.remove('admin-mode');
+            document.getElementById('btn-next-song').classList.add('hidden');
+            document.getElementById('sync-btn').classList.add('hidden');
+
+            // Clear login inputs for fresh entry
+            document.getElementById('username-input').value = '';
+            document.getElementById('name-color-input').value = '#3ea6ff';
+            document.getElementById('password-input').value = '';
+            document.getElementById('password-wrapper').classList.add('hidden');
+
+            // Clear chat
+            document.getElementById('chat-box-ui').innerHTML = '';
+
+            // Disconnect and reconnect socket
+            socket.disconnect();
+            socket.connect();
+        }
 
         let soundEnabled = true;
         function toggleSound() {
@@ -1449,7 +1549,7 @@
                                 Thêm bởi: <strong style="color: ${escapeHtml(song.addedByColor || '#aaaaaa')}">${escapeHtml(song.addedBy || 'Ẩn danh')}</strong>
                             </span>
                         </div>
-                        ${myRole === 'admin' ? `<button style="background: #cc0000; color: white; border: none; border-radius: 4px; cursor: pointer; padding: 4px 8px; font-size: 12px; display: flex; align-items: center; justify-content: center;" onclick="removeSong(${i})"><span class="material-symbols-outlined" style="font-size: 16px;">delete</span></button>` : ''}
+                        ${myRole === 'admin' ? `<button style="background: none; color: red; border: none; border-radius: 4px; cursor: pointer; padding: 4px 8px; font-size: 12px; display: flex; align-items: center; justify-content: center;" onclick="removeSong(${i})"><span class="material-symbols-outlined" style="font-size: 16px;">delete</span></button>` : ''}
                     </div>
                 `).join('');
             }

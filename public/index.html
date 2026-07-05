@@ -1051,13 +1051,13 @@
                             oninput="changeVolume(this.value)">
                     </div>
 
-                    <div id="admin-tools" class="admin-tools hidden">
+                    <div id="song-tools" class="admin-tools">
                         <input type="text" id="song-input" placeholder="Dán link YouTube, ID hoặc Tên bài hát...">
                         <button class="btn-add" onclick="addSong()"
                             style="display:flex;align-items:center;gap:4px;justify-content:center;">
                             <span class="material-symbols-outlined" style="font-size:18px;">add</span> Thêm vào hàng đợi
                         </button>
-                        <button class="btn-next" onclick="nextSong()"
+                        <button id="btn-next-song" class="btn-next hidden" onclick="nextSong()"
                             style="display:flex;align-items:center;gap:4px;justify-content:center;">
                             Qua Bài <span class="material-symbols-outlined" style="font-size:18px;">skip_next</span>
                         </button>
@@ -1163,6 +1163,7 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
     <script>
         const socket = io();
@@ -1229,7 +1230,7 @@
                 if (myRole === 'admin') {
                     document.body.classList.add('admin-mode');
                     document.getElementById('welcome-title').innerText = "Bảng Điều Khiển Của Admin";
-                    document.getElementById('admin-tools').classList.remove('hidden');
+                    document.getElementById('btn-next-song').classList.remove('hidden');
                     document.getElementById('player-container').style.pointerEvents = 'auto';
                 } else {
                     document.getElementById('sync-btn').classList.remove('hidden');
@@ -1413,16 +1414,34 @@
                 ui.innerHTML = '<div>Chưa có bài nào chờ.</div>';
             } else {
                 ui.innerHTML = list.map((song, i) => `
-                    <div style="display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border-color);">
-                        <span class="song-idx" style="color: var(--text-muted); font-size: 12px; width: 20px;">${i + 1}</span>
+                    <div data-id="${i}" class="playlist-item" style="display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border-color); ${myRole === 'admin' ? 'cursor: grab;' : ''}">
+                        <span class="song-idx" style="color: var(--text-muted); font-size: 12px; width: 20px;">${myRole === 'admin' ? '☰' : (i + 1)}</span>
                         <img src="${song.thumbnail}" alt="thumb" style="width: 80px; height: 45px; object-fit: cover; border-radius: 4px;">
                         <div class="song-info" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
-                            <span class="song-title" title="${song.title}" style="font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${song.title}</span>
-                            <span class="song-id-text" style="font-size: 11px; color: var(--text-muted);">${song.id}</span>
+                            <span class="song-title" title="${escapeHtml(song.title)}" style="font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(song.title)}</span>
+                            <span class="song-id-text" style="font-size: 11px; color: var(--text-muted);">
+                                Thêm bởi: <strong style="color: ${escapeHtml(song.addedByColor || '#aaaaaa')}">${escapeHtml(song.addedBy || 'Ẩn danh')}</strong>
+                            </span>
                         </div>
                         ${myRole === 'admin' ? `<button style="background: #cc0000; color: white; border: none; border-radius: 4px; cursor: pointer; padding: 4px 8px; font-size: 12px; display: flex; align-items: center; justify-content: center;" onclick="removeSong(${i})"><span class="material-symbols-outlined" style="font-size: 16px;">delete</span></button>` : ''}
                     </div>
                 `).join('');
+            }
+            
+            if (myRole === 'admin' && typeof Sortable !== 'undefined' && list.length > 1) {
+                new Sortable(ui, {
+                    animation: 150,
+                    handle: '.playlist-item',
+                    onEnd: function (evt) {
+                        const newPlaylist = [];
+                        const items = ui.querySelectorAll('.playlist-item');
+                        items.forEach(item => {
+                            const oldIndex = parseInt(item.getAttribute('data-id'));
+                            newPlaylist.push(list[oldIndex]);
+                        });
+                        socket.emit('adminReorderPlaylist', newPlaylist);
+                    }
+                });
             }
         }
 

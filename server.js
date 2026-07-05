@@ -220,23 +220,29 @@ io.on('connection', (socket) => {
         socket.broadcast.emit('memberRequestSync');
     });
 
-    socket.on('adminAddSong', async (inputData) => {
-        if (socket.role === 'admin') {
-            let videoId = inputData.trim();
-            // If it's not exactly an 11-character YouTube ID, treat it as a search query
-            if (!/^[a-zA-Z0-9_-]{11}$/.test(videoId)) {
-                try {
-                    const r = await ytSearch(videoId);
-                    if (r && r.videos.length > 0) {
-                        videoId = r.videos[0].videoId;
-                    }
-                } catch (err) {
-                    console.error('Lỗi tìm kiếm YouTube:', err);
+    socket.on('addSong', async (inputData) => {
+        let videoId = inputData.trim();
+        if (!/^[a-zA-Z0-9_-]{11}$/.test(videoId)) {
+            try {
+                const r = await ytSearch(videoId);
+                if (r && r.videos.length > 0) {
+                    videoId = r.videos[0].videoId;
                 }
+            } catch (err) {
+                console.error('Lỗi tìm kiếm YouTube:', err);
             }
-            
-            const info = await getYoutubeInfo(videoId);
-            playlist.push(info);
+        }
+        
+        const info = await getYoutubeInfo(videoId);
+        info.addedBy = socket.username || 'Ẩn danh';
+        info.addedByColor = socket.nameColor || '#aaaaaa';
+        playlist.push(info);
+        io.emit('updatePlaylist', playlist);
+    });
+
+    socket.on('adminReorderPlaylist', (newPlaylist) => {
+        if (socket.role === 'admin') {
+            playlist = newPlaylist;
             io.emit('updatePlaylist', playlist);
         }
     });

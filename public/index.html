@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trạm Nhạc Live 🫪</title>
+    <title>2937.ML</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
@@ -311,7 +311,7 @@
             width: 56px;
             height: 56px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #3ea6ff, #006fd6);
+            background: rgb(0, 126, 168);
             color: white;
             border: none;
             cursor: pointer;
@@ -971,7 +971,12 @@
             letter-spacing: 0.5px;
             text-transform: uppercase;
         }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 
@@ -1024,7 +1029,7 @@
     </div>
 
     <div class="navbar">
-        <div class="logo">🎵 Trạm Nhạc <span class="live-badge">TRỰC TIẾP</span></div>
+        <div class="logo">2937.ML <span class="live-badge">TRỰC TIẾP</span></div>
     </div>
 
     <div id="main-room" class="main-layout hidden">
@@ -1056,11 +1061,11 @@
                         <input type="text" id="song-input" placeholder="Dán link YouTube, ID hoặc Tên bài hát...">
                         <button class="btn-add" onclick="addSong()"
                             style="display:flex;align-items:center;gap:4px;justify-content:center;">
-                            <span class="material-symbols-outlined" style="font-size:18px;">add</span> Thêm vào hàng đợi
+                            <span class="material-symbols-outlined" style="font-size:18px;">add</span>
                         </button>
                         <button id="btn-next-song" class="btn-next hidden" onclick="nextSong()"
                             style="display:flex;align-items:center;gap:4px;justify-content:center;">
-                            Qua Bài <span class="material-symbols-outlined" style="font-size:18px;">skip_next</span>
+                            <span class="material-symbols-outlined" style="font-size:18px;">skip_next</span>
                         </button>
                     </div>
 
@@ -1076,7 +1081,7 @@
 
         <div class="right-column">
             <div class="chat-header">
-                <span>Trò chuyện trực tiếp <span id="viewer-count"
+                <span>Chat <span id="viewer-count"
                         style="color:var(--text-muted); font-size:13px; margin-left: 8px;">(<span
                             class="material-symbols-outlined"
                             style="font-size:14px; vertical-align:text-bottom;">visibility</span> 1)</span></span>
@@ -1086,8 +1091,7 @@
                             class="material-symbols-outlined" style="font-size:18px;">volume_up</span></button>
                     <button id="sync-btn" class="sync-btn hidden active" onclick="forceSync()"
                         style="display:flex;align-items:center;gap:4px;justify-content:center;"><span
-                            class="material-symbols-outlined" style="font-size:18px;">play_arrow</span> Bật
-                        Nhạc</button>
+                            class="material-symbols-outlined" style="font-size:18px;">play_arrow</span></button>
                     <button class="chat-close-btn" onclick="toggleChatBubble()" title="Đóng chat"
                         style="display:flex;align-items:center;justify-content:center;"><span
                             class="material-symbols-outlined" style="font-size:20px;">close</span></button>
@@ -1155,8 +1159,6 @@
         <button id="chat-bubble-btn" class="chat-bubble-btn" onclick="toggleChatBubble()">
             <span class="bubble-icon-chat" style="display:flex;align-items:center;justify-content:center;"><span
                     class="material-symbols-outlined" style="font-size:28px;">chat</span></span>
-            <span class="bubble-icon-close" style="display:flex;align-items:center;justify-content:center;"><span
-                    class="material-symbols-outlined" style="font-size:28px;">close</span></span>
             <span id="chat-badge" class="chat-badge hidden-badge">0</span>
         </button>
 
@@ -1411,10 +1413,10 @@
             const btn = document.querySelector('.btn-add');
             if (input.value) {
                 const originalHtml = btn.innerHTML;
-                btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px; animation: spin 1s linear infinite;">sync</span> Đang tìm...';
+                btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px; animation: spin 1s linear infinite;">sync</span>';
                 btn.disabled = true;
                 input.disabled = true;
-                
+
                 socket.emit('addSong', extractVideoID(input.value), (res) => {
                     btn.innerHTML = originalHtml;
                     btn.disabled = false;
@@ -1451,7 +1453,7 @@
                     </div>
                 `).join('');
             }
-            
+
             if (myRole === 'admin' && typeof Sortable !== 'undefined' && list.length > 1) {
                 if (window.playlistSortable) {
                     window.playlistSortable.destroy();
@@ -1477,7 +1479,7 @@
                 player.playVideo();
                 socket.emit('requestSync');
                 const btn = document.getElementById('sync-btn');
-                btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px;vertical-align:text-bottom;margin-right:4px;">sync</span> Đã Đồng Bộ (Nhấn lại nếu mất tiếng)';
+                btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px;vertical-align:text-bottom;margin-right:4px;">sync</span>';
                 btn.classList.remove('active');
             }
         }

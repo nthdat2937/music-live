@@ -220,24 +220,29 @@ io.on('connection', (socket) => {
         socket.broadcast.emit('memberRequestSync');
     });
 
-    socket.on('addSong', async (inputData) => {
+    socket.on('addSong', async (inputData, callback) => {
         let videoId = inputData.trim();
-        if (!/^[a-zA-Z0-9_-]{11}$/.test(videoId)) {
-            try {
+        let success = false;
+        try {
+            if (!/^[a-zA-Z0-9_-]{11}$/.test(videoId)) {
                 const r = await ytSearch(videoId);
                 if (r && r.videos.length > 0) {
                     videoId = r.videos[0].videoId;
                 }
-            } catch (err) {
-                console.error('Lỗi tìm kiếm YouTube:', err);
             }
+            
+            const info = await getYoutubeInfo(videoId);
+            info.addedBy = socket.username || 'Ẩn danh';
+            info.addedByColor = socket.nameColor || '#aaaaaa';
+            playlist.push(info);
+            io.emit('updatePlaylist', playlist);
+            success = true;
+        } catch (err) {
+            console.error('Lỗi khi thêm bài hát:', err);
         }
-        
-        const info = await getYoutubeInfo(videoId);
-        info.addedBy = socket.username || 'Ẩn danh';
-        info.addedByColor = socket.nameColor || '#aaaaaa';
-        playlist.push(info);
-        io.emit('updatePlaylist', playlist);
+        if (typeof callback === 'function') {
+            callback({ success });
+        }
     });
 
     socket.on('adminReorderPlaylist', (newPlaylist) => {

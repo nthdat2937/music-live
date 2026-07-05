@@ -971,6 +971,7 @@
             letter-spacing: 0.5px;
             text-transform: uppercase;
         }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
     </style>
 </head>
 
@@ -1167,6 +1168,12 @@
 
     <script>
         const socket = io();
+        socket.on('connect', () => {
+            if (myRole) {
+                // If socket reconnects (e.g. server restart), re-authenticate to restore role
+                joinRoom();
+            }
+        });
         let player;
         let myRole = '';
         let initialVideoId = 'jfKfPfyJRdk';
@@ -1401,7 +1408,24 @@
         function changeVolume(val) { if (player && player.setVolume) player.setVolume(val); }
         function addSong() {
             const input = document.getElementById('song-input');
-            if (input.value) { socket.emit('addSong', extractVideoID(input.value)); input.value = ''; }
+            const btn = document.querySelector('.btn-add');
+            if (input.value) {
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px; animation: spin 1s linear infinite;">sync</span> Đang tìm...';
+                btn.disabled = true;
+                input.disabled = true;
+                
+                socket.emit('addSong', extractVideoID(input.value), (res) => {
+                    btn.innerHTML = originalHtml;
+                    btn.disabled = false;
+                    input.disabled = false;
+                    if (res && res.success) {
+                        input.value = '';
+                    } else {
+                        alert("Không tìm thấy bài hát hoặc có lỗi xảy ra!");
+                    }
+                });
+            }
         }
         function nextSong() { socket.emit('adminNextSong'); }
 
@@ -1429,7 +1453,10 @@
             }
             
             if (myRole === 'admin' && typeof Sortable !== 'undefined' && list.length > 1) {
-                new Sortable(ui, {
+                if (window.playlistSortable) {
+                    window.playlistSortable.destroy();
+                }
+                window.playlistSortable = new Sortable(ui, {
                     animation: 150,
                     handle: '.playlist-item',
                     onEnd: function (evt) {

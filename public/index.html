@@ -30,10 +30,22 @@
         }
 
         /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #717171; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #a0a0a0; }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #717171;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a0a0a0;
+        }
 
         .navbar {
             height: 56px;
@@ -45,7 +57,16 @@
             flex-shrink: 0;
             z-index: 100;
         }
-        .navbar .logo { font-size: 20px; font-weight: bold; display: flex; align-items: center; gap: 8px; letter-spacing: -0.5px;}
+
+        .navbar .logo {
+            font-size: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: -0.5px;
+        }
+
         .navbar .logo .live-badge {
             background-color: #cc0000;
             color: white;
@@ -56,13 +77,16 @@
             margin-left: 5px;
         }
 
-        .hidden { display: none !important; }
+        .hidden {
+            display: none !important;
+        }
 
         .main-layout {
             display: flex;
             flex-direction: column;
             flex: 1;
-            overflow: hidden; /* Do not scroll the whole body */
+            overflow: hidden;
+            /* Do not scroll the whole body */
             min-height: 0;
         }
 
@@ -76,26 +100,37 @@
         }
 
         .left-column {
-            flex: none;
+            flex: 1;
             display: flex;
             flex-direction: column;
             min-width: 0;
-            max-height: 50vh; /* Limit video + info height on mobile */
-            border-bottom: 1px solid var(--border-color);
+            overflow-y: auto;
         }
+
         @media(min-width: 900px) {
-            .left-column { flex: 1; max-height: none; border-bottom: none; padding-right: 8px; overflow-y: auto; }
+            .left-column {
+                flex: 1;
+                max-height: none;
+                border-bottom: none;
+                padding-right: 8px;
+                overflow-y: auto;
+            }
         }
 
         .video-container {
             position: relative;
             width: 100%;
-            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            padding-bottom: 56.25%;
+            /* 16:9 Aspect Ratio */
             background: #000;
             flex: none;
         }
+
         @media(min-width: 900px) {
-            .video-container { border-radius: 12px; overflow: hidden; }
+            .video-container {
+                border-radius: 12px;
+                overflow: hidden;
+            }
         }
 
         .video-container #youtube-player {
@@ -105,21 +140,28 @@
             width: 100%;
             height: 100%;
             border: none;
-            pointer-events: none; /* Member cannot touch */
+            pointer-events: none;
+            /* Member cannot touch */
         }
-        
+
         body.admin-mode .video-container #youtube-player {
-            pointer-events: auto; /* Admin can touch */
+            pointer-events: auto;
+            /* Admin can touch */
         }
 
         .video-info {
             flex: 1;
-            overflow-y: auto; /* Scroll info independently */
+            overflow-y: auto;
+            /* Scroll info independently */
             padding: 12px 16px;
             margin-top: 0;
         }
+
         @media(min-width: 900px) {
-            .video-info { padding: 16px 0 0 0; overflow-y: visible; }
+            .video-info {
+                padding: 16px 0 0 0;
+                overflow-y: visible;
+            }
         }
 
         .video-title {
@@ -136,14 +178,39 @@
         }
 
         .channel-avatar {
-            width: 40px; height: 40px; border-radius: 50%; background: #ff0000; 
-            display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 18px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #ff0000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 18px;
         }
 
-        .channel-details { display: flex; flex-direction: column; }
-        .channel-name { font-weight: 500; font-size: 16px; display: flex; align-items: center; gap: 5px; }
-        .channel-name span { color: var(--text-muted); font-size: 12px; }
-        .channel-sub { font-size: 12px; color: var(--text-muted); }
+        .channel-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .channel-name {
+            font-weight: 500;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .channel-name span {
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .channel-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
 
         /* Control Panel */
         .control-box {
@@ -159,7 +226,7 @@
             gap: 10px;
             font-size: 14px;
         }
-        
+
         .volume-control input[type="range"] {
             accent-color: var(--text-main);
         }
@@ -177,29 +244,114 @@
             display: inline-flex;
             align-items: center;
         }
-        .sync-btn:hover { background-color: rgba(255, 255, 255, 0.2); }
-        .sync-btn.active { background-color: var(--accent); color: #000; font-weight: bold; }
+
+        .sync-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .sync-btn.active {
+            background-color: var(--accent);
+            color: #000;
+            font-weight: bold;
+        }
 
         /* Right Column (Chat) */
         .right-column {
-            flex: 1; /* Take the remaining height on mobile */
-            width: 100%;
-            display: flex;
+            /* Mobile: hidden by default, shown as overlay */
+            display: none;
             flex-direction: column;
             background: var(--bg-color);
-            margin-top: 0;
-            border: none;
-            min-height: 0; /* Force container to shrink so chat can scroll */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            z-index: 500;
+            animation: chatSlideUp 0.25s ease-out;
+        }
+        .right-column.chat-open {
+            display: flex;
+        }
+
+        @keyframes chatSlideUp {
+            from { opacity: 0; transform: translateY(100%); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         @media(min-width: 900px) {
             .right-column {
+                display: flex !important;
+                position: static;
                 width: 350px;
+                height: 100%;
                 flex: none;
-                height: 100%; /* Fill available height */
                 border: 1px solid var(--border-color);
                 border-radius: 12px;
+                animation: none;
             }
+        }
+
+        /* Chat Bubble Button (mobile only) */
+        .chat-bubble-btn {
+            display: flex;
+            position: fixed;
+            bottom: 24px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3ea6ff, #006fd6);
+            color: white;
+            border: none;
+            cursor: pointer;
+            z-index: 400;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            box-shadow: 0 4px 16px rgba(62,166,255,0.4), 0 2px 6px rgba(0,0,0,0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .chat-bubble-btn:hover { transform: scale(1.1); }
+        .chat-bubble-btn:active { transform: scale(0.92); }
+        .chat-bubble-btn.chat-is-open {
+            background: linear-gradient(135deg, #555, #333);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .chat-bubble-btn.chat-is-open .bubble-icon-chat { display: none; }
+        .chat-bubble-btn.chat-is-open .bubble-icon-close { display: block; }
+        .chat-bubble-btn .bubble-icon-close { display: none; }
+
+        @media(min-width: 900px) {
+            .chat-bubble-btn { display: none !important; }
+        }
+
+        /* Unread Badge */
+        .chat-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            min-width: 20px;
+            height: 20px;
+            border-radius: 10px;
+            background: #cc0000;
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 5px;
+            box-sizing: border-box;
+            border: 2px solid var(--bg-color);
+            animation: badgePop 0.3s ease-out;
+        }
+        .chat-badge.hidden-badge { display: none; }
+
+        @keyframes badgePop {
+            from { transform: scale(0); }
+            50% { transform: scale(1.3); }
+            to { transform: scale(1); }
         }
 
         .chat-header {
@@ -210,6 +362,24 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-shrink: 0;
+        }
+
+        /* Mobile close button in chat header */
+        .chat-close-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 22px;
+            cursor: pointer;
+            padding: 4px;
+            line-height: 1;
+            transition: 0.2s;
+            display: inline-flex;
+        }
+        .chat-close-btn:hover { color: var(--text-main); }
+        @media(min-width: 900px) {
+            .chat-close-btn { display: none; }
         }
 
         .chat-messages {
@@ -226,13 +396,22 @@
             line-height: 20px;
             word-wrap: break-word;
         }
+
         .chat-message .chat-author {
             color: var(--text-muted);
             font-weight: 500;
             margin-right: 8px;
         }
-        .chat-message.admin-msg .chat-author { color: #fbbc04; } /* Highlight admin */
-        .chat-message.system-msg .chat-author { color: var(--accent); font-style: italic; }
+
+        .chat-message.admin-msg .chat-author {
+            color: #fbbc04;
+        }
+
+        /* Highlight admin */
+        .chat-message.system-msg .chat-author {
+            color: var(--accent);
+            font-style: italic;
+        }
 
         .chat-input-area {
             padding: 16px;
@@ -267,65 +446,426 @@
             padding: 4px 8px;
             transition: 0.2s;
         }
-        .chat-input-wrapper button:hover { color: var(--text-main); }
+
+        .chat-input-wrapper button:hover {
+            color: var(--text-main);
+        }
 
         /* Login Overlay */
         .login-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: var(--bg-color); display: flex; justify-content: center; align-items: center; z-index: 1000;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
         }
+
         .login-card {
             background: var(--panel-bg);
-            padding: 40px 30px; border-radius: 12px; width: 90%; max-width: 400px;
+            padding: 40px 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
-        .login-card h2 { margin-top: 0; margin-bottom: 8px; font-weight: 400; font-size: 24px; }
-        .login-card p { color: var(--text-muted); margin-bottom: 24px; font-size: 14px; }
-        
+
+        .login-card h2 {
+            margin-top: 0;
+            margin-bottom: 8px;
+            font-weight: 400;
+            font-size: 24px;
+        }
+
+        .login-card p {
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
         .login-input {
-            width: 100%; padding: 12px 16px; margin-bottom: 16px; border-radius: 8px;
-            background: transparent; border: 1px solid var(--border-color); color: white;
-            box-sizing: border-box; outline: none; font-size: 15px; transition: 0.2s;
+            width: 100%;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            border-radius: 8px;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: white;
+            box-sizing: border-box;
+            outline: none;
+            font-size: 15px;
+            transition: 0.2s;
         }
-        .login-input:focus { border-color: var(--accent); }
-        
+
+        .login-input:focus {
+            border-color: var(--accent);
+        }
+
         .login-btn {
-            width: 100%; padding: 12px; border-radius: 18px; background: var(--text-main); color: var(--bg-color);
-            font-weight: 500; font-size: 15px; border: none; cursor: pointer; transition: 0.2s;
+            width: 100%;
+            padding: 12px;
+            border-radius: 18px;
+            background: var(--text-main);
+            color: var(--bg-color);
+            font-weight: 500;
+            font-size: 15px;
+            border: none;
+            cursor: pointer;
+            transition: 0.2s;
         }
-        .login-btn:hover { background: #d0d0d0; }
 
-        .admin-tools { display: flex; gap: 8px; margin-top: 15px; }
-        .admin-tools input { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: transparent; color: white; outline: none; }
-        .admin-tools button { padding: 8px 16px; border-radius: 18px; border: none; font-weight: 500; cursor: pointer; color: #000; }
-        .btn-add { background: var(--text-main); }
-        .btn-add:hover { background: #d0d0d0; }
-        .btn-next { background: var(--panel-bg); color: var(--text-main) !important; border: 1px solid var(--border-color) !important; }
-        .btn-next:hover { background: #333; }
+        .login-btn:hover {
+            background: #d0d0d0;
+        }
 
-        .playlist-header { font-size: 14px; font-weight: 500; margin-bottom: 8px; color: var(--text-muted); }
+        .admin-tools {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .admin-tools input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: white;
+            outline: none;
+        }
+
+        .admin-tools button {
+            padding: 8px 16px;
+            border-radius: 18px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            color: #000;
+        }
+
+        .btn-add {
+            background: var(--text-main);
+        }
+
+        .btn-add:hover {
+            background: #d0d0d0;
+        }
+
+        .btn-next {
+            background: var(--panel-bg);
+            color: var(--text-main) !important;
+            border: 1px solid var(--border-color) !important;
+        }
+
+        .btn-next:hover {
+            background: #333;
+        }
+
+        .playlist-header {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+        }
+
         .playlist-ui {
-            max-height: 150px; overflow-y: auto; font-size: 14px;
-            background: rgba(0,0,0,0.2); border-radius: 8px; padding: 10px;
+            max-height: 150px;
+            overflow-y: auto;
+            font-size: 14px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 10px;
         }
-        .playlist-ui div { padding: 8px 0; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 8px; }
-        .playlist-ui div:last-child { border-bottom: none; }
-        .playlist-ui .song-idx { color: var(--text-muted); font-size: 12px; width: 20px;}
-        .playlist-ui .song-id { font-family: monospace; }
 
-        .chat-message { position: relative; padding: 4px 0; border-radius: 4px; border-bottom: 1px solid transparent; }
-        .chat-message:hover { background: rgba(255,255,255,0.05); }
-        .chat-actions { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); display: none; gap: 4px; }
-        .chat-message:hover .chat-actions { display: flex; }
-        .action-btn { background: var(--panel-bg); border: 1px solid var(--border-color); color: white; border-radius: 4px; cursor: pointer; font-size: 11px; padding: 2px 6px; }
-        .action-btn:hover { background: #333; }
+        .playlist-ui div {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .playlist-ui div:last-child {
+            border-bottom: none;
+        }
+
+        .playlist-ui .song-idx {
+            color: var(--text-muted);
+            font-size: 12px;
+            width: 20px;
+        }
+
+        .playlist-ui .song-id {
+            font-family: monospace;
+        }
+
+        .chat-message {
+            position: relative;
+            padding: 4px 0;
+            border-radius: 4px;
+            border-bottom: 1px solid transparent;
+        }
+
+        .chat-message:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .chat-actions {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: none;
+            gap: 4px;
+        }
+
+        .chat-message:hover .chat-actions {
+            display: flex;
+        }
+
+        .action-btn {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            padding: 2px 6px;
+        }
+
+        .action-btn:hover {
+            background: #333;
+        }
+
+        /* GIF in chat message */
+        .chat-message .chat-gif {
+            display: block;
+            max-width: 200px;
+            max-height: 150px;
+            border-radius: 8px;
+            margin-top: 4px;
+            object-fit: contain;
+        }
+
+        /* Emoji & GIF Picker Styles */
+        .picker-overlay {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            right: 0;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px 12px 0 0;
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            height: 320px;
+            animation: pickerSlideUp 0.2s ease-out;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
+            overflow: hidden;
+        }
+
+        @keyframes pickerSlideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .picker-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
+        .picker-tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-muted);
+            background: transparent;
+            border: none;
+            transition: 0.2s;
+            border-bottom: 2px solid transparent;
+        }
+        .picker-tab:hover { color: var(--text-main); background: rgba(255,255,255,0.05); }
+        .picker-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+        /* Emoji Grid */
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 2px;
+            padding: 10px;
+            overflow-y: auto;
+            flex: 1;
+        }
+        .emoji-item {
+            font-size: 22px;
+            padding: 6px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: 0.15s;
+            user-select: none;
+        }
+        .emoji-item:hover { background: rgba(255,255,255,0.1); transform: scale(1.2); }
+        .emoji-item:active { transform: scale(0.9); }
+
+        .emoji-category-label {
+            grid-column: 1 / -1;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            padding: 8px 4px 4px;
+            font-weight: 500;
+        }
+
+        /* GIF Search */
+        .gif-panel {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
+        }
+        .gif-search-bar {
+            display: flex;
+            align-items: center;
+            padding: 8px 10px;
+            gap: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .gif-search-bar input {
+            flex: 1;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            color: var(--text-main);
+            padding: 8px 14px;
+            outline: none;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+        .gif-search-bar input:focus { border-color: var(--accent); }
+        .gif-search-bar .powered-by {
+            font-size: 10px;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .gif-results {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
+            padding: 8px;
+            overflow-y: auto;
+            flex: 1;
+            min-height: 0;
+        }
+        .gif-results-loading {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 30px;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+        .gif-result-item {
+            cursor: pointer;
+            border-radius: 8px;
+            overflow: hidden;
+            background: rgba(255,255,255,0.05);
+            height: 120px;
+            position: relative;
+            transition: 0.2s;
+        }
+        .gif-result-item:hover { transform: scale(1.03); box-shadow: 0 0 0 2px var(--accent); }
+        .gif-result-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Picker buttons in input bar */
+        .chat-input-wrapper .picker-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 18px;
+            padding: 4px 4px;
+            transition: 0.2s;
+            border-radius: 50%;
+            line-height: 1;
+        }
+        .chat-input-wrapper .picker-btn:hover { color: var(--text-main); background: rgba(255,255,255,0.08); }
+        .chat-input-wrapper .picker-btn.active { color: var(--accent); }
+
+        /* Inline GIF Suggestions (TikTok-style) */
+        .gif-suggest-strip {
+            display: none;
+            overflow-x: auto;
+            overflow-y: hidden;
+            white-space: nowrap;
+            padding: 8px 8px 6px;
+            gap: 6px;
+            border-top: 1px solid var(--border-color);
+            background: var(--panel-bg);
+            border-radius: 12px 12px 0 0;
+            animation: suggestSlideUp 0.15s ease-out;
+            scrollbar-width: none;
+        }
+        .gif-suggest-strip::-webkit-scrollbar { display: none; }
+        .gif-suggest-strip.active { display: flex; }
+
+        @keyframes suggestSlideUp {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .gif-suggest-item {
+            flex-shrink: 0;
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            background: rgba(255,255,255,0.05);
+            transition: 0.15s;
+            position: relative;
+        }
+        .gif-suggest-item:hover { transform: scale(1.08); box-shadow: 0 0 0 2px var(--accent); }
+        .gif-suggest-item:active { transform: scale(0.95); }
+        .gif-suggest-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .gif-suggest-label {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            padding: 0 6px 0 2px;
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
     </style>
 </head>
 
 <body>
 
-    <!-- Login Screen -->
     <div id="login-section" class="login-overlay">
         <div class="login-card">
             <h2>Tham gia luồng trực tiếp</h2>
@@ -334,23 +874,36 @@
             <input type="text" id="username-input" class="login-input" placeholder="Tên hiển thị..."
                 oninput="checkAdminName(this.value)" onkeypress="if(event.key === 'Enter') joinRoom()" required>
 
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <label style="font-size: 14px; color: var(--text-muted); white-space: nowrap;">Màu tên:</label>
+                <div style="display: flex; gap: 6px; flex-wrap: wrap; flex: 1;">
+                    <input type="color" id="name-color-input" value="#3ea6ff"
+                        style="width: 36px; height: 36px; border: none; border-radius: 8px; cursor: pointer; background: transparent; padding: 0;">
+                    <button type="button" onclick="document.getElementById('name-color-input').value='#3ea6ff'" style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; background: #3ea6ff;" title="Xanh dương"></button>
+                    <button type="button" onclick="document.getElementById('name-color-input').value='#ff6b6b'" style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; background: #ff6b6b;" title="Đỏ"></button>
+                    <button type="button" onclick="document.getElementById('name-color-input').value='#51cf66'" style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; background: #51cf66;" title="Xanh lá"></button>
+                    <button type="button" onclick="document.getElementById('name-color-input').value='#ffd43b'" style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; background: #ffd43b;" title="Vàng"></button>
+                    <button type="button" onclick="document.getElementById('name-color-input').value='#cc5de8'" style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; background: #cc5de8;" title="Tím"></button>
+                    <button type="button" onclick="document.getElementById('name-color-input').value='#ff922b'" style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; background: #ff922b;" title="Cam"></button>
+                    <button type="button" onclick="document.getElementById('name-color-input').value='#f1f1f1'" style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--border-color); cursor: pointer; background: #f1f1f1;" title="Trắng"></button>
+                </div>
+            </div>
+
             <div id="password-wrapper" class="hidden">
-                <input type="password" id="password-input" class="login-input" placeholder="Mật khẩu Admin" onkeypress="if(event.key === 'Enter') joinRoom()">
+                <input type="password" id="password-input" class="login-input" placeholder="Mật khẩu Admin"
+                    onkeypress="if(event.key === 'Enter') joinRoom()">
             </div>
 
             <button class="login-btn" onclick="joinRoom()">Tham Gia Ngay</button>
         </div>
     </div>
 
-    <!-- Navbar -->
     <div class="navbar">
         <div class="logo">🎵 Trạm Nhạc <span class="live-badge">TRỰC TIẾP</span></div>
     </div>
 
-    <!-- Main Layout -->
     <div id="main-room" class="main-layout hidden">
-        
-        <!-- Left: Video & Info -->
+
         <div class="left-column">
             <div class="video-container" id="player-container">
                 <div id="youtube-player"></div>
@@ -358,7 +911,7 @@
 
             <div class="video-info">
                 <h1 class="video-title" id="welcome-title">Thưởng thức âm nhạc cùng mọi người</h1>
-                
+
                 <div class="channel-info">
                     <div class="channel-avatar">N</div>
                     <div class="channel-details">
@@ -369,7 +922,8 @@
 
                 <div class="control-box">
                     <div class="volume-control">
-                        🔊 <input type="range" id="volume-slider" min="0" max="100" value="50" oninput="changeVolume(this.value)">
+                        🔊 <input type="range" id="volume-slider" min="0" max="100" value="50"
+                            oninput="changeVolume(this.value)">
                     </div>
 
                     <div id="admin-tools" class="admin-tools hidden">
@@ -388,36 +942,76 @@
             </div>
         </div>
 
-        <!-- Right: Chat -->
         <div class="right-column">
             <div class="chat-header">
-                <span>Trò chuyện trực tiếp <span id="viewer-count" style="color:var(--text-muted); font-size:13px; margin-left: 8px;">(👁️ 1)</span></span>
-                <div style="display:flex; gap: 8px;">
-                    <button id="sound-btn" class="sync-btn" onclick="toggleSound()" title="Bật/Tắt âm thanh chat">🔊</button>
+                <span>Trò chuyện trực tiếp <span id="viewer-count"
+                        style="color:var(--text-muted); font-size:13px; margin-left: 8px;">(👁️ 1)</span></span>
+                <div style="display:flex; gap: 8px; align-items: center;">
+                    <button id="sound-btn" class="sync-btn" onclick="toggleSound()"
+                        title="Bật/Tắt âm thanh chat">🔊</button>
                     <button id="sync-btn" class="sync-btn hidden active" onclick="forceSync()">▶ Bật Nhạc</button>
+                    <button class="chat-close-btn" onclick="toggleChatBubble()" title="Đóng chat">✕</button>
                 </div>
             </div>
-            
-            <div id="pinned-message-container" class="hidden" style="background: rgba(255,255,255,0.05); padding: 10px 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 13px;">
+
+            <div id="pinned-message-container" class="hidden"
+                style="background: rgba(255,255,255,0.05); padding: 10px 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 13px;">
                 <div style="display:flex; flex-direction: column; gap: 4px; overflow: hidden;">
-                    <span style="color: var(--accent); font-weight: 500; font-size: 12px;">📌 Ghim bởi <span id="pin-author">Admin</span></span>
-                    <span id="pin-text" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px;">Nội dung ghim</span>
+                    <span style="color: var(--accent); font-weight: 500; font-size: 12px;">📌 Ghim bởi <span
+                            id="pin-author">Admin</span></span>
+                    <span id="pin-text"
+                        style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px;">Nội
+                        dung ghim</span>
                 </div>
-                <button id="unpin-btn" class="hidden" style="background:transparent; border:none; color:var(--text-muted); cursor:pointer;" onclick="unpinMessage()">❌</button>
+                <button id="unpin-btn" class="hidden"
+                    style="background:transparent; border:none; color:var(--text-muted); cursor:pointer;"
+                    onclick="unpinMessage()">❌</button>
             </div>
 
             <div class="chat-messages" id="chat-box-ui">
                 <!-- Messages will appear here -->
             </div>
 
-            <div class="chat-input-area">
+            <div class="chat-input-area" style="position: relative;">
+                <!-- Emoji & GIF Picker Popup -->
+                <div id="picker-popup" class="picker-overlay hidden">
+                    <div class="picker-tabs">
+                        <button class="picker-tab active" id="tab-emoji" onclick="switchPickerTab('emoji')">😊 Emoji</button>
+                        <button class="picker-tab" id="tab-gif" onclick="switchPickerTab('gif')">GIF</button>
+                    </div>
+                    <div id="emoji-panel" class="emoji-grid">
+                        <!-- Emoji grid populated by JS -->
+                    </div>
+                    <div id="gif-panel" class="gif-panel hidden">
+                        <div class="gif-search-bar">
+                            <input type="text" id="gif-search-input" placeholder="Tìm GIF..." oninput="debouncedGifSearch()" onkeypress="if(event.key==='Enter') searchGifs()">
+                            <span class="powered-by">Powered by Tenor</span>
+                        </div>
+                        <div class="gif-results" id="gif-results">
+                            <div class="gif-results-loading">Nhập từ khóa để tìm GIF...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Inline GIF Suggestions Strip -->
+                <div id="gif-suggest-strip" class="gif-suggest-strip"></div>
+
                 <div class="chat-input-wrapper">
+                    <button class="picker-btn" id="emoji-toggle-btn" onclick="togglePicker()" title="Emoji & GIF">😊</button>
                     <input type="text" id="chat-input" placeholder="Trò chuyện công khai..."
-                        onkeypress="if(event.key === 'Enter') sendChat()">
+                        onkeypress="if(event.key === 'Enter') sendChat()"
+                        oninput="onChatInputChange()">
                     <button onclick="sendChat()">➤</button>
                 </div>
             </div>
         </div>
+
+        <!-- Chat Bubble Button (mobile only) -->
+        <button id="chat-bubble-btn" class="chat-bubble-btn" onclick="toggleChatBubble()">
+            <span class="bubble-icon-chat">💬</span>
+            <span class="bubble-icon-close">✕</span>
+            <span id="chat-badge" class="chat-badge hidden-badge">0</span>
+        </button>
 
     </div>
 
@@ -430,6 +1024,24 @@
         let myRole = '';
         let initialVideoId = 'jfKfPfyJRdk';
         let myUsername = '';
+        let myNameColor = '#3ea6ff';
+
+        // Restore saved user data from localStorage & auto-join
+        (function restoreSavedUser() {
+            const savedName = localStorage.getItem('musiclive_username');
+            const savedColor = localStorage.getItem('musiclive_namecolor');
+            if (savedName) {
+                document.getElementById('username-input').value = savedName;
+                checkAdminName(savedName);
+            }
+            if (savedColor) {
+                document.getElementById('name-color-input').value = savedColor;
+            }
+            // Auto-join if saved name exists (skip login for non-admin)
+            if (savedName && savedName.trim().toLowerCase() !== 'nthdat') {
+                setTimeout(() => joinRoom(), 300);
+            }
+        })();
 
         function checkAdminName(name) {
             if (name.trim().toLowerCase() === 'nthdat') {
@@ -443,6 +1055,7 @@
         function joinRoom() {
             const name = document.getElementById('username-input').value;
             const password = document.getElementById('password-input').value;
+            const nameColor = document.getElementById('name-color-input').value;
             const isAdmin = name.trim().toLowerCase() === 'nthdat';
 
             if (!name.trim()) {
@@ -451,12 +1064,17 @@
             }
 
             myUsername = name.trim();
+            myNameColor = nameColor;
+
+            // Save to localStorage
+            localStorage.setItem('musiclive_username', myUsername);
+            localStorage.setItem('musiclive_namecolor', myNameColor);
 
             if (player && typeof player.playVideo === 'function') {
                 player.playVideo();
             }
 
-            socket.emit('joinRoom', { name, isAdmin, password });
+            socket.emit('joinRoom', { name, isAdmin, password, nameColor });
         }
 
         socket.on('authResult', (res) => {
@@ -464,7 +1082,7 @@
                 myRole = res.role;
                 document.getElementById('login-section').classList.add('hidden');
                 document.getElementById('main-room').classList.remove('hidden');
-                
+
                 if (myRole === 'admin') {
                     document.body.classList.add('admin-mode');
                     document.getElementById('welcome-title').innerText = "Bảng Điều Khiển Của Admin";
@@ -478,7 +1096,7 @@
                 if (player && player.loadVideoById) {
                     player.loadVideoById(initialVideoId);
                     player.pauseVideo();
-                    
+
                     if (myRole === 'member') {
                         setTimeout(() => socket.emit('requestSync'), 1000);
                     }
@@ -511,7 +1129,7 @@
                 gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
                 osc.start();
                 osc.stop(ctx.currentTime + 0.1);
-            } catch (e) {}
+            } catch (e) { }
         }
 
         function sendChat() {
@@ -520,6 +1138,7 @@
                 socket.emit('sendMessage', input.value);
                 input.value = '';
             }
+            hideGifSuggestions();
         }
 
         function updatePinnedMessageUI(msg) {
@@ -549,30 +1168,66 @@
             const chatBox = document.getElementById('chat-box-ui');
             const isSystem = data.role === 'system';
             const isAdminMsg = data.role === 'admin';
-            
+
             let msgClass = 'chat-message';
             if (isSystem) msgClass += ' system-msg';
             if (isAdminMsg) msgClass += ' admin-msg';
 
             let actionsHtml = '';
             if (myRole === 'admin' && !isSystem) {
-                const safeName = (data.name||'').replace(/'/g, "\\'").replace(/"/g, "&quot;");
-                const safeText = (data.text||'').replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                const safeName = (data.name || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                const safeText = (data.text || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
                 actionsHtml = `<div class="chat-actions">
                     <button class="action-btn" onclick="pinMessage('${safeName}', '${safeText}')">📌</button>
                     <button class="action-btn" onclick="deleteMessage('${data.id}')">🗑️</button>
                 </div>`;
             }
 
-            chatBox.innerHTML += `<div class="${msgClass}" id="msg-${data.id}">
-                <span class="chat-author">${data.name}</span>
-                <span class="chat-text">${data.text}</span>
+            // Check if user is scrolled near the bottom (within 150px threshold) BEFORE appending
+            const isScrolledToBottom = chatBox.scrollHeight - chatBox.clientHeight <= chatBox.scrollTop + 150;
+            const shouldScroll = isScrolledToBottom || data.senderId === socket.id;
+
+            // Handle GIF messages
+            let contentHtml = '';
+            if (data.gifUrl) {
+                // When GIF loads, its height expands. Force a re-scroll if needed.
+                contentHtml = `<img class="chat-gif" src="${escapeHtml(data.gifUrl)}" alt="GIF" loading="lazy" onload="if(${shouldScroll}) { const cb = document.getElementById('chat-box-ui'); cb.scrollTop = cb.scrollHeight; }">`;
+            } else {
+                contentHtml = `<span class="chat-text">${escapeHtml(data.text || '')}</span>`;
+            }
+
+            // Determine author color
+            let authorStyle = '';
+            if (!isSystem && data.nameColor) {
+                authorStyle = `style="color: ${escapeHtml(data.nameColor)}"`;
+            }
+
+            const msgHtml = `<div class="${msgClass}" id="msg-${data.id}">
+                <span class="chat-author" ${authorStyle}>${data.name}</span>
+                ${contentHtml}
                 ${actionsHtml}
             </div>`;
-            chatBox.scrollTop = chatBox.scrollHeight;
+            
+            // Use insertAdjacentHTML instead of innerHTML += to prevent resetting the scroll position!
+            chatBox.insertAdjacentHTML('beforeend', msgHtml);
+            
+            // Auto-scroll ONLY if they were already at the bottom, or if it's their own message
+            if (shouldScroll) {
+                // Scroll immediately
+                chatBox.scrollTop = chatBox.scrollHeight;
+                // setTimeout ensures browser has calculated the new height (for text wrapping)
+                setTimeout(() => {
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                }, 100);
+            }
 
             if (data.senderId !== socket.id && !isSystem) {
                 playChatSound();
+                // Track unread if chat bubble is closed on mobile
+                if (!chatBubbleOpen && window.innerWidth < 900) {
+                    unreadCount++;
+                    updateChatBadge();
+                }
             }
         });
 
@@ -593,9 +1248,9 @@
                 height: '100%', width: '100%', videoId: initialVideoId,
                 playerVars: { 'controls': 1, 'disablekb': 1, 'origin': window.location.origin, 'rel': 0 },
                 events: {
-                    'onReady': () => { 
-                        player.setVolume(50); 
-                        document.getElementById('status').innerText = "Trạng thái: Đang phát trực tiếp 🟢"; 
+                    'onReady': () => {
+                        player.setVolume(50);
+                        document.getElementById('status').innerText = "Trạng thái: Đang phát trực tiếp 🟢";
                     },
                     'onStateChange': (e) => {
                         if (myRole === 'admin') {
@@ -625,7 +1280,7 @@
             } else {
                 ui.innerHTML = list.map((song, i) => `
                     <div style="display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border-color);">
-                        <span class="song-idx" style="color: var(--text-muted); font-size: 12px; width: 20px;">${i+1}</span>
+                        <span class="song-idx" style="color: var(--text-muted); font-size: 12px; width: 20px;">${i + 1}</span>
                         <img src="${song.thumbnail}" alt="thumb" style="width: 80px; height: 45px; object-fit: cover; border-radius: 4px;">
                         <div class="song-info" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
                             <span class="song-title" title="${song.title}" style="font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${song.title}</span>
@@ -659,6 +1314,257 @@
 
         socket.on('memberPlay', (time) => { if (myRole === 'member' && player) { if (Math.abs(player.getCurrentTime() - time) > 1) player.seekTo(time); player.playVideo(); } });
         socket.on('memberPause', () => { if (myRole === 'member' && player) player.pauseVideo(); });
+
+        // --- EMOJI & GIF PICKER LOGIC ---
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+        }
+
+        const EMOJI_DATA = {
+            'Mặt cười': ['😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '😊', '😇', '🥰', '😍', '🤩', '😘', '😗', '😚', '😙', '🥲', '😋', '😛', '😜', '🤪', '😝', '🤑', '🤗', '🤭', '🫢', '🫣', '🤫', '🤔', '🫡'],
+            'Cảm xúc': ['😐', '😑', '😶', '🫥', '😏', '😒', '🙄', '😬', '🤥', '😌', '😔', '😪', '🤤', '😴', '😷', '🤒', '🤕', '🤢', '🤮', '🥵', '🥶', '🥴', '😵', '🤯', '🤠', '🥳', '🥸', '😎', '🤓', '🧐'],
+            'Cử chỉ': ['👋', '🤚', '🖐', '✋', '🖖', '🫱', '🫲', '🫳', '🫴', '👌', '🤌', '🤏', '✌️', '🤞', '🫰', '🤟', '🤘', '🤙', '👈', '👉', '👆', '🖕', '👇', '☝️', '🫵', '👍', '👎', '✊', '👊', '🤛'],
+            'Trái tim': ['❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💔', '❤️‍🔥', '❤️‍🩹', '💕', '💞', '💓', '💗', '💖', '💘', '💝', '💟'],
+            'Thú vật': ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐻‍❄️', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵', '🙈', '🙉', '🙊', '🐔', '🐧', '🐦', '🦅', '🦆', '🦉'],
+            'Đồ ăn': ['🍎', '🍐', '🍊', '🍋', '🍌', '🍉', '🍇', '🍓', '🫐', '🍈', '🍒', '🍑', '🥭', '🍍', '🥥', '🥝', '🍅', '🥑', '🍕', '🍔', '🍟', '🌭', '🍿', '🧁', '🍰'],
+            'Hoạt động': ['⚽', '🏀', '🏈', '⚾', '🥎', '🎾', '🏐', '🏉', '🥏', '🎱', '🏓', '🎮', '🎯', '🎪', '🎭', '🎨', '🎬', '🎤', '🎧', '🎼', '🎹', '🥁', '🎷', '🎺', '🎸'],
+            'Biểu tượng': ['💯', '🔥', '✨', '🌟', '💫', '⭐', '🎉', '🎊', '🏆', '🥇', '🏅', '🎖', '🎗', '🎁', '💰', '💎', '🔔', '📢', '💬', '💭', '🗯', '♥️', '♠️', '♣️', '♦️']
+        };
+
+        let pickerVisible = false;
+        let currentPickerTab = 'emoji';
+        let gifSearchTimeout = null;
+
+        function populateEmojiGrid() {
+            const grid = document.getElementById('emoji-panel');
+            let html = '';
+            for (const [category, emojis] of Object.entries(EMOJI_DATA)) {
+                html += `<div class="emoji-category-label">${category}</div>`;
+                for (const emoji of emojis) {
+                    html += `<div class="emoji-item" onclick="insertEmoji('${emoji}')">${emoji}</div>`;
+                }
+            }
+            grid.innerHTML = html;
+        }
+
+        function insertEmoji(emoji) {
+            const input = document.getElementById('chat-input');
+            const start = input.selectionStart;
+            const end = input.selectionEnd;
+            const text = input.value;
+            input.value = text.substring(0, start) + emoji + text.substring(end);
+            input.focus();
+            input.selectionStart = input.selectionEnd = start + emoji.length;
+        }
+
+        function togglePicker() {
+            const popup = document.getElementById('picker-popup');
+            const btn = document.getElementById('emoji-toggle-btn');
+            pickerVisible = !pickerVisible;
+            popup.classList.toggle('hidden', !pickerVisible);
+            btn.classList.toggle('active', pickerVisible);
+            if (pickerVisible && currentPickerTab === 'gif') {
+                loadTrendingGifs();
+            }
+        }
+
+        function switchPickerTab(tab) {
+            currentPickerTab = tab;
+            document.getElementById('tab-emoji').classList.toggle('active', tab === 'emoji');
+            document.getElementById('tab-gif').classList.toggle('active', tab === 'gif');
+            document.getElementById('emoji-panel').classList.toggle('hidden', tab !== 'emoji');
+            document.getElementById('gif-panel').classList.toggle('hidden', tab !== 'gif');
+            if (tab === 'gif') {
+                loadTrendingGifs();
+                document.getElementById('gif-search-input').focus();
+            }
+        }
+
+        // Close picker when clicking outside
+        document.addEventListener('click', (e) => {
+            const popup = document.getElementById('picker-popup');
+            const toggleBtn = document.getElementById('emoji-toggle-btn');
+            if (pickerVisible && !popup.contains(e.target) && e.target !== toggleBtn) {
+                pickerVisible = false;
+                popup.classList.add('hidden');
+                toggleBtn.classList.remove('active');
+            }
+        });
+
+        // --- GIF SEARCH (Tenor API v2) ---
+        const TENOR_API_KEY = 'AIzaSyAyimkuYQYF_FXVALexPuGQctUWRURdCYQ'; // Free public key for Tenor
+        const TENOR_CLIENT_KEY = 'music_live_chat';
+        let trendingLoaded = false;
+
+        function loadTrendingGifs() {
+            if (trendingLoaded) return;
+            const results = document.getElementById('gif-results');
+            results.innerHTML = '<div class="gif-results-loading">🔄 Đang tải GIF xu hướng...</div>';
+            fetch(`https://tenor.googleapis.com/v2/featured?key=${TENOR_API_KEY}&client_key=${TENOR_CLIENT_KEY}&limit=20&media_filter=tinygif,gif`)
+                .then(r => r.json())
+                .then(data => {
+                    trendingLoaded = true;
+                    renderGifResults(data.results || []);
+                })
+                .catch(() => {
+                    results.innerHTML = '<div class="gif-results-loading">Không thể tải GIF. Hãy thử tìm kiếm!</div>';
+                });
+        }
+
+        function debouncedGifSearch() {
+            clearTimeout(gifSearchTimeout);
+            gifSearchTimeout = setTimeout(searchGifs, 400);
+        }
+
+        function searchGifs() {
+            const query = document.getElementById('gif-search-input').value.trim();
+            const results = document.getElementById('gif-results');
+            if (!query) {
+                trendingLoaded = false;
+                loadTrendingGifs();
+                return;
+            }
+            results.innerHTML = '<div class="gif-results-loading">🔍 Đang tìm kiếm...</div>';
+            fetch(`https://tenor.googleapis.com/v2/search?q=${encodeURIComponent(query)}&key=${TENOR_API_KEY}&client_key=${TENOR_CLIENT_KEY}&limit=20&media_filter=tinygif,gif`)
+                .then(r => r.json())
+                .then(data => renderGifResults(data.results || []))
+                .catch(() => {
+                    results.innerHTML = '<div class="gif-results-loading">Lỗi tìm kiếm GIF ❌</div>';
+                });
+        }
+
+        function renderGifResults(gifs) {
+            const results = document.getElementById('gif-results');
+            if (gifs.length === 0) {
+                results.innerHTML = '<div class="gif-results-loading">Không tìm thấy GIF nào 😢</div>';
+                return;
+            }
+            results.innerHTML = gifs.map(gif => {
+                const tinyUrl = gif.media_formats?.tinygif?.url || gif.media_formats?.gif?.url || '';
+                const fullUrl = gif.media_formats?.gif?.url || tinyUrl;
+                return `<div class="gif-result-item" onclick="sendGif('${escapeHtml(fullUrl)}')">
+                    <img src="${escapeHtml(tinyUrl)}" alt="GIF" loading="lazy">
+                </div>`;
+            }).join('');
+        }
+
+        function sendGif(gifUrl) {
+            socket.emit('sendMessage', { type: 'gif', gifUrl: gifUrl });
+            // Close picker
+            pickerVisible = false;
+            document.getElementById('picker-popup').classList.add('hidden');
+            document.getElementById('emoji-toggle-btn').classList.remove('active');
+        }
+
+        // Initialize emoji grid on load
+        populateEmojiGrid();
+
+        // --- INLINE GIF SUGGESTIONS (TikTok-style) ---
+        let inlineSuggestTimeout = null;
+        let lastSuggestQuery = '';
+
+        function onChatInputChange() {
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+
+            // Don't show suggestions if picker is open
+            if (pickerVisible) return;
+
+            if (!text || text.length < 2) {
+                hideGifSuggestions();
+                lastSuggestQuery = '';
+                return;
+            }
+
+            // Use last word as search query
+            const words = text.split(/\s+/);
+            const query = words[words.length - 1];
+
+            if (query.length < 2 || query === lastSuggestQuery) return;
+            lastSuggestQuery = query;
+
+            clearTimeout(inlineSuggestTimeout);
+            inlineSuggestTimeout = setTimeout(() => fetchInlineGifs(query), 350);
+        }
+
+        function fetchInlineGifs(query) {
+            fetch(`https://tenor.googleapis.com/v2/search?q=${encodeURIComponent(query)}&key=${TENOR_API_KEY}&client_key=${TENOR_CLIENT_KEY}&limit=10&media_filter=tinygif,gif`)
+                .then(r => r.json())
+                .then(data => {
+                    const gifs = data.results || [];
+                    if (gifs.length > 0) {
+                        showGifSuggestions(gifs);
+                    } else {
+                        hideGifSuggestions();
+                    }
+                })
+                .catch(() => hideGifSuggestions());
+        }
+
+        function showGifSuggestions(gifs) {
+            const strip = document.getElementById('gif-suggest-strip');
+            strip.innerHTML = '<div class="gif-suggest-label">GIF</div>' +
+                gifs.map(gif => {
+                    const tinyUrl = gif.media_formats?.tinygif?.url || gif.media_formats?.gif?.url || '';
+                    const fullUrl = gif.media_formats?.gif?.url || tinyUrl;
+                    return `<div class="gif-suggest-item" onclick="sendInlineGif('${escapeHtml(fullUrl)}')">
+                        <img src="${escapeHtml(tinyUrl)}" alt="GIF" loading="lazy">
+                    </div>`;
+                }).join('');
+            strip.classList.add('active');
+            // Scroll to start
+            strip.scrollLeft = 0;
+        }
+
+        function hideGifSuggestions() {
+            const strip = document.getElementById('gif-suggest-strip');
+            strip.classList.remove('active');
+            strip.innerHTML = '';
+            lastSuggestQuery = '';
+        }
+
+        function sendInlineGif(gifUrl) {
+            socket.emit('sendMessage', { type: 'gif', gifUrl: gifUrl });
+            document.getElementById('chat-input').value = '';
+            hideGifSuggestions();
+        }
+
+        // --- CHAT BUBBLE LOGIC (mobile) ---
+        let chatBubbleOpen = false;
+        let unreadCount = 0;
+
+        function toggleChatBubble() {
+            chatBubbleOpen = !chatBubbleOpen;
+            const chatPanel = document.querySelector('.right-column');
+            const bubbleBtn = document.getElementById('chat-bubble-btn');
+
+            if (chatBubbleOpen) {
+                chatPanel.classList.add('chat-open');
+                bubbleBtn.classList.add('chat-is-open');
+                unreadCount = 0;
+                updateChatBadge();
+                // Scroll to bottom of chat
+                const chatBox = document.getElementById('chat-box-ui');
+                setTimeout(() => { chatBox.scrollTop = chatBox.scrollHeight; }, 100);
+                // Focus input
+                setTimeout(() => { document.getElementById('chat-input').focus(); }, 200);
+            } else {
+                chatPanel.classList.remove('chat-open');
+                bubbleBtn.classList.remove('chat-is-open');
+            }
+        }
+
+        function updateChatBadge() {
+            const badge = document.getElementById('chat-badge');
+            if (unreadCount > 0) {
+                badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+                badge.classList.remove('hidden-badge');
+            } else {
+                badge.classList.add('hidden-badge');
+            }
+        }
     </script>
 </body>
+
 </html>

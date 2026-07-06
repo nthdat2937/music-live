@@ -695,8 +695,15 @@
         }
 
         @keyframes loopPulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.6;
+            }
         }
 
         .loop-indicator {
@@ -1079,64 +1086,483 @@
         }
 
         /* Draw Game Overlay */
-        .draw-overlay { position:fixed; top:0; left:0; width:100vw; height:100vh; height:100dvh; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); z-index:800; display:flex; flex-direction:column; align-items:center; justify-content:center; animation:drawFadeIn 0.3s ease; }
-        @keyframes drawFadeIn { from{opacity:0;transform:scale(0.95)} to{opacity:1;transform:scale(1)} }
-        .draw-container { width:95%; max-width:700px; background:var(--panel-bg); border-radius:16px; border:1px solid var(--border-color); overflow:hidden; display:flex; flex-direction:column; max-height:90vh; max-height:90dvh; box-shadow:0 20px 60px rgba(0,0,0,0.6); }
-        .draw-header { display:flex; align-items:center; justify-content:space-between; padding:14px 20px; border-bottom:1px solid var(--border-color); background:rgba(0,0,0,0.3); }
-        .draw-header-title { font-size:18px; font-weight:700; display:flex; align-items:center; gap:8px; }
-        .draw-timer { font-size:22px; font-weight:700; color:var(--accent); min-width:50px; text-align:center; }
-        .draw-timer.urgent { color:#ff4444; animation:timerPulse 0.5s ease infinite; }
-        @keyframes timerPulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-        .draw-close-btn { background:rgba(255,255,255,0.1); border:none; color:var(--text-muted); font-size:20px; cursor:pointer; border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center; transition:0.2s; }
-        .draw-close-btn:hover { background:rgba(255,70,70,0.2); color:#ff6b6b; }
-        .draw-info { padding:10px 20px; text-align:center; font-size:14px; border-bottom:1px solid var(--border-color); background:rgba(0,0,0,0.15); }
-        .draw-word-display { font-size:20px; font-weight:700; letter-spacing:4px; margin:4px 0; color:var(--accent); white-space:pre-wrap; }
-        .draw-word-secret { font-size:16px; color:#51cf66; background:rgba(81,207,102,0.1); padding:6px 16px; border-radius:20px; display:inline-block; margin:4px 0; }
-        .draw-canvas-wrap { position:relative; background:#fff; margin:12px; border-radius:12px; overflow:hidden; aspect-ratio:4/3; }
-        .draw-canvas-wrap canvas { position:absolute; top:0; left:0; width:100%; height:100%; cursor:crosshair; touch-action:none; }
-        .draw-tools { display:flex; align-items:center; gap:8px; padding:10px 16px; border-top:1px solid var(--border-color); flex-wrap:wrap; justify-content:center; background:rgba(0,0,0,0.2); }
-        .draw-colors { display:flex; gap:4px; }
-        .draw-color-btn { width:28px; height:28px; border-radius:50%; border:2px solid transparent; cursor:pointer; transition:0.15s; }
-        .draw-color-btn:hover { transform:scale(1.15); }
-        .draw-color-btn.active { border-color:#fff; box-shadow:0 0 8px rgba(255,255,255,0.3); }
-        .draw-sizes { display:flex; gap:4px; }
-        .draw-size-btn { width:32px; height:32px; border-radius:8px; border:1px solid var(--border-color); background:var(--panel-bg); color:var(--text-main); cursor:pointer; font-size:11px; font-weight:600; transition:0.15s; display:flex; align-items:center; justify-content:center; }
-        .draw-size-btn.active { background:var(--accent); color:#000; border-color:var(--accent); }
-        .draw-tool-btn { padding:6px 12px; border-radius:8px; border:1px solid var(--border-color); background:var(--panel-bg); color:var(--text-main); cursor:pointer; font-size:13px; transition:0.15s; display:flex; align-items:center; gap:4px; }
-        .draw-tool-btn:hover { background:#333; }
-        .draw-tool-btn.active { background:rgba(255,107,107,0.2); border-color:#ff6b6b; color:#ff6b6b; }
-        .draw-admin-tools { display:flex; gap:6px; }
-        .draw-admin-btn { padding:6px 14px; border-radius:16px; border:none; cursor:pointer; font-size:12px; font-weight:600; transition:0.2s; }
-        .draw-admin-btn.skip { background:rgba(255,255,255,0.1); color:var(--text-main); }
-        .draw-admin-btn.skip:hover { background:rgba(255,255,255,0.2); }
-        .draw-admin-btn.end { background:rgba(255,70,70,0.15); color:#ff6b6b; }
-        .draw-admin-btn.end:hover { background:rgba(255,70,70,0.3); }
-        .draw-scores { padding:10px 20px; border-top:1px solid var(--border-color); display:flex; flex-wrap:wrap; gap:8px; justify-content:center; background:rgba(0,0,0,0.2); max-height:80px; overflow-y:auto; }
-        .draw-score-item { font-size:12px; padding:4px 10px; background:rgba(255,255,255,0.08); border-radius:12px; display:flex; align-items:center; gap:6px; }
-        .draw-score-pts { font-weight:700; color:#ffd43b; }
-        .draw-user-list { display:flex; flex-wrap:wrap; gap:8px; padding:16px 20px; justify-content:center; max-height:200px; overflow-y:auto; }
-        .draw-user-btn { padding:8px 16px; border-radius:20px; border:1px solid var(--border-color); background:rgba(255,255,255,0.05); color:var(--text-main); cursor:pointer; font-size:13px; font-weight:500; transition:0.2s; }
-        .draw-user-btn:hover { background:var(--accent); color:#000; border-color:var(--accent); transform:scale(1.05); }
-        .draw-round-result { padding:20px; text-align:center; }
-        .draw-round-result h3 { margin:0 0 8px; font-size:18px; }
-        .draw-round-result .reveal-word { font-size:24px; font-weight:700; color:#ffd43b; margin:8px 0; }
-        .draw-random-picker { text-align:center; padding:30px 20px; font-size:20px; font-weight:700; color:var(--text-main); }
-        .draw-random-name { font-size:36px; margin-top:16px; color:var(--accent); animation:popInRandom 0.1s; letter-spacing: 2px; }
-        @keyframes popInRandom { from{opacity:0;transform:scale(0.8)} to{opacity:1;transform:scale(1)} }
-        .btn-start-game { display:flex; align-items:center; gap:8px; justify-content:center; width:100%; padding:10px; margin-top:12px; border-radius:12px; border:1px dashed var(--border-color); background:rgba(62,166,255,0.05); color:var(--accent); cursor:pointer; font-size:14px; font-weight:500; transition:0.2s; font-family:'Roboto',sans-serif; }
-        .btn-start-game:hover { background:rgba(62,166,255,0.15); border-style:solid; }
+        .draw-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 800;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: drawFadeIn 0.3s ease;
+        }
+
+        @keyframes drawFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95)
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1)
+            }
+        }
+
+        .draw-container {
+            width: 95%;
+            max-width: 700px;
+            background: var(--panel-bg);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh;
+            max-height: 90dvh;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+        }
+
+        .draw-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .draw-header-title {
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .draw-timer {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--accent);
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .draw-timer.urgent {
+            color: #ff4444;
+            animation: timerPulse 0.5s ease infinite;
+        }
+
+        @keyframes timerPulse {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0.4
+            }
+        }
+
+        .draw-close-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--text-muted);
+            font-size: 20px;
+            cursor: pointer;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+
+        .draw-close-btn:hover {
+            background: rgba(255, 70, 70, 0.2);
+            color: #ff6b6b;
+        }
+
+        .draw-info {
+            padding: 10px 20px;
+            text-align: center;
+            font-size: 14px;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(0, 0, 0, 0.15);
+        }
+
+        .draw-word-display {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 4px;
+            margin: 4px 0;
+            color: var(--accent);
+            white-space: pre-wrap;
+        }
+
+        .draw-word-secret {
+            font-size: 16px;
+            color: #51cf66;
+            background: rgba(81, 207, 102, 0.1);
+            padding: 6px 16px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 4px 0;
+        }
+
+        .draw-canvas-wrap {
+            position: relative;
+            background: #fff;
+            margin: 12px;
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 4/3;
+        }
+
+        .draw-canvas-wrap canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+            touch-action: none;
+        }
+
+        .draw-tools {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-top: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .draw-colors {
+            display: flex;
+            gap: 4px;
+        }
+
+        .draw-color-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+
+        .draw-color-btn:hover {
+            transform: scale(1.15);
+        }
+
+        .draw-color-btn.active {
+            border-color: #fff;
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+        }
+
+        .draw-sizes {
+            display: flex;
+            gap: 4px;
+        }
+
+        .draw-size-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--panel-bg);
+            color: var(--text-main);
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            transition: 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .draw-size-btn.active {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+
+        .draw-tool-btn {
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--panel-bg);
+            color: var(--text-main);
+            cursor: pointer;
+            font-size: 13px;
+            transition: 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .draw-tool-btn:hover {
+            background: #333;
+        }
+
+        .draw-tool-btn.active {
+            background: rgba(255, 107, 107, 0.2);
+            border-color: #ff6b6b;
+            color: #ff6b6b;
+        }
+
+        .draw-admin-tools {
+            display: flex;
+            gap: 6px;
+        }
+
+        .draw-admin-btn {
+            padding: 6px 14px;
+            border-radius: 16px;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .draw-admin-btn.skip {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+        }
+
+        .draw-admin-btn.skip:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .draw-admin-btn.end {
+            background: rgba(255, 70, 70, 0.15);
+            color: #ff6b6b;
+        }
+
+        .draw-admin-btn.end:hover {
+            background: rgba(255, 70, 70, 0.3);
+        }
+
+        .draw-scores {
+            padding: 10px 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.2);
+            max-height: 80px;
+            overflow-y: auto;
+        }
+
+        .draw-score-item {
+            font-size: 12px;
+            padding: 4px 10px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .draw-score-pts {
+            font-weight: 700;
+            color: #ffd43b;
+        }
+
+        .draw-user-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 16px 20px;
+            justify-content: center;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .draw-user-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .draw-user-btn:hover {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+            transform: scale(1.05);
+        }
+
+        .draw-round-result {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .draw-round-result h3 {
+            margin: 0 0 8px;
+            font-size: 18px;
+        }
+
+        .draw-round-result .reveal-word {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffd43b;
+            margin: 8px 0;
+        }
+
+        .draw-random-picker {
+            text-align: center;
+            padding: 30px 20px;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .draw-random-name {
+            font-size: 36px;
+            margin-top: 16px;
+            color: var(--accent);
+            animation: popInRandom 0.1s;
+            letter-spacing: 2px;
+        }
+
+        @keyframes popInRandom {
+            from {
+                opacity: 0;
+                transform: scale(0.8)
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1)
+            }
+        }
+
+        .btn-start-game {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+            width: 100%;
+            padding: 10px;
+            margin-top: 12px;
+            border-radius: 12px;
+            border: 1px dashed var(--border-color);
+            background: rgba(62, 166, 255, 0.05);
+            color: var(--accent);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: 0.2s;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .btn-start-game:hover {
+            background: rgba(62, 166, 255, 0.15);
+            border-style: solid;
+        }
 
         /* Draw Guess Input */
-        .draw-guess-area { padding:10px 16px; border-top:1px solid var(--border-color); background:rgba(0,0,0,0.2); }
-        .draw-guess-wrapper { display:flex; align-items:center; gap:8px; background:rgba(255,255,255,0.08); border-radius:24px; padding:4px 4px 4px 16px; }
-        .draw-guess-wrapper input { flex:1; background:transparent; border:none; color:var(--text-main); padding:10px 0; outline:none; font-size:15px; font-family:'Roboto',sans-serif; }
-        .draw-guess-wrapper input::placeholder { color:var(--text-muted); }
-        .draw-guess-btn { background:var(--accent); border:none; color:#000; border-radius:20px; padding:8px 18px; font-size:14px; font-weight:600; cursor:pointer; transition:0.2s; display:flex; align-items:center; gap:4px; font-family:'Roboto',sans-serif; white-space:nowrap; }
-        .draw-guess-btn:hover { background:#5bb8ff; }
-        .draw-guess-feedback { text-align:center; font-size:13px; padding:4px; min-height:20px; }
-        .draw-guess-feedback.correct { color:#51cf66; }
-        .draw-guess-feedback.wrong { color:#ff6b6b; animation:shakeGuess 0.3s ease; }
-        @keyframes shakeGuess { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+        .draw-guess-area {
+            padding: 10px 16px;
+            border-top: 1px solid var(--border-color);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .draw-guess-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 4px 4px 4px 16px;
+        }
+
+        .draw-guess-wrapper input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            padding: 10px 0;
+            outline: none;
+            font-size: 15px;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .draw-guess-wrapper input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .draw-guess-btn {
+            background: var(--accent);
+            border: none;
+            color: #000;
+            border-radius: 20px;
+            padding: 8px 18px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-family: 'Roboto', sans-serif;
+            white-space: nowrap;
+        }
+
+        .draw-guess-btn:hover {
+            background: #5bb8ff;
+        }
+
+        .draw-guess-feedback {
+            text-align: center;
+            font-size: 13px;
+            padding: 4px;
+            min-height: 20px;
+        }
+
+        .draw-guess-feedback.correct {
+            color: #51cf66;
+        }
+
+        .draw-guess-feedback.wrong {
+            color: #ff6b6b;
+            animation: shakeGuess 0.3s ease;
+        }
+
+        @keyframes shakeGuess {
+
+            0%,
+            100% {
+                transform: translateX(0)
+            }
+
+            25% {
+                transform: translateX(-5px)
+            }
+
+            75% {
+                transform: translateX(5px)
+            }
+        }
     </style>
 </head>
 
@@ -1362,9 +1788,12 @@
             </div>
             <div id="draw-main-area">
                 <div id="draw-waiting-panel">
-                    <div style="padding:16px 20px; text-align:center; color:var(--text-muted); font-size:14px;">👆 Admin chọn người vẽ bên dưới</div>
+                    <div style="padding:16px 20px; text-align:center; color:var(--text-muted); font-size:14px;">👆 Admin
+                        chọn người vẽ bên dưới</div>
                     <div id="draw-random-btn-container" class="hidden" style="text-align:center; margin-bottom: 8px;">
-                        <button class="draw-admin-btn skip" style="font-size:14px; padding:8px 20px; background:rgba(255,212,59,0.15); color:#ffd43b;" onclick="randomPickDrawer()">🎲 Chọn Ngẫu Nhiên</button>
+                        <button class="draw-admin-btn skip"
+                            style="font-size:14px; padding:8px 20px; background:rgba(255,212,59,0.15); color:#ffd43b;"
+                            onclick="randomPickDrawer()">🎲 Chọn Ngẫu Nhiên</button>
                     </div>
                     <div class="draw-user-list" id="draw-user-list"></div>
                 </div>
@@ -1384,8 +1813,10 @@
                             <button class="draw-size-btn" data-size="12" onclick="setDrawSize(12,this)">L</button>
                             <button class="draw-size-btn" data-size="20" onclick="setDrawSize(20,this)">XL</button>
                         </div>
-                        <button class="draw-tool-btn" id="eraser-btn" onclick="toggleEraser()"><span class="material-symbols-outlined" style="font-size:16px;">ink_eraser</span></button>
-                        <button class="draw-tool-btn" onclick="clearDrawCanvas()"><span class="material-symbols-outlined" style="font-size:16px;">delete</span> Xóa</button>
+                        <button class="draw-tool-btn" id="eraser-btn" onclick="toggleEraser()"><span
+                                class="material-symbols-outlined" style="font-size:16px;">ink_eraser</span></button>
+                        <button class="draw-tool-btn" onclick="clearDrawCanvas()"><span
+                                class="material-symbols-outlined" style="font-size:16px;">delete</span> Xóa</button>
                     </div>
                 </div>
                 <div id="draw-round-result" class="draw-round-result hidden"></div>
@@ -1393,8 +1824,10 @@
             <div id="draw-guess-area" class="draw-guess-area hidden">
                 <div id="draw-guess-feedback" class="draw-guess-feedback"></div>
                 <div class="draw-guess-wrapper">
-                    <input type="text" id="draw-guess-input" placeholder="Nhập câu trả lời của bạn..." onkeypress="if(event.key==='Enter') sendDrawGuess()" autocomplete="off">
-                    <button class="draw-guess-btn" onclick="sendDrawGuess()"><span class="material-symbols-outlined" style="font-size:16px;">send</span> Đoán</button>
+                    <input type="text" id="draw-guess-input" placeholder="Nhập câu trả lời của bạn..."
+                        onkeypress="if(event.key==='Enter') sendDrawGuess()" autocomplete="off">
+                    <button class="draw-guess-btn" onclick="sendDrawGuess()"><span class="material-symbols-outlined"
+                            style="font-size:16px;">send</span> Đoán</button>
                 </div>
             </div>
             <div class="draw-scores" id="draw-scores"></div>
@@ -1992,7 +2425,7 @@
 
         function showGifSuggestions(gifs) {
             const strip = document.getElementById('gif-suggest-strip');
-            strip.innerHTML = '<div class="gif-suggest-label">GIF</div>' +
+            strip.innerHTML = '<div class="gif-suggest-label"></div>' +
                 gifs.map(gif => {
                     const tinyUrl = gif.media_formats?.tinygif?.url || gif.media_formats?.gif?.url || '';
                     const fullUrl = gif.media_formats?.gif?.url || tinyUrl;
@@ -2050,7 +2483,7 @@
             }
         }
         // ========== DRAW & GUESS GAME ==========
-        const DRAW_COLORS = ['#000000','#ff0000','#ff6b00','#ffd43b','#51cf66','#3ea6ff','#7950f2','#e64980','#ffffff','#8B4513'];
+        const DRAW_COLORS = ['#000000', '#ff0000', '#ff6b00', '#ffd43b', '#51cf66', '#3ea6ff', '#7950f2', '#e64980', '#ffffff', '#8B4513'];
         let drawColor = '#000000', drawSize = 6, isEraser = false, isDrawing = false;
         let drawLastX = 0, drawLastY = 0;
         let amIDrawer = false;
@@ -2171,7 +2604,7 @@
             document.getElementById('draw-canvas-panel').classList.toggle('hidden', panel !== 'canvas');
             document.getElementById('draw-round-result').classList.toggle('hidden', panel !== 'result');
             document.getElementById('draw-random-panel').classList.toggle('hidden', panel !== 'random');
-            
+
             if (panel === 'waiting') {
                 document.getElementById('draw-random-btn-container').classList.toggle('hidden', myRole !== 'admin');
             }
@@ -2285,7 +2718,7 @@
             const nameEl = document.getElementById('draw-random-name');
             const users = data.users;
             const winner = users.find(u => u.id === data.winnerId);
-            
+
             let i = 0;
             const interval = setInterval(() => {
                 const u = users[i % users.length];
@@ -2340,7 +2773,7 @@
         }
 
         // Listen for correct guess feedback (system message with our name)
-        (function() {
+        (function () {
             const origHandler = socket.listeners('newMessage').find(f => true);
             socket.on('newMessage', (data) => {
                 if (drawGameActive && data.role === 'system' && data.name === 'Trò chơi 🎨' && data.text.includes(myUsername) && data.text.includes('đoán đúng')) {

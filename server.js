@@ -11,8 +11,45 @@ const io = new Server(server);
 app.use(express.static('public'));
 
 let playlist = [];
-let currentVideoId = 'jfKfPfyJRdk';
+let currentVideoId = '';
 let pinnedMessage = null;
+let loopMode = false;
+let isPlayerIdle = true;
+
+// Draw game state
+let connectedUsers = new Map();
+let drawGame = {
+    active: false, state: 'inactive', drawerId: null, drawerName: '',
+    word: '', scores: {}, timeLeft: 90, timer: null,
+    guessedPlayers: [], canvasHistory: []
+};
+const DRAW_WORDS = [
+    'con mèo','con chó','ngôi nhà','cái cây','mặt trời','mặt trăng','con cá','bông hoa',
+    'xe đạp','ô tô','máy bay','con bướm','quả táo','cái bàn','cái ghế','con gà','con voi',
+    'con rắn','cầu vồng','ngôi sao','trái tim','con ong','pizza','kem','guitar','điện thoại',
+    'cái kéo','con nhện','người tuyết','tên lửa','cây dừa','quả dưa hấu','con khỉ','con thỏ',
+    'con rùa','cái ô','đồng hồ','cái nón','đôi giày','con mắt','bàn tay','ngọn núi',
+    'con sông','cái cầu','chiếc thuyền','xe buýt','xe lửa','robot','khủng long','siêu nhân',
+    'cái ly','cái chìa khóa','bóng đèn','cái quạt','cây bút','cuốn sách','cái bánh','con ếch',
+    'con cua','con sứa','cá heo','chim cánh cụt','con gấu','hoa hướng dương','cây nấm','quả chuối'
+];
+function getRandomWord() { return DRAW_WORDS[Math.floor(Math.random() * DRAW_WORDS.length)]; }
+function generateHint(word) {
+    return word.split(' ').map(w => w.split('').map(() => '_').join(' ')).join('   ');
+}
+function getDrawUserList() {
+    const users = [];
+    connectedUsers.forEach((u, id) => users.push({ id, name: u.name, nameColor: u.nameColor }));
+    return users;
+}
+function endDrawRound() {
+    if (drawGame.timer) { clearInterval(drawGame.timer); drawGame.timer = null; }
+    drawGame.state = 'waiting';
+    io.emit('drawRoundEnd', { word: drawGame.word, scores: drawGame.scores });
+    setTimeout(() => {
+        if (drawGame.active) io.emit('drawWaitingForDrawer', { users: getDrawUserList(), scores: drawGame.scores });
+    }, 3000);
+}
 
 const ADMIN_PASSWORD = 'admin123';
 
@@ -137,7 +174,8 @@ io.on('connection', (socket) => {
                 socket.username = username + ' 😎 (Admin)';
                 socket.role = 'admin';
                 socket.nameColor = nameColor || '#fbbc04';
-                socket.emit('authResult', { success: true, role: 'admin', currentVideoId, playlist, pinnedMessage });
+                connectedUsers.set(socket.id, { name: socket.username, role: 'admin', nameColor: socket.nameColor });
+                socket.emit('authResult', { success: true, role: 'admin', currentVideoId, playlist, pinnedMessage, loopMode, drawGame: drawGame.active ? { active: true, state: drawGame.state, scores: drawGame.scores } : null });
                 io.emit('newMessage', { id: 'sys-' + Date.now(), name: 'Hệ thống 🤖', text: `👑 Admin [${socket.username}] đã lên sàn điều khiển nhạc!`, role: 'system' });
             } else {
                 socket.emit('authResult', { success: false, message: 'Sai mật khẩu Admin rồi ông chủ ơi! ❌' });
@@ -146,13 +184,15 @@ io.on('connection', (socket) => {
             socket.username = username;
             socket.role = 'member';
             socket.nameColor = nameColor || '#aaaaaa';
-            socket.emit('authResult', { success: true, role: 'member', currentVideoId, playlist, pinnedMessage });
+            connectedUsers.set(socket.id, { name: socket.username, role: 'member', nameColor: socket.nameColor });
+            socket.emit('authResult', { success: true, role: 'member', currentVideoId, playlist, pinnedMessage, loopMode, drawGame: drawGame.active ? { active: true, state: drawGame.state, scores: drawGame.scores } : null });
             io.emit('newMessage', { id: 'sys-' + Date.now(), name: 'Hệ thống 🤖', text: `👋 Chào mừng [${socket.username}] đã tham gia phòng nhạc!`, role: 'system' });
         }
+        if (drawGame.active) io.emit('drawUsersUpdate', getDrawUserList());
     });
 
 
-    socket.on('sendMessage', (msg) => {
+    socket.on('sendMessage', async (msg) => {
         const msgId = Date.now() + '-' + Math.random().toString(36).substr(2, 9);
         const senderName = socket.username || 'Ẩn danh';
         const senderRole = socket.role || 'member';
@@ -174,21 +214,80 @@ io.on('connection', (socket) => {
 
         // Handle plain text messages
         if (typeof msg === 'string' && msg.trim() !== '') {
+            // Check draw game guess
+            if (drawGame.active && drawGame.state === 'playing' && socket.id !== drawGame.drawerId && !drawGame.guessedPlayers.includes(socket.id)) {
+                const guess = msg.trim().toLowerCase();
+                if (guess === drawGame.word.toLowerCase()) {
+                    drawGame.guessedPlayers.push(socket.id);
+                    const pts = Math.max(10, Math.ceil(drawGame.timeLeft / 90 * 100));
+                    if (!drawGame.scores[socket.id]) drawGame.scores[socket.id] = { name: senderName, score: 0, nameColor: senderColor };
+                    drawGame.scores[socket.id].score += pts;
+                    if (!drawGame.scores[drawGame.drawerId]) {
+                        const dr = connectedUsers.get(drawGame.drawerId);
+                        drawGame.scores[drawGame.drawerId] = { name: dr?.name || '', score: 0, nameColor: dr?.nameColor || '#aaa' };
+                    }
+                    drawGame.scores[drawGame.drawerId].score += 25;
+                    io.emit('newMessage', { id: 'draw-' + Date.now(), name: 'Trò chơi 🎨', text: `🎉 ${senderName} đã đoán đúng! (+${pts} điểm)`, role: 'system' });
+                    io.emit('drawScoreUpdate', drawGame.scores);
+                    const playersCanGuess = Array.from(connectedUsers.keys()).filter(id => id !== drawGame.drawerId);
+                    if (drawGame.guessedPlayers.length >= playersCanGuess.length) setTimeout(() => endDrawRound(), 2000);
+                    return;
+                }
+            }
+
             io.emit('newMessage', {
-                id: msgId,
-                senderId: socket.id,
-                name: senderName,
-                nameColor: senderColor,
-                text: msg,
-                role: senderRole
+                id: msgId, senderId: socket.id, name: senderName,
+                nameColor: senderColor, text: msg, role: senderRole
             });
 
-            // Trigger AI if message starts with /ai
+            if (msg.trim().toLowerCase().startsWith('/add ')) {
+                const query = msg.trim().substring(5).trim();
+                if (query) {
+                    try {
+                        let videoId = query;
+                        if (!/^[a-zA-Z0-9_-]{11}$/.test(videoId)) {
+                            const r = await ytSearch(videoId);
+                            if (r && r.videos.length > 0) {
+                                videoId = r.videos[0].videoId;
+                            } else {
+                                throw new Error('Not found');
+                            }
+                        }
+                        
+                        const info = await getYoutubeInfo(videoId);
+                        info.addedBy = senderName;
+                        info.addedByColor = senderColor;
+                        playlist.push(info);
+                        io.emit('updatePlaylist', playlist);
+                        io.emit('newMessage', {
+                            id: 'sys-' + Date.now(),
+                            name: 'Hệ thống 🎵',
+                            text: `✅ Đã thêm **${info.title}** vào danh sách chờ.`,
+                            role: 'system'
+                        });
+
+                        if (isPlayerIdle) {
+                            const nextSong = playlist.shift();
+                            currentVideoId = nextSong.id;
+                            io.emit('changeVideo', currentVideoId);
+                            io.emit('updatePlaylist', playlist);
+                            isPlayerIdle = false;
+                        }
+                    } catch (err) {
+                        socket.emit('newMessage', {
+                            id: 'sys-' + Date.now(),
+                            name: 'Hệ thống ❌',
+                            text: `Không tìm thấy bài hát "${query}".`,
+                            role: 'system'
+                        });
+                    }
+                }
+                return;
+            }
+
             if (msg.trim().toLowerCase().startsWith('/ai ')) {
                 const query = msg.trim().substring(4).trim();
-                if (query) {
-                    callGroqAI(query, senderName);
-                }
+                if (query) callGroqAI(query, senderName);
             }
         }
     });
@@ -236,6 +335,15 @@ io.on('connection', (socket) => {
             info.addedByColor = socket.nameColor || '#aaaaaa';
             playlist.push(info);
             io.emit('updatePlaylist', playlist);
+            
+            if (isPlayerIdle) {
+                const nextSong = playlist.shift();
+                currentVideoId = nextSong.id;
+                io.emit('changeVideo', currentVideoId);
+                io.emit('updatePlaylist', playlist);
+                isPlayerIdle = false;
+            }
+            
             success = true;
         } catch (err) {
             console.error('Lỗi khi thêm bài hát:', err);
@@ -260,19 +368,118 @@ io.on('connection', (socket) => {
     });
 
     socket.on('adminNextSong', () => {
-        if (socket.role === 'admin' && playlist.length > 0) {
-            const nextSong = playlist.shift();
-            currentVideoId = nextSong.id;
-            io.emit('changeVideo', currentVideoId);
-            io.emit('updatePlaylist', playlist);
+        if (socket.role === 'admin') {
+            if (playlist.length > 0) {
+                const nextSong = playlist.shift();
+                currentVideoId = nextSong.id;
+                io.emit('changeVideo', currentVideoId);
+                io.emit('updatePlaylist', playlist);
+                isPlayerIdle = false;
+            } else {
+                currentVideoId = '';
+                isPlayerIdle = true;
+                io.emit('stopVideo');
+                isPlayerIdle = true;
+            }
+        }
+    });
+
+    // Toggle loop mode (admin only)
+    socket.on('adminToggleLoop', () => {
+        if (socket.role === 'admin') {
+            loopMode = !loopMode;
+            io.emit('loopModeUpdate', loopMode);
+        }
+    });
+
+    // When a video ends on admin's player, handle auto-play logic
+    socket.on('videoEnded', () => {
+        if (socket.role === 'admin') {
+            if (loopMode) {
+                // Replay the current video
+                io.emit('changeVideo', currentVideoId);
+                isPlayerIdle = false;
+            } else if (playlist.length > 0) {
+                // Auto-play next song from queue
+                const nextSong = playlist.shift();
+                currentVideoId = nextSong.id;
+                io.emit('changeVideo', currentVideoId);
+                io.emit('updatePlaylist', playlist);
+                isPlayerIdle = false;
+            } else {
+                isPlayerIdle = true;
+            }
         }
     });
 
     socket.on('adminPlay', (time) => { if (socket.role === 'admin') socket.broadcast.emit('memberPlay', time); });
     socket.on('adminPause', () => { if (socket.role === 'admin') socket.broadcast.emit('memberPause'); });
 
+    // Draw game events
+    socket.on('adminStartDrawGame', () => {
+        if (socket.role !== 'admin') return;
+        drawGame.active = true; drawGame.state = 'waiting'; drawGame.scores = {}; drawGame.canvasHistory = [];
+        io.emit('drawGameStarted', { users: getDrawUserList(), scores: {} });
+    });
+    function startDrawRound(drawerId) {
+        if (!connectedUsers.has(drawerId)) return;
+        const user = connectedUsers.get(drawerId);
+        drawGame.state = 'playing'; drawGame.drawerId = drawerId; drawGame.drawerName = user.name;
+        drawGame.word = getRandomWord(); drawGame.timeLeft = 90; drawGame.guessedPlayers = []; drawGame.canvasHistory = [];
+        if (drawGame.timer) clearInterval(drawGame.timer);
+        drawGame.timer = setInterval(() => { drawGame.timeLeft--; io.emit('drawTimerUpdate', drawGame.timeLeft); if (drawGame.timeLeft <= 0) endDrawRound(); }, 1000);
+        io.emit('drawRoundStart', { drawerId, drawerName: user.name, hint: generateHint(drawGame.word), timeLeft: 90 });
+        // Send word AFTER roundStart so it doesn't get overwritten
+        setTimeout(() => {
+            io.to(drawerId).emit('drawYourWord', drawGame.word);
+        }, 100);
+    }
+
+    socket.on('adminPickDrawer', (drawerId) => {
+        if (socket.role !== 'admin') return;
+        startDrawRound(drawerId);
+    });
+
+    socket.on('adminRandomPickDrawer', () => {
+        if (socket.role !== 'admin') return;
+        const users = Array.from(connectedUsers.keys());
+        if (users.length === 0) return;
+        const winnerId = users[Math.floor(Math.random() * users.length)];
+        
+        io.emit('drawRandomPickAnimation', { winnerId, users: getDrawUserList() });
+        
+        setTimeout(() => {
+            startDrawRound(winnerId);
+        }, 3000);
+    });
+    socket.on('drawStroke', (data) => { if (socket.id === drawGame.drawerId) { drawGame.canvasHistory.push(data); socket.broadcast.emit('drawStroke', data); } });
+    socket.on('drawClear', () => { if (socket.id === drawGame.drawerId) { drawGame.canvasHistory = []; socket.broadcast.emit('drawClear'); } });
+    socket.on('adminEndDrawGame', () => {
+        if (socket.role !== 'admin') return;
+        if (drawGame.timer) { clearInterval(drawGame.timer); drawGame.timer = null; }
+        drawGame.active = false; drawGame.state = 'inactive';
+        io.emit('drawGameEnded');
+    });
+    socket.on('skipWord', () => {
+        if (drawGame.state !== 'playing') return;
+        if (socket.id !== drawGame.drawerId) return; // ONLY drawer can skip
+        drawGame.word = getRandomWord(); drawGame.canvasHistory = []; drawGame.guessedPlayers = []; drawGame.timeLeft = 90;
+        io.to(drawGame.drawerId).emit('drawYourWord', drawGame.word);
+        io.emit('drawNewWord', { hint: generateHint(drawGame.word), timeLeft: 90 });
+        io.emit('drawClear');
+    });
+    socket.on('requestCanvasHistory', () => {
+        if (drawGame.canvasHistory.length > 0) socket.emit('drawCanvasHistory', drawGame.canvasHistory);
+    });
+
     socket.on('disconnect', () => {
+        connectedUsers.delete(socket.id);
         io.emit('viewersUpdate', io.engine.clientsCount);
+        if (drawGame.active && socket.id === drawGame.drawerId && drawGame.state === 'playing') {
+            io.emit('newMessage', { id: 'sys-' + Date.now(), name: 'Trò chơi 🎨', text: `😢 Người vẽ đã rời phòng! Kết thúc lượt.`, role: 'system' });
+            endDrawRound();
+        }
+        if (drawGame.active) io.emit('drawUsersUpdate', getDrawUserList());
         if (socket.username) {
             io.emit('newMessage', { id: 'sys-' + Date.now(), name: 'Hệ thống 🤖', text: `🏃‍♂️ [${socket.username}] đã rời phòng.`, role: 'system' });
         }

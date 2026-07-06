@@ -661,6 +661,56 @@
             background: #333;
         }
 
+        /* Loop Toggle Button */
+        .btn-loop {
+            background: var(--panel-bg);
+            color: var(--text-main) !important;
+            border: 1px solid var(--border-color) !important;
+            padding: 8px 12px;
+            border-radius: 18px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            justify-content: center;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+        .btn-loop:hover {
+            background: #333;
+        }
+
+        .btn-loop.active {
+            background: rgba(62, 166, 255, 0.15);
+            color: var(--accent) !important;
+            border-color: var(--accent) !important;
+            box-shadow: 0 0 12px rgba(62, 166, 255, 0.2);
+        }
+
+        .btn-loop.active .material-symbols-outlined {
+            animation: loopPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes loopPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .loop-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: var(--accent);
+            padding: 4px 10px;
+            background: rgba(62, 166, 255, 0.1);
+            border-radius: 12px;
+            margin-left: 8px;
+        }
+
         .playlist-header {
             font-size: 14px;
             font-weight: 500;
@@ -1027,6 +1077,66 @@
                 transform: rotate(360deg);
             }
         }
+
+        /* Draw Game Overlay */
+        .draw-overlay { position:fixed; top:0; left:0; width:100vw; height:100vh; height:100dvh; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); z-index:800; display:flex; flex-direction:column; align-items:center; justify-content:center; animation:drawFadeIn 0.3s ease; }
+        @keyframes drawFadeIn { from{opacity:0;transform:scale(0.95)} to{opacity:1;transform:scale(1)} }
+        .draw-container { width:95%; max-width:700px; background:var(--panel-bg); border-radius:16px; border:1px solid var(--border-color); overflow:hidden; display:flex; flex-direction:column; max-height:90vh; max-height:90dvh; box-shadow:0 20px 60px rgba(0,0,0,0.6); }
+        .draw-header { display:flex; align-items:center; justify-content:space-between; padding:14px 20px; border-bottom:1px solid var(--border-color); background:rgba(0,0,0,0.3); }
+        .draw-header-title { font-size:18px; font-weight:700; display:flex; align-items:center; gap:8px; }
+        .draw-timer { font-size:22px; font-weight:700; color:var(--accent); min-width:50px; text-align:center; }
+        .draw-timer.urgent { color:#ff4444; animation:timerPulse 0.5s ease infinite; }
+        @keyframes timerPulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+        .draw-close-btn { background:rgba(255,255,255,0.1); border:none; color:var(--text-muted); font-size:20px; cursor:pointer; border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center; transition:0.2s; }
+        .draw-close-btn:hover { background:rgba(255,70,70,0.2); color:#ff6b6b; }
+        .draw-info { padding:10px 20px; text-align:center; font-size:14px; border-bottom:1px solid var(--border-color); background:rgba(0,0,0,0.15); }
+        .draw-word-display { font-size:20px; font-weight:700; letter-spacing:4px; margin:4px 0; color:var(--accent); white-space:pre-wrap; }
+        .draw-word-secret { font-size:16px; color:#51cf66; background:rgba(81,207,102,0.1); padding:6px 16px; border-radius:20px; display:inline-block; margin:4px 0; }
+        .draw-canvas-wrap { position:relative; background:#fff; margin:12px; border-radius:12px; overflow:hidden; aspect-ratio:4/3; }
+        .draw-canvas-wrap canvas { position:absolute; top:0; left:0; width:100%; height:100%; cursor:crosshair; touch-action:none; }
+        .draw-tools { display:flex; align-items:center; gap:8px; padding:10px 16px; border-top:1px solid var(--border-color); flex-wrap:wrap; justify-content:center; background:rgba(0,0,0,0.2); }
+        .draw-colors { display:flex; gap:4px; }
+        .draw-color-btn { width:28px; height:28px; border-radius:50%; border:2px solid transparent; cursor:pointer; transition:0.15s; }
+        .draw-color-btn:hover { transform:scale(1.15); }
+        .draw-color-btn.active { border-color:#fff; box-shadow:0 0 8px rgba(255,255,255,0.3); }
+        .draw-sizes { display:flex; gap:4px; }
+        .draw-size-btn { width:32px; height:32px; border-radius:8px; border:1px solid var(--border-color); background:var(--panel-bg); color:var(--text-main); cursor:pointer; font-size:11px; font-weight:600; transition:0.15s; display:flex; align-items:center; justify-content:center; }
+        .draw-size-btn.active { background:var(--accent); color:#000; border-color:var(--accent); }
+        .draw-tool-btn { padding:6px 12px; border-radius:8px; border:1px solid var(--border-color); background:var(--panel-bg); color:var(--text-main); cursor:pointer; font-size:13px; transition:0.15s; display:flex; align-items:center; gap:4px; }
+        .draw-tool-btn:hover { background:#333; }
+        .draw-tool-btn.active { background:rgba(255,107,107,0.2); border-color:#ff6b6b; color:#ff6b6b; }
+        .draw-admin-tools { display:flex; gap:6px; }
+        .draw-admin-btn { padding:6px 14px; border-radius:16px; border:none; cursor:pointer; font-size:12px; font-weight:600; transition:0.2s; }
+        .draw-admin-btn.skip { background:rgba(255,255,255,0.1); color:var(--text-main); }
+        .draw-admin-btn.skip:hover { background:rgba(255,255,255,0.2); }
+        .draw-admin-btn.end { background:rgba(255,70,70,0.15); color:#ff6b6b; }
+        .draw-admin-btn.end:hover { background:rgba(255,70,70,0.3); }
+        .draw-scores { padding:10px 20px; border-top:1px solid var(--border-color); display:flex; flex-wrap:wrap; gap:8px; justify-content:center; background:rgba(0,0,0,0.2); max-height:80px; overflow-y:auto; }
+        .draw-score-item { font-size:12px; padding:4px 10px; background:rgba(255,255,255,0.08); border-radius:12px; display:flex; align-items:center; gap:6px; }
+        .draw-score-pts { font-weight:700; color:#ffd43b; }
+        .draw-user-list { display:flex; flex-wrap:wrap; gap:8px; padding:16px 20px; justify-content:center; max-height:200px; overflow-y:auto; }
+        .draw-user-btn { padding:8px 16px; border-radius:20px; border:1px solid var(--border-color); background:rgba(255,255,255,0.05); color:var(--text-main); cursor:pointer; font-size:13px; font-weight:500; transition:0.2s; }
+        .draw-user-btn:hover { background:var(--accent); color:#000; border-color:var(--accent); transform:scale(1.05); }
+        .draw-round-result { padding:20px; text-align:center; }
+        .draw-round-result h3 { margin:0 0 8px; font-size:18px; }
+        .draw-round-result .reveal-word { font-size:24px; font-weight:700; color:#ffd43b; margin:8px 0; }
+        .draw-random-picker { text-align:center; padding:30px 20px; font-size:20px; font-weight:700; color:var(--text-main); }
+        .draw-random-name { font-size:36px; margin-top:16px; color:var(--accent); animation:popInRandom 0.1s; letter-spacing: 2px; }
+        @keyframes popInRandom { from{opacity:0;transform:scale(0.8)} to{opacity:1;transform:scale(1)} }
+        .btn-start-game { display:flex; align-items:center; gap:8px; justify-content:center; width:100%; padding:10px; margin-top:12px; border-radius:12px; border:1px dashed var(--border-color); background:rgba(62,166,255,0.05); color:var(--accent); cursor:pointer; font-size:14px; font-weight:500; transition:0.2s; font-family:'Roboto',sans-serif; }
+        .btn-start-game:hover { background:rgba(62,166,255,0.15); border-style:solid; }
+
+        /* Draw Guess Input */
+        .draw-guess-area { padding:10px 16px; border-top:1px solid var(--border-color); background:rgba(0,0,0,0.2); }
+        .draw-guess-wrapper { display:flex; align-items:center; gap:8px; background:rgba(255,255,255,0.08); border-radius:24px; padding:4px 4px 4px 16px; }
+        .draw-guess-wrapper input { flex:1; background:transparent; border:none; color:var(--text-main); padding:10px 0; outline:none; font-size:15px; font-family:'Roboto',sans-serif; }
+        .draw-guess-wrapper input::placeholder { color:var(--text-muted); }
+        .draw-guess-btn { background:var(--accent); border:none; color:#000; border-radius:20px; padding:8px 18px; font-size:14px; font-weight:600; cursor:pointer; transition:0.2s; display:flex; align-items:center; gap:4px; font-family:'Roboto',sans-serif; white-space:nowrap; }
+        .draw-guess-btn:hover { background:#5bb8ff; }
+        .draw-guess-feedback { text-align:center; font-size:13px; padding:4px; min-height:20px; }
+        .draw-guess-feedback.correct { color:#51cf66; }
+        .draw-guess-feedback.wrong { color:#ff6b6b; animation:shakeGuess 0.3s ease; }
+        @keyframes shakeGuess { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
     </style>
 </head>
 
@@ -1126,6 +1236,10 @@
                             style="display:flex;align-items:center;gap:4px;justify-content:center;">
                             <span class="material-symbols-outlined" style="font-size:18px;">skip_next</span>
                         </button>
+                        <button id="btn-loop" class="btn-loop hidden" onclick="toggleLoop()"
+                            title="Bật/Tắt chế độ lặp lại">
+                            <span class="material-symbols-outlined" style="font-size:18px;">repeat</span>
+                        </button>
                     </div>
 
                     <div style="margin-top: 20px;">
@@ -1134,6 +1248,11 @@
                             <div>Chưa có bài nào chờ.</div>
                         </div>
                     </div>
+
+                    <button id="btn-start-game" class="btn-start-game hidden" onclick="startDrawGame()">
+                        <span class="material-symbols-outlined" style="font-size:20px;">brush</span>
+                        Bắt đầu Vẽ & Đoán
+                    </button>
                 </div>
             </div>
         </div>
@@ -1223,6 +1342,65 @@
 
     </div>
 
+    <!-- Draw Game Overlay -->
+    <div id="draw-game-overlay" class="draw-overlay hidden">
+        <div class="draw-container">
+            <div class="draw-header">
+                <div class="draw-header-title">🎨 Vẽ & Đoán</div>
+                <div class="draw-timer" id="draw-timer">--</div>
+                <div style="display:flex;gap:6px;align-items:center;">
+                    <div id="draw-drawer-tools" class="draw-admin-tools hidden">
+                        <button class="draw-admin-btn skip" onclick="skipDrawWord()">🔄 Đổi từ</button>
+                    </div>
+                    <div id="draw-admin-tools-header" class="draw-admin-tools hidden">
+                        <button class="draw-admin-btn end" onclick="endDrawGame()">✕ Kết thúc</button>
+                    </div>
+                </div>
+            </div>
+            <div class="draw-info" id="draw-info">
+                <div>Chờ admin chọn người vẽ...</div>
+            </div>
+            <div id="draw-main-area">
+                <div id="draw-waiting-panel">
+                    <div style="padding:16px 20px; text-align:center; color:var(--text-muted); font-size:14px;">👆 Admin chọn người vẽ bên dưới</div>
+                    <div id="draw-random-btn-container" class="hidden" style="text-align:center; margin-bottom: 8px;">
+                        <button class="draw-admin-btn skip" style="font-size:14px; padding:8px 20px; background:rgba(255,212,59,0.15); color:#ffd43b;" onclick="randomPickDrawer()">🎲 Chọn Ngẫu Nhiên</button>
+                    </div>
+                    <div class="draw-user-list" id="draw-user-list"></div>
+                </div>
+                <div id="draw-random-panel" class="hidden">
+                    <div class="draw-random-picker">
+                        <div>🎲 Đang chọn ngẫu nhiên...</div>
+                        <div id="draw-random-name" class="draw-random-name">---</div>
+                    </div>
+                </div>
+                <div id="draw-canvas-panel" class="hidden">
+                    <div class="draw-canvas-wrap"><canvas id="draw-canvas"></canvas></div>
+                    <div id="draw-tools-bar" class="draw-tools hidden">
+                        <div class="draw-colors" id="draw-colors"></div>
+                        <div class="draw-sizes">
+                            <button class="draw-size-btn" data-size="3" onclick="setDrawSize(3,this)">S</button>
+                            <button class="draw-size-btn active" data-size="6" onclick="setDrawSize(6,this)">M</button>
+                            <button class="draw-size-btn" data-size="12" onclick="setDrawSize(12,this)">L</button>
+                            <button class="draw-size-btn" data-size="20" onclick="setDrawSize(20,this)">XL</button>
+                        </div>
+                        <button class="draw-tool-btn" id="eraser-btn" onclick="toggleEraser()"><span class="material-symbols-outlined" style="font-size:16px;">ink_eraser</span></button>
+                        <button class="draw-tool-btn" onclick="clearDrawCanvas()"><span class="material-symbols-outlined" style="font-size:16px;">delete</span> Xóa</button>
+                    </div>
+                </div>
+                <div id="draw-round-result" class="draw-round-result hidden"></div>
+            </div>
+            <div id="draw-guess-area" class="draw-guess-area hidden">
+                <div id="draw-guess-feedback" class="draw-guess-feedback"></div>
+                <div class="draw-guess-wrapper">
+                    <input type="text" id="draw-guess-input" placeholder="Nhập câu trả lời của bạn..." onkeypress="if(event.key==='Enter') sendDrawGuess()" autocomplete="off">
+                    <button class="draw-guess-btn" onclick="sendDrawGuess()"><span class="material-symbols-outlined" style="font-size:16px;">send</span> Đoán</button>
+                </div>
+            </div>
+            <div class="draw-scores" id="draw-scores"></div>
+        </div>
+    </div>
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
@@ -1240,6 +1418,7 @@
         let initialVideoId = 'jfKfPfyJRdk';
         let myUsername = '';
         let myNameColor = '#3ea6ff';
+        let isLoopMode = false;
 
         (function restoreSavedUser() {
             const savedName = localStorage.getItem('musiclive_username');
@@ -1306,9 +1485,24 @@
                     document.body.classList.add('admin-mode');
                     document.getElementById('welcome-title').innerText = "Bảng Điều Khiển Của Admin";
                     document.getElementById('btn-next-song').classList.remove('hidden');
+                    document.getElementById('btn-loop').classList.remove('hidden');
+                    document.getElementById('btn-start-game').classList.remove('hidden');
                     document.getElementById('player-container').style.pointerEvents = 'auto';
                 } else {
                     document.getElementById('sync-btn').classList.remove('hidden');
+                }
+
+                // Rejoin active draw game
+                if (res.drawGame && res.drawGame.active) {
+                    document.getElementById('draw-game-overlay').classList.remove('hidden');
+                    renderDrawScores(res.drawGame.scores || {});
+                    socket.emit('requestCanvasHistory');
+                }
+
+                // Initialize loop mode from server state
+                if (res.loopMode !== undefined) {
+                    isLoopMode = res.loopMode;
+                    updateLoopUI();
                 }
 
                 initialVideoId = res.currentVideoId;
@@ -1500,7 +1694,7 @@
                         if (myRole === 'admin') {
                             if (e.data == YT.PlayerState.PLAYING) socket.emit('adminPlay', player.getCurrentTime());
                             if (e.data == YT.PlayerState.PAUSED) socket.emit('adminPause');
-                            if (e.data == YT.PlayerState.ENDED) socket.emit('adminNextSong');
+                            if (e.data == YT.PlayerState.ENDED) socket.emit('videoEnded');
                         }
                     }
                 }
@@ -1533,6 +1727,23 @@
 
         socket.on('updatePlaylist', (list) => { updatePlaylistUI(list); });
         socket.on('changeVideo', (id) => { if (player && player.loadVideoById) player.loadVideoById(id); });
+        socket.on('stopVideo', () => { if (player && player.stopVideo) player.stopVideo(); });
+        socket.on('loopModeUpdate', (mode) => {
+            isLoopMode = mode;
+            updateLoopUI();
+        });
+
+        function toggleLoop() {
+            socket.emit('adminToggleLoop');
+        }
+
+        function updateLoopUI() {
+            const btn = document.getElementById('btn-loop');
+            if (btn) {
+                btn.classList.toggle('active', isLoopMode);
+                btn.title = isLoopMode ? 'Chế độ lặp: BẬT 🔁' : 'Chế độ lặp: TẮT';
+            }
+        }
 
         function updatePlaylistUI(list) {
             const ui = document.getElementById('playlist-ui');
@@ -1838,6 +2049,310 @@
                 badge.classList.add('hidden-badge');
             }
         }
+        // ========== DRAW & GUESS GAME ==========
+        const DRAW_COLORS = ['#000000','#ff0000','#ff6b00','#ffd43b','#51cf66','#3ea6ff','#7950f2','#e64980','#ffffff','#8B4513'];
+        let drawColor = '#000000', drawSize = 6, isEraser = false, isDrawing = false;
+        let drawLastX = 0, drawLastY = 0;
+        let amIDrawer = false;
+        let drawGameActive = false;
+        let drawGuessedCorrectly = false;
+
+        // Init color palette
+        (function initDrawColors() {
+            const container = document.getElementById('draw-colors');
+            container.innerHTML = DRAW_COLORS.map((c, i) =>
+                `<button class="draw-color-btn${i === 0 ? ' active' : ''}" style="background:${c}${c === '#ffffff' ? ';border:1px solid #ccc' : ''}" onclick="setDrawColor('${c}',this)"></button>`
+            ).join('');
+        })();
+
+        function setDrawColor(c, btn) {
+            drawColor = c; isEraser = false;
+            document.getElementById('eraser-btn').classList.remove('active');
+            document.querySelectorAll('.draw-color-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+        }
+        function setDrawSize(s, btn) {
+            drawSize = s;
+            document.querySelectorAll('.draw-size-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+        }
+        function toggleEraser() {
+            isEraser = !isEraser;
+            document.getElementById('eraser-btn').classList.toggle('active', isEraser);
+        }
+
+        function getDrawCanvas() { return document.getElementById('draw-canvas'); }
+        function getDrawCtx() {
+            const c = getDrawCanvas();
+            const ctx = c.getContext('2d');
+            if (c.width !== c.offsetWidth || c.height !== c.offsetHeight) {
+                const imgData = ctx.getImageData(0, 0, c.width, c.height);
+                c.width = c.offsetWidth; c.height = c.offsetHeight;
+                ctx.putImageData(imgData, 0, 0);
+            }
+            return ctx;
+        }
+        function resizeDrawCanvas() {
+            const c = getDrawCanvas();
+            c.width = c.offsetWidth; c.height = c.offsetHeight;
+            const ctx = c.getContext('2d');
+            ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, c.width, c.height);
+        }
+
+        function drawLine(x0, y0, x1, y1, color, size) {
+            const ctx = getDrawCtx();
+            ctx.beginPath();
+            ctx.moveTo(x0 * getDrawCanvas().width, y0 * getDrawCanvas().height);
+            ctx.lineTo(x1 * getDrawCanvas().width, y1 * getDrawCanvas().height);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = size;
+            ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+            ctx.stroke();
+        }
+
+        function getCanvasPos(e) {
+            const c = getDrawCanvas(); const r = c.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return { x: (clientX - r.left) / r.width, y: (clientY - r.top) / r.height };
+        }
+
+        function onDrawStart(e) {
+            if (!amIDrawer) return;
+            e.preventDefault(); isDrawing = true;
+            const pos = getCanvasPos(e); drawLastX = pos.x; drawLastY = pos.y;
+        }
+        function onDrawMove(e) {
+            if (!amIDrawer || !isDrawing) return;
+            e.preventDefault();
+            const pos = getCanvasPos(e);
+            const c = isEraser ? '#ffffff' : drawColor;
+            const s = isEraser ? drawSize * 3 : drawSize;
+            drawLine(drawLastX, drawLastY, pos.x, pos.y, c, s);
+            socket.emit('drawStroke', { x0: drawLastX, y0: drawLastY, x1: pos.x, y1: pos.y, color: c, size: s });
+            drawLastX = pos.x; drawLastY = pos.y;
+        }
+        function onDrawEnd(e) { isDrawing = false; }
+
+        // Attach canvas events
+        const dc = getDrawCanvas();
+        dc.addEventListener('mousedown', onDrawStart);
+        dc.addEventListener('mousemove', onDrawMove);
+        dc.addEventListener('mouseup', onDrawEnd);
+        dc.addEventListener('mouseleave', onDrawEnd);
+        dc.addEventListener('touchstart', onDrawStart, { passive: false });
+        dc.addEventListener('touchmove', onDrawMove, { passive: false });
+        dc.addEventListener('touchend', onDrawEnd);
+
+        function clearDrawCanvas() {
+            resizeDrawCanvas();
+            socket.emit('drawClear');
+        }
+
+        function startDrawGame() { socket.emit('adminStartDrawGame'); }
+        function endDrawGame() { socket.emit('adminEndDrawGame'); }
+        function skipDrawWord() { socket.emit('skipWord'); }
+        function pickDrawer(id) { socket.emit('adminPickDrawer', id); }
+        function randomPickDrawer() { socket.emit('adminRandomPickDrawer'); }
+
+        function renderDrawScores(scores) {
+            const el = document.getElementById('draw-scores');
+            const arr = Object.values(scores).sort((a, b) => b.score - a.score);
+            if (arr.length === 0) { el.innerHTML = '<span style="color:var(--text-muted);font-size:12px;">Chưa có điểm</span>'; return; }
+            el.innerHTML = arr.map(s => `<div class="draw-score-item"><span style="color:${escapeHtml(s.nameColor)}">${escapeHtml(s.name)}</span><span class="draw-score-pts">${s.score}đ</span></div>`).join('');
+        }
+        function renderDrawUserList(users) {
+            const el = document.getElementById('draw-user-list');
+            if (myRole !== 'admin') { el.innerHTML = '<div style="color:var(--text-muted);font-size:13px;padding:10px;">Chờ admin chọn người vẽ...</div>'; return; }
+            el.innerHTML = users.map(u => `<button class="draw-user-btn" style="color:${escapeHtml(u.nameColor)}" onclick="pickDrawer('${u.id}')">${escapeHtml(u.name)}</button>`).join('');
+        }
+        function showDrawPanel(panel) {
+            document.getElementById('draw-waiting-panel').classList.toggle('hidden', panel !== 'waiting');
+            document.getElementById('draw-canvas-panel').classList.toggle('hidden', panel !== 'canvas');
+            document.getElementById('draw-round-result').classList.toggle('hidden', panel !== 'result');
+            document.getElementById('draw-random-panel').classList.toggle('hidden', panel !== 'random');
+            
+            if (panel === 'waiting') {
+                document.getElementById('draw-random-btn-container').classList.toggle('hidden', myRole !== 'admin');
+            }
+        }
+
+        // Socket: game started
+        socket.on('drawGameStarted', (data) => {
+            drawGameActive = true; amIDrawer = false; drawGuessedCorrectly = false;
+            document.getElementById('draw-game-overlay').classList.remove('hidden');
+            if (myRole === 'admin') document.getElementById('draw-admin-tools-header').classList.remove('hidden');
+            document.getElementById('draw-drawer-tools').classList.add('hidden');
+            document.getElementById('draw-guess-area').classList.add('hidden');
+            showDrawPanel('waiting');
+            renderDrawUserList(data.users);
+            renderDrawScores(data.scores || {});
+            document.getElementById('draw-info').innerHTML = '<div>👆 Chọn người vẽ để bắt đầu!</div>';
+            document.getElementById('draw-timer').textContent = '--';
+            document.getElementById('draw-timer').classList.remove('urgent');
+        });
+
+        // Socket: round start
+        socket.on('drawRoundStart', (data) => {
+            amIDrawer = (data.drawerId === socket.id);
+            drawGuessedCorrectly = false;
+            showDrawPanel('canvas');
+            resizeDrawCanvas();
+            document.getElementById('draw-tools-bar').classList.toggle('hidden', !amIDrawer);
+            document.getElementById('draw-timer').textContent = data.timeLeft + 's';
+            document.getElementById('draw-timer').classList.remove('urgent');
+
+            // Show skip button for drawer ONLY
+            document.getElementById('draw-drawer-tools').classList.toggle('hidden', !amIDrawer);
+
+            // Show guess input for non-drawers
+            const guessArea = document.getElementById('draw-guess-area');
+            guessArea.classList.toggle('hidden', amIDrawer);
+            document.getElementById('draw-guess-input').value = '';
+            document.getElementById('draw-guess-input').disabled = false;
+            document.getElementById('draw-guess-input').placeholder = 'Nhập câu trả lời của bạn...';
+            document.getElementById('draw-guess-feedback').textContent = '';
+            document.getElementById('draw-guess-feedback').className = 'draw-guess-feedback';
+
+            if (amIDrawer) {
+                document.getElementById('draw-info').innerHTML = `<div>Bạn đang vẽ! <span class="draw-word-secret">🔒 Chờ nhận từ...</span></div>`;
+            } else {
+                document.getElementById('draw-info').innerHTML = `<div>🖌️ <strong>${escapeHtml(data.drawerName)}</strong> đang vẽ... <div class="draw-word-display">${data.hint}</div></div>`;
+                setTimeout(() => document.getElementById('draw-guess-input').focus(), 300);
+            }
+        });
+
+        // Socket: you are the drawer - here's your word
+        socket.on('drawYourWord', (word) => {
+            document.getElementById('draw-info').innerHTML = `<div>Bạn đang vẽ! <span class="draw-word-secret">🎨 ${escapeHtml(word).toUpperCase()}</span></div>`;
+        });
+
+        // Socket: timer update
+        socket.on('drawTimerUpdate', (t) => {
+            const el = document.getElementById('draw-timer');
+            el.textContent = t + 's';
+            el.classList.toggle('urgent', t <= 15);
+        });
+
+        // Socket: receive drawing stroke
+        socket.on('drawStroke', (data) => { drawLine(data.x0, data.y0, data.x1, data.y1, data.color, data.size); });
+
+        // Socket: clear canvas
+        socket.on('drawClear', () => { resizeDrawCanvas(); });
+
+        // Socket: new word (admin skipped)
+        socket.on('drawNewWord', (data) => {
+            resizeDrawCanvas();
+            if (!amIDrawer) {
+                const info = document.getElementById('draw-info');
+                const current = info.innerHTML;
+                info.innerHTML = current.replace(/<div class="draw-word-display">.*?<\/div>/, `<div class="draw-word-display">${data.hint}</div>`);
+            }
+            document.getElementById('draw-timer').textContent = data.timeLeft + 's';
+            document.getElementById('draw-timer').classList.remove('urgent');
+        });
+
+        // Socket: score update
+        socket.on('drawScoreUpdate', (scores) => { renderDrawScores(scores); });
+
+        // Socket: round end
+        socket.on('drawRoundEnd', (data) => {
+            amIDrawer = false;
+            showDrawPanel('result');
+            document.getElementById('draw-drawer-tools').classList.add('hidden');
+            document.getElementById('draw-tools-bar').classList.add('hidden');
+            document.getElementById('draw-guess-area').classList.add('hidden');
+            document.getElementById('draw-round-result').innerHTML = `<h3>⏰ Hết lượt!</h3><div class="reveal-word">Đáp án: ${escapeHtml(data.word)}</div>`;
+            document.getElementById('draw-info').innerHTML = '<div>Chờ lượt tiếp theo...</div>';
+            renderDrawScores(data.scores);
+        });
+
+        // Socket: waiting for new drawer
+        socket.on('drawWaitingForDrawer', (data) => {
+            showDrawPanel('waiting');
+            document.getElementById('draw-guess-area').classList.add('hidden');
+            renderDrawUserList(data.users);
+            renderDrawScores(data.scores);
+            document.getElementById('draw-info').innerHTML = '<div>👆 Chọn người vẽ tiếp theo!</div>';
+            document.getElementById('draw-timer').textContent = '--';
+            document.getElementById('draw-timer').classList.remove('urgent');
+        });
+
+        // Socket: random pick animation
+        socket.on('drawRandomPickAnimation', (data) => {
+            showDrawPanel('random');
+            document.getElementById('draw-info').innerHTML = '<div>Đang tìm kiếm người may mắn...</div>';
+            const nameEl = document.getElementById('draw-random-name');
+            const users = data.users;
+            const winner = users.find(u => u.id === data.winnerId);
+            
+            let i = 0;
+            const interval = setInterval(() => {
+                const u = users[i % users.length];
+                nameEl.textContent = u.name;
+                nameEl.style.color = u.nameColor || 'var(--text-main)';
+                // Force reflow for animation restart
+                nameEl.classList.remove('draw-random-name');
+                void nameEl.offsetWidth;
+                nameEl.classList.add('draw-random-name');
+                i++;
+            }, 100);
+
+            setTimeout(() => {
+                clearInterval(interval);
+                if (winner) {
+                    nameEl.textContent = winner.name;
+                    nameEl.style.color = winner.nameColor || 'var(--accent)';
+                }
+            }, 2500); // Stop cycling slightly before round actually starts
+        });
+
+        // Socket: users list update
+        socket.on('drawUsersUpdate', (users) => {
+            if (drawGameActive && document.getElementById('draw-waiting-panel') && !document.getElementById('draw-waiting-panel').classList.contains('hidden')) {
+                renderDrawUserList(users);
+            }
+        });
+
+        // Socket: game ended
+        socket.on('drawGameEnded', () => {
+            drawGameActive = false; amIDrawer = false;
+            document.getElementById('draw-game-overlay').classList.add('hidden');
+            document.getElementById('draw-admin-tools-header').classList.add('hidden');
+            document.getElementById('draw-drawer-tools').classList.add('hidden');
+        });
+
+        // Socket: canvas history (for late joiners)
+        socket.on('drawCanvasHistory', (history) => {
+            resizeDrawCanvas();
+            history.forEach(s => drawLine(s.x0, s.y0, s.x1, s.y1, s.color, s.size));
+        });
+
+        // Send draw guess (uses main chat socket, server checks for correct answer)
+        function sendDrawGuess() {
+            if (drawGuessedCorrectly) return;
+            const input = document.getElementById('draw-guess-input');
+            const guess = input.value.trim();
+            if (!guess) return;
+            socket.emit('sendMessage', guess);
+            input.value = '';
+            input.focus();
+        }
+
+        // Listen for correct guess feedback (system message with our name)
+        (function() {
+            const origHandler = socket.listeners('newMessage').find(f => true);
+            socket.on('newMessage', (data) => {
+                if (drawGameActive && data.role === 'system' && data.name === 'Trò chơi 🎨' && data.text.includes(myUsername) && data.text.includes('đoán đúng')) {
+                    drawGuessedCorrectly = true;
+                    const fb = document.getElementById('draw-guess-feedback');
+                    fb.textContent = '✅ Bạn đã đoán đúng!';
+                    fb.className = 'draw-guess-feedback correct';
+                    document.getElementById('draw-guess-input').disabled = true;
+                    document.getElementById('draw-guess-input').placeholder = 'Đã đoán đúng! 🎉';
+                }
+            });
+        })();
     </script>
 </body>
 

@@ -1647,13 +1647,12 @@
 
                 <div class="control-box">
                     <div class="volume-control" style="display:flex;align-items:center;gap:4px;">
-                        <span class="material-symbols-outlined" style="font-size: 20px;">volume_up</span>
-                        <input type="range" id="volume-slider" min="0" max="100" value="50"
-                            oninput="changeVolume(this.value)">
+                        <span id="volume-icon" class="material-symbols-outlined" style="font-size: 20px; cursor: pointer;" onclick="toggleVideoMute()" title="Bật/Tắt tiếng video">volume_up</span>
+                        <input type="range" id="volume-slider" min="0" max="100" value="50" oninput="changeVolume(this.value)">
                     </div>
 
                     <div id="song-tools" class="admin-tools">
-                        <input type="text" id="song-input" placeholder="Dán link YouTube, ID hoặc Tên bài hát...">
+                        <input type="text" id="song-input" placeholder="Dán link YouTube, ID hoặc Tên bài hát..." onkeypress="if(event.key === 'Enter') addSong()">
                         <button class="btn-add" onclick="addSong()"
                             style="display:flex;align-items:center;gap:4px;justify-content:center;">
                             <span class="material-symbols-outlined" style="font-size:18px;">add</span>
@@ -1690,9 +1689,9 @@
                             class="material-symbols-outlined"
                             style="font-size:14px; vertical-align:text-bottom;">visibility</span> 1)</span></span>
                 <div style="display:flex; gap: 8px; align-items: center;">
-                    <button id="sound-btn" class="sync-btn" onclick="toggleSound()" title="Bật/Tắt âm thanh chat"
+                    <button id="sound-btn" class="sync-btn" onclick="toggleSound()" title="Bật/Tắt âm báo tin nhắn"
                         style="display:flex;align-items:center;justify-content:center;"><span
-                            class="material-symbols-outlined" style="font-size:18px;">volume_up</span></button>
+                            class="material-symbols-outlined" style="font-size:18px;">notifications_active</span></button>
                     <button id="sync-btn" class="sync-btn hidden active" onclick="forceSync()"
                         style="display:flex;align-items:center;gap:4px;justify-content:center;"><span
                             class="material-symbols-outlined" style="font-size:18px;">play_arrow</span></button>
@@ -1906,6 +1905,11 @@
                 myRole = res.role;
                 document.getElementById('login-section').classList.add('hidden');
                 document.getElementById('main-room').classList.remove('hidden');
+                
+                if (res.currentVideoTitle) {
+                    document.title = res.currentVideoTitle;
+                    document.getElementById('welcome-title').innerText = res.currentVideoTitle;
+                }
 
                 // Show user info in navbar
                 const navRight = document.getElementById('navbar-right');
@@ -1916,7 +1920,6 @@
 
                 if (myRole === 'admin') {
                     document.body.classList.add('admin-mode');
-                    document.getElementById('welcome-title').innerText = "Bảng Điều Khiển Của Admin";
                     document.getElementById('btn-next-song').classList.remove('hidden');
                     document.getElementById('btn-loop').classList.remove('hidden');
                     document.getElementById('btn-start-game').classList.remove('hidden');
@@ -1940,11 +1943,16 @@
 
                 initialVideoId = res.currentVideoId;
                 if (player && player.loadVideoById) {
-                    player.loadVideoById(initialVideoId);
-                    player.pauseVideo();
-
-                    if (myRole === 'member') {
-                        setTimeout(() => socket.emit('requestSync'), 1000);
+                    if (initialVideoId) {
+                        player.loadVideoById(initialVideoId);
+                        if (myRole === 'member') {
+                            player.pauseVideo();
+                            setTimeout(() => socket.emit('requestSync'), 1000);
+                        } else if (myRole === 'admin') {
+                            setTimeout(() => player.playVideo(), 200);
+                        }
+                    } else {
+                        player.stopVideo();
                     }
                 }
                 updatePlaylistUI(res.playlist);
@@ -1992,7 +2000,7 @@
         let soundEnabled = true;
         function toggleSound() {
             soundEnabled = !soundEnabled;
-            document.getElementById('sound-btn').innerHTML = soundEnabled ? '<span class="material-symbols-outlined" style="font-size:18px;">volume_up</span>' : '<span class="material-symbols-outlined" style="font-size:18px;">volume_off</span>';
+            document.getElementById('sound-btn').innerHTML = soundEnabled ? '<span class="material-symbols-outlined" style="font-size:18px;">notifications_active</span>' : '<span class="material-symbols-outlined" style="font-size:18px;">notifications_off</span>';
         }
 
         function playChatSound() {
@@ -2058,8 +2066,8 @@
                 const safeName = (data.name || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
                 const safeText = (data.text || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
                 actionsHtml = `<div class="chat-actions">
-                    <button class="action-btn" onclick="pinMessage('${safeName}', '${safeText}')">📌</button>
-                    <button class="action-btn" onclick="deleteMessage('${data.id}')">🗑️</button>
+                    <button class="action-btn" onclick="pinMessage('${safeName}', '${safeText}')"><span class="material-symbols-outlined" style="font-size:16px;">push_pin</span></button>
+                    <button class="action-btn" onclick="deleteMessage('${data.id}')"><span class="material-symbols-outlined" style="font-size:16px;">delete</span></button>
                 </div>`;
             }
 
@@ -2070,16 +2078,31 @@
             if (data.gifUrl) {
                 contentHtml = `<img class="chat-gif" src="${escapeHtml(data.gifUrl)}" alt="GIF" loading="lazy" onload="if(${shouldScroll}) { const cb = document.getElementById('chat-box-ui'); cb.scrollTop = cb.scrollHeight; }">`;
             } else {
-                contentHtml = `<span class="chat-text">${escapeHtml(data.text || '')}</span>`;
+                let safeText = escapeHtml(data.text || '');
+                if (isSystem) {
+                    safeText = safeText
+                        .replace(/✅/g, '<span class="material-symbols-outlined" style="font-size:15px; vertical-align:text-bottom; margin-right:2px;">check_circle</span>')
+                        .replace(/⏭️/g, '<span class="material-symbols-outlined" style="font-size:15px; vertical-align:text-bottom; margin-right:2px;">skip_next</span>')
+                        .replace(/🔁/g, '<span class="material-symbols-outlined" style="font-size:15px; vertical-align:text-bottom; margin-right:2px;">repeat</span>')
+                        .replace(/🔄/g, '<span class="material-symbols-outlined" style="font-size:15px; vertical-align:text-bottom; margin-right:2px;">sync_alt</span>')
+                        .replace(/🗑️/g, '<span class="material-symbols-outlined" style="font-size:15px; vertical-align:text-bottom; margin-right:2px;">delete</span>')
+                        .replace(/❌/g, '<span class="material-symbols-outlined" style="font-size:15px; vertical-align:text-bottom; margin-right:2px;">error</span>');
+                    safeText = safeText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                }
+                contentHtml = `<span class="chat-text">${safeText}</span>`;
             }
 
             let authorStyle = '';
+            let finalName = data.name || '';
+            if (isSystem) {
+                finalName = finalName.replace(/🎵/g, '<span class="material-symbols-outlined" style="font-size:14px; vertical-align:text-bottom;">smart_toy</span>');
+            }
             if (!isSystem && data.nameColor) {
                 authorStyle = `style="color: ${escapeHtml(data.nameColor)}"`;
             }
 
             const msgHtml = `<div class="${msgClass}" id="msg-${data.id}">
-                <span class="chat-author" ${authorStyle}>${data.name}</span>
+                <span class="chat-author" ${authorStyle}>${finalName}</span>
                 ${contentHtml}
                 ${actionsHtml}
             </div>`;
@@ -2124,6 +2147,17 @@
                         document.getElementById('status').innerText = "Trạng thái: Đang phát trực tiếp 🟢";
                     },
                     'onStateChange': (e) => {
+                        if (e.data == YT.PlayerState.PLAYING) {
+                            try {
+                                const videoData = player.getVideoData();
+                                if (videoData && videoData.title) {
+                                    if (document.title !== videoData.title) {
+                                        document.title = videoData.title;
+                                        document.getElementById('welcome-title').innerText = videoData.title;
+                                    }
+                                }
+                            } catch(err) {}
+                        }
                         if (myRole === 'admin') {
                             if (e.data == YT.PlayerState.PLAYING) socket.emit('adminPlay', player.getCurrentTime());
                             if (e.data == YT.PlayerState.PAUSED) socket.emit('adminPause');
@@ -2134,7 +2168,32 @@
             });
         }
 
-        function changeVolume(val) { if (player && player.setVolume) player.setVolume(val); }
+        function changeVolume(val) { 
+            if (player && player.setVolume) player.setVolume(val); 
+            const icon = document.getElementById('volume-icon');
+            if (icon) {
+                if (val == 0) icon.innerText = 'volume_off';
+                else if (val < 50) icon.innerText = 'volume_down';
+                else icon.innerText = 'volume_up';
+            }
+            if (val > 0) isVideoMuted = false;
+        }
+        
+        let isVideoMuted = false;
+        let lastVolume = 50;
+        function toggleVideoMute() {
+            const slider = document.getElementById('volume-slider');
+            if (isVideoMuted) {
+                isVideoMuted = false;
+                slider.value = lastVolume || 50;
+                changeVolume(slider.value);
+            } else {
+                lastVolume = slider.value > 0 ? slider.value : 50;
+                isVideoMuted = true;
+                slider.value = 0;
+                changeVolume(0);
+            }
+        }
         function addSong() {
             const input = document.getElementById('song-input');
             const btn = document.querySelector('.btn-add');
@@ -2159,8 +2218,18 @@
         function nextSong() { socket.emit('adminNextSong'); }
 
         socket.on('updatePlaylist', (list) => { updatePlaylistUI(list); });
-        socket.on('changeVideo', (id) => { if (player && player.loadVideoById) player.loadVideoById(id); });
-        socket.on('stopVideo', () => { if (player && player.stopVideo) player.stopVideo(); });
+        socket.on('changeVideo', (data) => { 
+            const vidId = data.id || data;
+            const vidTitle = data.title || 'Trạm Nhạc Live';
+            if (player && player.loadVideoById) player.loadVideoById(vidId); 
+            document.title = vidTitle;
+            document.getElementById('welcome-title').innerText = vidTitle;
+        });
+        socket.on('stopVideo', () => { 
+            if (player && player.stopVideo) player.stopVideo(); 
+            document.title = 'Trạm Nhạc Live';
+            document.getElementById('welcome-title').innerText = 'Chưa có bài hát nào';
+        });
         socket.on('loopModeUpdate', (mode) => {
             isLoopMode = mode;
             updateLoopUI();
@@ -2318,15 +2387,14 @@
         });
 
 
-        const TENOR_API_KEY = 'AIzaSyAyimkuYQYF_FXVALexPuGQctUWRURdCYQ';
-        const TENOR_CLIENT_KEY = 'music_live_chat';
+        const KLIPY_API_KEY = '0Y7PJdRTbgPWV1aGkzA6FwklXAW5osXemiX4dFr4aJrgtxO4QF4E40Pc6WdEDzRS';
         let trendingLoaded = false;
 
         function loadTrendingGifs() {
             if (trendingLoaded) return;
             const results = document.getElementById('gif-results');
             results.innerHTML = '<div class="gif-results-loading">🔄 Đang tải GIF xu hướng...</div>';
-            fetch(`https://tenor.googleapis.com/v2/featured?key=${TENOR_API_KEY}&client_key=${TENOR_CLIENT_KEY}&limit=20&media_filter=tinygif,gif`)
+            fetch(`https://api.klipy.com/v2/featured?key=${KLIPY_API_KEY}&limit=20&media_filter=tinygif,gif`)
                 .then(r => r.json())
                 .then(data => {
                     trendingLoaded = true;
@@ -2351,7 +2419,7 @@
                 return;
             }
             results.innerHTML = '<div class="gif-results-loading">🔍 Đang tìm kiếm...</div>';
-            fetch(`https://tenor.googleapis.com/v2/search?q=${encodeURIComponent(query)}&key=${TENOR_API_KEY}&client_key=${TENOR_CLIENT_KEY}&limit=20&media_filter=tinygif,gif`)
+            fetch(`https://api.klipy.com/v2/search?key=${KLIPY_API_KEY}&q=${encodeURIComponent(query)}&limit=20&media_filter=tinygif,gif`)
                 .then(r => r.json())
                 .then(data => renderGifResults(data.results || []))
                 .catch(() => {
@@ -2410,7 +2478,7 @@
         }
 
         function fetchInlineGifs(query) {
-            fetch(`https://tenor.googleapis.com/v2/search?q=${encodeURIComponent(query)}&key=${TENOR_API_KEY}&client_key=${TENOR_CLIENT_KEY}&limit=10&media_filter=tinygif,gif`)
+            fetch(`https://api.klipy.com/v2/search?key=${KLIPY_API_KEY}&q=${encodeURIComponent(query)}&limit=10&media_filter=tinygif,gif`)
                 .then(r => r.json())
                 .then(data => {
                     const gifs = data.results || [];
@@ -2648,16 +2716,16 @@
             document.getElementById('draw-guess-feedback').className = 'draw-guess-feedback';
 
             if (amIDrawer) {
-                document.getElementById('draw-info').innerHTML = `<div>Bạn đang vẽ! <span class="draw-word-secret">🔒 Chờ nhận từ...</span></div>`;
+                document.getElementById('draw-info').innerHTML = `<div>Bạn đang vẽ! <span class="draw-word-secret"><span class="material-symbols-outlined" style="font-size:16px;vertical-align:text-bottom;">lock</span> Chờ nhận từ...</span></div>`;
             } else {
-                document.getElementById('draw-info').innerHTML = `<div>🖌️ <strong>${escapeHtml(data.drawerName)}</strong> đang vẽ... <div class="draw-word-display">${data.hint}</div></div>`;
+                document.getElementById('draw-info').innerHTML = `<div><span class="material-symbols-outlined" style="font-size:16px;vertical-align:text-bottom;">brush</span> <strong>${escapeHtml(data.drawerName)}</strong> đang vẽ... <div class="draw-word-display">${data.hint}</div></div>`;
                 setTimeout(() => document.getElementById('draw-guess-input').focus(), 300);
             }
         });
 
         // Socket: you are the drawer - here's your word
         socket.on('drawYourWord', (word) => {
-            document.getElementById('draw-info').innerHTML = `<div>Bạn đang vẽ! <span class="draw-word-secret">🎨 ${escapeHtml(word).toUpperCase()}</span></div>`;
+            document.getElementById('draw-info').innerHTML = `<div>Bạn đang vẽ! <span class="draw-word-secret"><span class="material-symbols-outlined" style="font-size:16px;vertical-align:text-bottom;">palette</span> ${escapeHtml(word).toUpperCase()}</span></div>`;
         });
 
         // Socket: timer update
@@ -2695,7 +2763,7 @@
             document.getElementById('draw-drawer-tools').classList.add('hidden');
             document.getElementById('draw-tools-bar').classList.add('hidden');
             document.getElementById('draw-guess-area').classList.add('hidden');
-            document.getElementById('draw-round-result').innerHTML = `<h3>⏰ Hết lượt!</h3><div class="reveal-word">Đáp án: ${escapeHtml(data.word)}</div>`;
+            document.getElementById('draw-round-result').innerHTML = `<h3><span class="material-symbols-outlined" style="font-size:24px;vertical-align:text-bottom;">timer</span> Hết lượt!</h3><div class="reveal-word">Đáp án: ${escapeHtml(data.word)}</div>`;
             document.getElementById('draw-info').innerHTML = '<div>Chờ lượt tiếp theo...</div>';
             renderDrawScores(data.scores);
         });

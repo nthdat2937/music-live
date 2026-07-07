@@ -12,6 +12,7 @@ app.use(express.static('public'));
 
 let playlist = [];
 let currentVideoId = '';
+let currentVideoTitle = 'Chưa có bài hát nào';
 let pinnedMessage = null;
 let loopMode = false;
 let isPlayerIdle = true;
@@ -175,7 +176,7 @@ io.on('connection', (socket) => {
                 socket.role = 'admin';
                 socket.nameColor = nameColor || '#fbbc04';
                 connectedUsers.set(socket.id, { name: socket.username, role: 'admin', nameColor: socket.nameColor });
-                socket.emit('authResult', { success: true, role: 'admin', currentVideoId, playlist, pinnedMessage, loopMode, drawGame: drawGame.active ? { active: true, state: drawGame.state, scores: drawGame.scores } : null });
+                socket.emit('authResult', { success: true, role: 'admin', currentVideoId, currentVideoTitle, playlist, pinnedMessage, loopMode, drawGame: drawGame.active ? { active: true, state: drawGame.state, scores: drawGame.scores } : null });
                 io.emit('newMessage', { id: 'sys-' + Date.now(), name: 'Hệ thống 🤖', text: `👑 Admin [${socket.username}] đã lên sàn điều khiển nhạc!`, role: 'system' });
             } else {
                 socket.emit('authResult', { success: false, message: 'Sai mật khẩu Admin rồi ông chủ ơi! ❌' });
@@ -185,7 +186,7 @@ io.on('connection', (socket) => {
             socket.role = 'member';
             socket.nameColor = nameColor || '#aaaaaa';
             connectedUsers.set(socket.id, { name: socket.username, role: 'member', nameColor: socket.nameColor });
-            socket.emit('authResult', { success: true, role: 'member', currentVideoId, playlist, pinnedMessage, loopMode, drawGame: drawGame.active ? { active: true, state: drawGame.state, scores: drawGame.scores } : null });
+            socket.emit('authResult', { success: true, role: 'member', currentVideoId, currentVideoTitle, playlist, pinnedMessage, loopMode, drawGame: drawGame.active ? { active: true, state: drawGame.state, scores: drawGame.scores } : null });
             io.emit('newMessage', { id: 'sys-' + Date.now(), name: 'Hệ thống 🤖', text: `👋 Chào mừng [${socket.username}] đã tham gia phòng nhạc!`, role: 'system' });
         }
         if (drawGame.active) io.emit('drawUsersUpdate', getDrawUserList());
@@ -240,7 +241,108 @@ io.on('connection', (socket) => {
                 nameColor: senderColor, text: msg, role: senderRole
             });
 
-            if (msg.trim().toLowerCase().startsWith('/add ')) {
+            const textLower = msg.trim().toLowerCase();
+
+            if (textLower === '/skip') {
+                if (playlist.length > 0) {
+                    const nextSong = playlist.shift();
+                    currentVideoId = nextSong.id;
+                    currentVideoTitle = nextSong.title;
+                    io.emit('changeVideo', { id: currentVideoId, title: currentVideoTitle });
+                    io.emit('updatePlaylist', playlist);
+                    io.emit('newMessage', {
+                        id: 'sys-' + Date.now(),
+                        name: 'Hệ thống 🎵',
+                        text: `⏭️ **${senderName}** đã chuyển bài. Đang phát: **${currentVideoTitle}**`,
+                        role: 'system'
+                    });
+                    isPlayerIdle = false;
+                } else {
+                    currentVideoId = '';
+                    currentVideoTitle = 'Chưa có bài hát nào';
+                    isPlayerIdle = true;
+                    io.emit('stopVideo');
+                    io.emit('newMessage', {
+                        id: 'sys-' + Date.now(),
+                        name: 'Hệ thống 🎵',
+                        text: `⏭️ **${senderName}** đã chuyển bài. Đã hết danh sách phát.`,
+                        role: 'system'
+                    });
+                }
+                return;
+            }
+
+            if (textLower === '/repeat') {
+                loopMode = !loopMode;
+                io.emit('loopModeUpdate', loopMode);
+                io.emit('newMessage', {
+                    id: 'sys-' + Date.now(),
+                    name: 'Hệ thống 🎵',
+                    text: `🔁 **${senderName}** đã ${loopMode ? 'BẬT' : 'TẮT'} chế độ lặp lại.`,
+                    role: 'system'
+                });
+                return;
+            }
+
+            if (textLower.startsWith('/move ')) {
+                const args = textLower.substring(6).trim().split(/\s+/);
+                if (args.length === 2) {
+                    const idx1 = parseInt(args[0]) - 1;
+                    const idx2 = parseInt(args[1]) - 1;
+                    if (!isNaN(idx1) && !isNaN(idx2) && idx1 >= 0 && idx2 >= 0 && idx1 < playlist.length && idx2 < playlist.length) {
+                        const temp = playlist[idx1];
+                        playlist[idx1] = playlist[idx2];
+                        playlist[idx2] = temp;
+                        io.emit('updatePlaylist', playlist);
+                        io.emit('newMessage', {
+                            id: 'sys-' + Date.now(),
+                            name: 'Hệ thống 🎵',
+                            text: `🔄 **${senderName}** đã đổi vị trí bài số ${idx1 + 1} và ${idx2 + 1}.`,
+                            role: 'system'
+                        });
+                    } else {
+                        socket.emit('newMessage', {
+                            id: 'sys-' + Date.now(),
+                            name: 'Hệ thống 🎵',
+                            text: `❌ Số thứ tự không hợp lệ. Vui lòng nhập từ 1 đến ${playlist.length}.`,
+                            role: 'system'
+                        });
+                    }
+                } else {
+                    socket.emit('newMessage', {
+                        id: 'sys-' + Date.now(),
+                        name: 'Hệ thống 🎵',
+                        text: `❌ Cú pháp sai. Hãy dùng: /move <số 1> <số 2> (ví dụ: /move 1 3)`,
+                        role: 'system'
+                    });
+                }
+                return;
+            }
+
+            if (textLower.startsWith('/remove ')) {
+                const idxStr = textLower.substring(8).trim();
+                const idx = parseInt(idxStr) - 1;
+                if (!isNaN(idx) && idx >= 0 && idx < playlist.length) {
+                    const removed = playlist.splice(idx, 1)[0];
+                    io.emit('updatePlaylist', playlist);
+                    io.emit('newMessage', {
+                        id: 'sys-' + Date.now(),
+                        name: 'Hệ thống 🎵',
+                        text: `🗑️ **${senderName}** đã xóa bài **${removed.title}** khỏi danh sách chờ.`,
+                        role: 'system'
+                    });
+                } else {
+                    socket.emit('newMessage', {
+                        id: 'sys-' + Date.now(),
+                        name: 'Hệ thống 🎵',
+                        text: `❌ Số thứ tự không hợp lệ. Vui lòng nhập từ 1 đến ${playlist.length}.`,
+                        role: 'system'
+                    });
+                }
+                return;
+            }
+
+            if (textLower.startsWith('/add ')) {
                 const query = msg.trim().substring(5).trim();
                 if (query) {
                     try {
@@ -269,7 +371,8 @@ io.on('connection', (socket) => {
                         if (isPlayerIdle) {
                             const nextSong = playlist.shift();
                             currentVideoId = nextSong.id;
-                            io.emit('changeVideo', currentVideoId);
+                            currentVideoTitle = nextSong.title;
+                            io.emit('changeVideo', { id: currentVideoId, title: currentVideoTitle });
                             io.emit('updatePlaylist', playlist);
                             isPlayerIdle = false;
                         }
@@ -339,7 +442,8 @@ io.on('connection', (socket) => {
             if (isPlayerIdle) {
                 const nextSong = playlist.shift();
                 currentVideoId = nextSong.id;
-                io.emit('changeVideo', currentVideoId);
+                currentVideoTitle = nextSong.title;
+                io.emit('changeVideo', { id: currentVideoId, title: currentVideoTitle });
                 io.emit('updatePlaylist', playlist);
                 isPlayerIdle = false;
             }
@@ -372,11 +476,13 @@ io.on('connection', (socket) => {
             if (playlist.length > 0) {
                 const nextSong = playlist.shift();
                 currentVideoId = nextSong.id;
-                io.emit('changeVideo', currentVideoId);
+                currentVideoTitle = nextSong.title;
+                io.emit('changeVideo', { id: currentVideoId, title: currentVideoTitle });
                 io.emit('updatePlaylist', playlist);
                 isPlayerIdle = false;
             } else {
                 currentVideoId = '';
+                currentVideoTitle = 'Chưa có bài hát nào';
                 isPlayerIdle = true;
                 io.emit('stopVideo');
                 isPlayerIdle = true;
@@ -397,13 +503,14 @@ io.on('connection', (socket) => {
         if (socket.role === 'admin') {
             if (loopMode) {
                 // Replay the current video
-                io.emit('changeVideo', currentVideoId);
+                io.emit('changeVideo', { id: currentVideoId, title: currentVideoTitle });
                 isPlayerIdle = false;
             } else if (playlist.length > 0) {
                 // Auto-play next song from queue
                 const nextSong = playlist.shift();
                 currentVideoId = nextSong.id;
-                io.emit('changeVideo', currentVideoId);
+                currentVideoTitle = nextSong.title;
+                io.emit('changeVideo', { id: currentVideoId, title: currentVideoTitle });
                 io.emit('updatePlaylist', playlist);
                 isPlayerIdle = false;
             } else {

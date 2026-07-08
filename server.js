@@ -270,12 +270,24 @@ io.on('connection', (socket) => {
                 }
             }
 
+            const textLower = msg.trim().toLowerCase();
+
+            if (textLower.startsWith('/') && !textLower.startsWith('/ai')) {
+                if (socket.role !== 'admin') {
+                    socket.emit('newMessage', {
+                        id: 'sys-' + Date.now(),
+                        name: 'Hệ thống ❌',
+                        text: `Lệnh **${textLower.split(' ')[0]}** chỉ dành cho Quản trị viên!`,
+                        role: 'system'
+                    });
+                    return;
+                }
+            }
+
             io.emit('newMessage', {
                 id: msgId, senderId: socket.id, name: senderName,
                 nameColor: senderColor, text: msg, role: senderRole
             });
-
-            const textLower = msg.trim().toLowerCase();
 
             if (textLower === '/skip') {
                 if (playlist.length > 0) {

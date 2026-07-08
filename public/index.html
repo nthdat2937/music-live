@@ -531,6 +531,7 @@
             height: 100dvh;
             z-index: 500;
             animation: chatSlideUp 0.25s ease-out;
+            padding-bottom: 72px; /* space for bottom nav */
         }
 
         .right-column.chat-open {
@@ -2662,6 +2663,9 @@
                             } catch (err) { }
                         }
                         if (myRole === 'admin') {
+                            if (window.ignoreNextStateChange && (Date.now() - window.lastSyncTime < 1500)) {
+                                return; // Prevent infinite sync loops between admins
+                            }
                             if (e.data == YT.PlayerState.PLAYING) socket.emit('adminPlay', player.getCurrentTime());
                             if (e.data == YT.PlayerState.PAUSED) socket.emit('adminPause');
                             if (e.data == YT.PlayerState.ENDED) socket.emit('videoEnded');
@@ -2729,7 +2733,16 @@
         socket.on('changeVideo', (data) => {
             const vidId = data.id || data;
             const vidTitle = data.title || 'Trạm Nhạc Live';
-            if (player && player.loadVideoById) player.loadVideoById(vidId);
+            
+            if (player) {
+                if (window.currentVideoId === vidId && typeof player.seekTo === 'function') {
+                    player.seekTo(0);
+                    player.playVideo();
+                } else if (typeof player.loadVideoById === 'function') {
+                    player.loadVideoById(vidId);
+                }
+            }
+            window.currentVideoId = vidId;
             document.title = vidTitle;
             document.getElementById('welcome-title').innerText = vidTitle;
         });
@@ -2807,16 +2820,44 @@
 
         socket.on('memberRequestSync', () => {
             if (myRole === 'admin' && player) {
-                if (player.getPlayerState() === YT.PlayerState.PLAYING) {
+                const state = typeof player.getPlayerState === 'function' ? player.getPlayerState() : -1;
+                if (state === YT.PlayerState.PLAYING || state === YT.PlayerState.BUFFERING || state === YT.PlayerState.UNSTARTED) {
                     socket.emit('adminPlay', player.getCurrentTime());
-                } else if (player.getPlayerState() === YT.PlayerState.PAUSED) {
+                } else if (state === YT.PlayerState.PAUSED) {
                     socket.emit('adminPause');
                 }
             }
         });
 
-        socket.on('memberPlay', (time) => { if (myRole === 'member' && player) { if (Math.abs(player.getCurrentTime() - time) > 1) player.seekTo(time); player.playVideo(); } });
-        socket.on('memberPause', () => { if (myRole === 'member' && player) player.pauseVideo(); });
+        socket.on('memberPlay', (time) => {
+            if (player) {
+                const diff = Math.abs(player.getCurrentTime() - time);
+                const state = typeof player.getPlayerState === 'function' ? player.getPlayerState() : -1;
+                
+                if (diff > 1.5) {
+                    window.ignoreNextStateChange = true;
+                    window.lastSyncTime = Date.now();
+                    player.seekTo(time);
+                }
+                
+                if (state !== YT.PlayerState.PLAYING) {
+                    window.ignoreNextStateChange = true;
+                    window.lastSyncTime = Date.now();
+                    player.playVideo();
+                }
+            }
+        });
+        
+        socket.on('memberPause', () => { 
+            if (player) {
+                const state = typeof player.getPlayerState === 'function' ? player.getPlayerState() : -1;
+                if (state !== YT.PlayerState.PAUSED) {
+                    window.ignoreNextStateChange = true;
+                    window.lastSyncTime = Date.now();
+                    player.pauseVideo(); 
+                }
+            } 
+        });
 
 
         function escapeHtml(str) {

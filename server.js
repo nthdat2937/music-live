@@ -3,6 +3,29 @@ const http = require('http');
 const { Server } = require('socket.io');
 const https = require('https');
 const ytSearch = require('yt-search');
+const { createClient } = require('@supabase/supabase-js');
+
+const SUPABASE_URL = 'https://wnioetdrphkdylkoybsu.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_p0VSduH3epzQVUdvAf2kPQ_aoWk_l1T';
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+async function logMusicHistory(videoId, title, addedBy) {
+    try {
+        const { error } = await supabase.from('music_history').insert([{
+            video_id: videoId,
+            title: title,
+            added_by: addedBy,
+            played_at: new Date().toISOString()
+        }]);
+        if (error) {
+            console.error('Supabase Error (music_history):', error.message);
+        } else {
+            console.log('Đã lưu lịch sử bài hát:', title);
+        }
+    } catch (err) {
+        console.error('Supabase Exception:', err.message);
+    }
+}
 
 const app = express();
 const server = http.createServer(app);
@@ -25,14 +48,14 @@ let drawGame = {
     guessedPlayers: [], canvasHistory: []
 };
 const DRAW_WORDS = [
-    'con mèo','con chó','ngôi nhà','cái cây','mặt trời','mặt trăng','con cá','bông hoa',
-    'xe đạp','ô tô','máy bay','con bướm','quả táo','cái bàn','cái ghế','con gà','con voi',
-    'con rắn','cầu vồng','ngôi sao','trái tim','con ong','pizza','kem','guitar','điện thoại',
-    'cái kéo','con nhện','người tuyết','tên lửa','cây dừa','quả dưa hấu','con khỉ','con thỏ',
-    'con rùa','cái ô','đồng hồ','cái nón','đôi giày','con mắt','bàn tay','ngọn núi',
-    'con sông','cái cầu','chiếc thuyền','xe buýt','xe lửa','robot','khủng long','siêu nhân',
-    'cái ly','cái chìa khóa','bóng đèn','cái quạt','cây bút','cuốn sách','cái bánh','con ếch',
-    'con cua','con sứa','cá heo','chim cánh cụt','con gấu','hoa hướng dương','cây nấm','quả chuối'
+    'con mèo', 'con chó', 'ngôi nhà', 'cái cây', 'mặt trời', 'mặt trăng', 'con cá', 'bông hoa',
+    'xe đạp', 'ô tô', 'máy bay', 'con bướm', 'quả táo', 'cái bàn', 'cái ghế', 'con gà', 'con voi',
+    'con rắn', 'cầu vồng', 'ngôi sao', 'trái tim', 'con ong', 'pizza', 'kem', 'guitar', 'điện thoại',
+    'cái kéo', 'con nhện', 'người tuyết', 'tên lửa', 'cây dừa', 'quả dưa hấu', 'con khỉ', 'con thỏ',
+    'con rùa', 'cái ô', 'đồng hồ', 'cái nón', 'đôi giày', 'con mắt', 'bàn tay', 'ngọn núi',
+    'con sông', 'cái cầu', 'chiếc thuyền', 'xe buýt', 'xe lửa', 'robot', 'khủng long', 'siêu nhân',
+    'cái ly', 'cái chìa khóa', 'bóng đèn', 'cái quạt', 'cây bút', 'cuốn sách', 'cái bánh', 'con ếch',
+    'con cua', 'con sứa', 'cá heo', 'chim cánh cụt', 'con gấu', 'hoa hướng dương', 'cây nấm', 'quả chuối'
 ];
 function getRandomWord() { return DRAW_WORDS[Math.floor(Math.random() * DRAW_WORDS.length)]; }
 function generateHint(word) {
@@ -71,7 +94,7 @@ function getYoutubeInfo(videoId) {
     });
 }
 
-const GROQ_API_KEY = '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';
+const GROQ_API_KEY = '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';
 
 async function quickWebSearch(query) {
     try {
@@ -80,7 +103,7 @@ async function quickWebSearch(query) {
         // Only append year if they are asking for something "new" or "latest" to avoid ruining generic searches
         const needsYear = lowerQuery.includes('mới') || lowerQuery.includes('gần đây') || lowerQuery.includes('hiện tại');
         const searchQuery = (!query.includes(currentYear.toString()) && needsYear) ? query + ' ' + currentYear : query;
-        
+
         const res = await fetch('https://html.duckduckgo.com/html/?q=' + encodeURIComponent(searchQuery), {
             headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' }
         });
@@ -89,12 +112,12 @@ async function quickWebSearch(query) {
         let match;
         let results = [];
         let count = 0;
-        while((match = regex.exec(html)) !== null && count < 4) {
+        while ((match = regex.exec(html)) !== null && count < 4) {
             results.push("- " + match[1].replace(/<[^>]+>/g, '').replace(/&quot;/g, '"').replace(/&amp;/g, '&').replace(/&gt;/g, '>').replace(/&lt;/g, '<'));
             count++;
         }
         return results.join('\n');
-    } catch(e) {
+    } catch (e) {
         return '';
     }
 }
@@ -137,7 +160,7 @@ ${webContext}`;
             if (!aiMsg || aiMsg.trim() === '') {
                 aiMsg = '*(AI đã suy nghĩ quá lâu và quên mất câu trả lời)* 😅';
             }
-            
+
             io.emit('newMessage', {
                 id: 'ai-' + Date.now(),
                 senderId: 'ai-bot',
@@ -171,15 +194,26 @@ io.on('connection', (socket) => {
         const username = name.trim() || 'Người dùng ẩn danh';
 
         if (isAdmin) {
-            if (password === ADMIN_PASSWORD) {
-                socket.username = username + ' 😎 (Admin)';
+            let isValid = false;
+            let adminLabel = 'Admin';
+
+            if (username.toLowerCase() === 'nthdat') {
+                if (password === ADMIN_PASSWORD) isValid = true;
+                adminLabel = 'Admin Chính';
+            } else {
+                if (password === '16082009' || /^[0-9]{8}$/.test(password)) isValid = true;
+                adminLabel = 'Doo';
+            }
+
+            if (isValid) {
+                socket.username = username + ` 😎`;
                 socket.role = 'admin';
                 socket.nameColor = nameColor || '#fbbc04';
                 connectedUsers.set(socket.id, { name: socket.username, role: 'admin', nameColor: socket.nameColor });
                 socket.emit('authResult', { success: true, role: 'admin', currentVideoId, currentVideoTitle, playlist, pinnedMessage, loopMode, drawGame: drawGame.active ? { active: true, state: drawGame.state, scores: drawGame.scores } : null });
                 io.emit('newMessage', { id: 'sys-' + Date.now(), name: 'Hệ thống 🤖', text: `👑 Admin [${socket.username}] đã lên sàn điều khiển nhạc!`, role: 'system' });
             } else {
-                socket.emit('authResult', { success: false, message: 'Sai mật khẩu Admin rồi ông chủ ơi! ❌' });
+                socket.emit('authResult', { success: false, message: 'Sai mật khẩu hoặc ngày sinh rồi ông chủ ơi! ❌' });
             }
         } else {
             socket.username = username;
@@ -257,6 +291,7 @@ io.on('connection', (socket) => {
                         role: 'system'
                     });
                     isPlayerIdle = false;
+                    logMusicHistory(currentVideoId, currentVideoTitle, nextSong.addedBy || 'Người dùng');
                 } else {
                     currentVideoId = '';
                     currentVideoTitle = 'Chưa có bài hát nào';
@@ -355,7 +390,7 @@ io.on('connection', (socket) => {
                                 throw new Error('Not found');
                             }
                         }
-                        
+
                         const info = await getYoutubeInfo(videoId);
                         info.addedBy = senderName;
                         info.addedByColor = senderColor;
@@ -375,6 +410,7 @@ io.on('connection', (socket) => {
                             io.emit('changeVideo', { id: currentVideoId, title: currentVideoTitle });
                             io.emit('updatePlaylist', playlist);
                             isPlayerIdle = false;
+                            logMusicHistory(currentVideoId, currentVideoTitle, nextSong.addedBy || 'Groq AI');
                         }
                     } catch (err) {
                         socket.emit('newMessage', {
@@ -432,13 +468,21 @@ io.on('connection', (socket) => {
                     videoId = r.videos[0].videoId;
                 }
             }
-            
+
+            // Anti-spam duplicate check
+            if (videoId === currentVideoId || playlist.some(song => song.id === videoId)) {
+                if (typeof callback === 'function') {
+                    callback({ success: false, message: 'Bài hát đã có trong hàng đợi hoặc đang phát!' });
+                }
+                return;
+            }
+
             const info = await getYoutubeInfo(videoId);
             info.addedBy = socket.username || 'Ẩn danh';
             info.addedByColor = socket.nameColor || '#aaaaaa';
             playlist.push(info);
             io.emit('updatePlaylist', playlist);
-            
+
             if (isPlayerIdle) {
                 const nextSong = playlist.shift();
                 currentVideoId = nextSong.id;
@@ -446,8 +490,9 @@ io.on('connection', (socket) => {
                 io.emit('changeVideo', { id: currentVideoId, title: currentVideoTitle });
                 io.emit('updatePlaylist', playlist);
                 isPlayerIdle = false;
+                logMusicHistory(currentVideoId, currentVideoTitle, nextSong.addedBy || 'Người dùng');
             }
-            
+
             success = true;
         } catch (err) {
             console.error('Lỗi khi thêm bài hát:', err);
@@ -480,6 +525,7 @@ io.on('connection', (socket) => {
                 io.emit('changeVideo', { id: currentVideoId, title: currentVideoTitle });
                 io.emit('updatePlaylist', playlist);
                 isPlayerIdle = false;
+                logMusicHistory(currentVideoId, currentVideoTitle, nextSong.addedBy || 'Admin');
             } else {
                 currentVideoId = '';
                 currentVideoTitle = 'Chưa có bài hát nào';
@@ -513,6 +559,7 @@ io.on('connection', (socket) => {
                 io.emit('changeVideo', { id: currentVideoId, title: currentVideoTitle });
                 io.emit('updatePlaylist', playlist);
                 isPlayerIdle = false;
+                logMusicHistory(currentVideoId, currentVideoTitle, nextSong.addedBy || 'Hệ thống');
             } else {
                 isPlayerIdle = true;
             }
@@ -552,9 +599,9 @@ io.on('connection', (socket) => {
         const users = Array.from(connectedUsers.keys());
         if (users.length === 0) return;
         const winnerId = users[Math.floor(Math.random() * users.length)];
-        
+
         io.emit('drawRandomPickAnimation', { winnerId, users: getDrawUserList() });
-        
+
         setTimeout(() => {
             startDrawRound(winnerId);
         }, 3000);

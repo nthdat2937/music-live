@@ -5,22 +5,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2937.ML</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <style>
         :root {
-            --bg-color: #0f0f0f;
-            --panel-bg: #212121;
-            --text-main: #f1f1f1;
-            --text-muted: #aaaaaa;
-            --accent: #3ea6ff;
-            --border-color: #3d3d3d;
+            --bg-color: #0b0c10;
+            --panel-bg: rgba(25, 26, 35, 0.65);
+            --text-main: #f8f9fa;
+            --text-muted: #9499a3;
+            --accent: #4dabf7;
+            --accent-gradient: linear-gradient(135deg, #4dabf7, #3b5bdb);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.05);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
 
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: var(--bg-color);
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-color);
+            background-image: radial-gradient(circle at 15% 50%, rgba(77, 171, 247, 0.06), transparent 25%),
+                              radial-gradient(circle at 85% 30%, rgba(59, 91, 219, 0.06), transparent 25%);
             color: var(--text-main);
             margin: 0;
             padding: 0;
@@ -50,13 +55,15 @@
         }
 
         .navbar {
-            height: 56px;
-            background-color: var(--bg-color);
+            height: 64px;
+            background: rgba(11, 12, 16, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 24px;
-            border-bottom: 1px solid var(--border-color);
+            padding: 0 32px;
+            border-bottom: var(--glass-border);
             flex-shrink: 0;
             z-index: 100;
         }
@@ -111,22 +118,105 @@
         }
 
         .navbar .logo {
-            font-size: 20px;
-            font-weight: bold;
+            font-family: 'Outfit', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
             display: flex;
             align-items: center;
             gap: 8px;
             letter-spacing: -0.5px;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            flex-shrink: 0;
+        }
+
+        .navbar-search {
+            flex: 1;
+            max-width: 450px;
+            margin: 0 24px;
+        }
+
+        .search-bar-wrapper {
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 4px 6px 4px 16px;
+            transition: all 0.3s ease;
+        }
+
+        .search-bar-wrapper:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.15);
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .search-bar-wrapper .search-icon {
+            color: var(--text-muted);
+            font-size: 20px;
+            margin-right: 8px;
+        }
+
+        .search-bar-wrapper input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            outline: none;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            padding: 8px 0;
+            min-width: 0;
+        }
+
+        .search-bar-wrapper input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .btn-add-search {
+            background: var(--accent-gradient);
+            border: none;
+            color: #fff;
+            border-radius: 20px;
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(77, 171, 247, 0.3);
+            flex-shrink: 0;
+        }
+
+        .btn-add-search:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(77, 171, 247, 0.4);
+        }
+
+        @media(max-width: 768px) {
+            .navbar { padding: 0 12px; }
+            .navbar .logo { font-size: 18px; }
+            .navbar .logo .live-badge { display: none; }
+            .navbar-search { margin: 0 12px; max-width: none; }
+            .navbar-user span.user-dot { display: none; }
+            .navbar-user #navbar-username { display: none; }
+            .logout-btn { padding: 6px; border-radius: 50%; }
         }
 
         .navbar .logo .live-badge {
-            background-color: #cc0000;
+            background-color: #e03131;
             color: white;
-            font-size: 12px;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: 500;
-            margin-left: 5px;
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-left: 8px;
+            -webkit-text-fill-color: white; /* override gradient */
+            box-shadow: 0 2px 10px rgba(224, 49, 49, 0.4);
+            font-family: 'Inter', sans-serif;
         }
 
         .hidden {
@@ -151,12 +241,126 @@
             }
         }
 
-        .left-column {
+        .sidebar {
+            display: none; /* controlled by JS on desktop, fixed bottom on mobile */
+            flex-direction: column;
+            gap: 8px;
+            flex-shrink: 0;
+            border-right: 1px solid var(--border-color);
+            padding-right: 16px;
+            transition: width 0.3s ease;
+            width: 240px;
+        }
+
+        .sidebar.mini {
+            width: 72px;
+            padding-right: 8px;
+        }
+        
+        .sidebar.mini .sidebar-item {
+            flex-direction: column;
+            padding: 16px 0;
+            font-size: 0;
+            justify-content: center;
+        }
+        .sidebar.mini .sidebar-item .material-symbols-outlined {
+            font-size: 24px;
+        }
+
+        @media(min-width: 900px) {
+            .sidebar {
+                display: flex;
+            }
+        }
+        
+        @media(max-width: 899px) {
+            .sidebar {
+                display: flex !important;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
+                background: rgba(11, 12, 16, 0.95);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border-top: 1px solid var(--border-color);
+                border-right: none;
+                flex-direction: row;
+                justify-content: space-around;
+                padding: 8px 0;
+                margin: 0;
+                z-index: 1000;
+            }
+            .sidebar-item {
+                flex-direction: column !important;
+                gap: 4px !important;
+                padding: 4px 8px !important;
+                font-size: 11px !important;
+                background: transparent !important;
+                border-radius: 8px;
+            }
+            .sidebar-item.active {
+                color: var(--accent) !important;
+                font-weight: 700 !important;
+            }
+            .main-layout {
+                padding-bottom: 72px; /* space for bottom nav + safe area */
+            }
+            .menu-btn {
+                display: none !important;
+            }
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            color: var(--text-main);
+            font-size: 15px;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+        }
+
+        .sidebar-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .sidebar-item.active {
+            background: rgba(255, 255, 255, 0.15);
+            font-weight: 600;
+        }
+
+        .left-column, .history-column {
             flex: 1;
             display: flex;
             flex-direction: column;
             min-width: 0;
             overflow-y: auto;
+        }
+        
+        .history-item {
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            margin-bottom: 8px;
+        }
+        .history-title {
+            font-weight: 600;
+            font-size: 16px;
+            color: var(--text-main);
+        }
+        .history-meta {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 6px;
         }
 
         @media(min-width: 900px) {
@@ -180,8 +384,10 @@
 
         @media(min-width: 900px) {
             .video-container {
-                border-radius: 12px;
+                border-radius: 20px;
                 overflow: hidden;
+                box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+                border: var(--glass-border);
             }
         }
 
@@ -267,9 +473,13 @@
         /* Control Panel */
         .control-box {
             background: var(--panel-bg);
-            border-radius: 12px;
-            padding: 16px;
-            margin-top: 12px;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: var(--glass-border);
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin-top: 16px;
+            box-shadow: var(--glass-shadow);
         }
 
         .volume-control {
@@ -343,12 +553,17 @@
             .right-column {
                 display: flex !important;
                 position: static;
-                width: 350px;
+                width: 380px;
                 height: 100%;
                 flex: none;
-                border: 1px solid var(--border-color);
-                border-radius: 12px;
+                background: var(--panel-bg);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+                border: var(--glass-border);
+                border-radius: 20px;
+                box-shadow: var(--glass-shadow);
                 animation: none;
+                overflow: hidden;
             }
         }
 
@@ -356,7 +571,7 @@
         .chat-bubble-btn {
             display: flex;
             position: fixed;
-            bottom: 24px;
+            bottom: 84px;
             right: 20px;
             width: 56px;
             height: 56px;
@@ -517,9 +732,17 @@
         .chat-input-wrapper {
             display: flex;
             align-items: center;
-            background: var(--panel-bg);
-            border-radius: 18px;
-            padding: 4px 16px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 6px 16px;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input-wrapper:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.15);
+            background: rgba(0, 0, 0, 0.4);
         }
 
         .chat-input-wrapper input {
@@ -553,7 +776,9 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: var(--bg-color);
+            background: rgba(11, 12, 16, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -561,133 +786,164 @@
         }
 
         .login-card {
-            background: var(--panel-bg);
-            padding: 40px 30px;
-            border-radius: 12px;
+            background: rgba(25, 26, 35, 0.7);
+            border: var(--glass-border);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            padding: 48px 40px;
+            border-radius: 24px;
             width: 90%;
-            max-width: 400px;
+            max-width: 420px;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+            transform: translateY(0);
+            animation: cardFloat 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        
+        @keyframes cardFloat {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .login-card h2 {
+            font-family: 'Outfit', sans-serif;
             margin-top: 0;
-            margin-bottom: 8px;
-            font-weight: 400;
-            font-size: 24px;
+            margin-bottom: 12px;
+            font-weight: 700;
+            font-size: 28px;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .login-card p {
             color: var(--text-muted);
-            margin-bottom: 24px;
-            font-size: 14px;
+            margin-bottom: 32px;
+            font-size: 15px;
         }
 
         .login-input {
             width: 100%;
-            padding: 12px 16px;
+            padding: 14px 20px;
             margin-bottom: 16px;
-            border-radius: 8px;
-            background: transparent;
-            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: white;
             box-sizing: border-box;
             outline: none;
             font-size: 15px;
-            transition: 0.2s;
+            transition: all 0.3s ease;
         }
 
         .login-input:focus {
             border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2);
+            background: rgba(0, 0, 0, 0.4);
         }
 
         .login-btn {
             width: 100%;
-            padding: 12px;
-            border-radius: 18px;
-            background: var(--text-main);
-            color: var(--bg-color);
-            font-weight: 500;
-            font-size: 15px;
+            padding: 14px;
+            border-radius: 12px;
+            background: var(--accent-gradient);
+            color: #fff;
+            font-weight: 600;
+            font-size: 16px;
             border: none;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(77, 171, 247, 0.3);
         }
 
         .login-btn:hover {
-            background: #d0d0d0;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(77, 171, 247, 0.4);
+        }
+        
+        .login-btn:active {
+            transform: translateY(0);
         }
 
         .admin-tools {
             display: flex;
-            gap: 8px;
-            margin-top: 15px;
+            gap: 12px;
+            margin-top: 20px;
         }
 
         .admin-tools input {
             flex: 1;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            background: transparent;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.2);
             color: white;
             outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        .admin-tools input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2);
+            background: rgba(0, 0, 0, 0.4);
         }
 
         .admin-tools button {
-            padding: 8px 16px;
-            border-radius: 18px;
+            padding: 10px 20px;
+            border-radius: 12px;
             border: none;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
-            color: #000;
+            transition: all 0.3s ease;
         }
 
         .btn-add {
-            background: var(--text-main);
+            background: var(--accent-gradient);
+            color: #fff !important;
+            box-shadow: 0 4px 12px rgba(77, 171, 247, 0.3);
         }
 
         .btn-add:hover {
-            background: #d0d0d0;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(77, 171, 247, 0.4);
         }
 
         .btn-next {
-            background: var(--panel-bg);
+            background: rgba(255, 255, 255, 0.05);
             color: var(--text-main) !important;
-            border: 1px solid var(--border-color) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
         }
 
         .btn-next:hover {
-            background: #333;
+            background: rgba(255, 255, 255, 0.1);
         }
 
         /* Loop Toggle Button */
         .btn-loop {
-            background: var(--panel-bg);
+            background: rgba(255, 255, 255, 0.05);
             color: var(--text-main) !important;
-            border: 1px solid var(--border-color) !important;
-            padding: 8px 12px;
-            border-radius: 18px;
-            border: none;
-            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
             justify-content: center;
-            transition: all 0.25s ease;
+            transition: all 0.3s ease;
             position: relative;
         }
 
         .btn-loop:hover {
-            background: #333;
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .btn-loop.active {
-            background: rgba(62, 166, 255, 0.15);
+            background: rgba(77, 171, 247, 0.15);
             color: var(--accent) !important;
-            border-color: var(--accent) !important;
-            box-shadow: 0 0 12px rgba(62, 166, 255, 0.2);
+            border-color: rgba(77, 171, 247, 0.4) !important;
+            box-shadow: 0 0 16px rgba(77, 171, 247, 0.2);
         }
 
         .btn-loop.active .material-symbols-outlined {
@@ -726,20 +982,26 @@
         }
 
         .playlist-ui {
-            max-height: 150px;
+            max-height: 180px;
             overflow-y: auto;
             font-size: 14px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 8px;
-            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
         .playlist-ui div {
-            padding: 8px 0;
-            /* border-bottom: 1px solid var(--border-color); */
+            padding: 10px 8px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+        
+        .playlist-ui div:hover {
+            background: rgba(255, 255, 255, 0.05);
         }
 
         .playlist-ui div:last-child {
@@ -750,17 +1012,19 @@
             color: var(--text-muted);
             font-size: 12px;
             width: 20px;
+            font-weight: 600;
         }
 
         .playlist-ui .song-id {
-            font-family: monospace;
+            font-family: 'Inter', monospace;
         }
 
         .chat-message {
             position: relative;
-            padding: 4px 0;
-            border-radius: 4px;
+            padding: 8px 12px;
+            border-radius: 12px;
             border-bottom: 1px solid transparent;
+            transition: background 0.2s ease;
         }
 
         .chat-message:hover {
@@ -769,11 +1033,11 @@
 
         .chat-actions {
             position: absolute;
-            right: 8px;
+            right: 12px;
             top: 50%;
             transform: translateY(-50%);
             display: none;
-            gap: 4px;
+            gap: 6px;
         }
 
         .chat-message:hover .chat-actions {
@@ -810,22 +1074,24 @@
             bottom: 100%;
             left: 0;
             right: 0;
-            background: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px 12px 0 0;
+            background: rgba(25, 26, 35, 0.95);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: var(--glass-border);
+            border-radius: 20px 20px 0 0;
             z-index: 200;
             display: flex;
             flex-direction: column;
-            height: 320px;
-            animation: pickerSlideUp 0.2s ease-out;
-            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+            height: 360px;
+            animation: pickerSlideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5);
             overflow: hidden;
         }
 
         @keyframes pickerSlideUp {
             from {
                 opacity: 0;
-                transform: translateY(10px);
+                transform: translateY(20px);
             }
 
             to {
@@ -1118,15 +1384,18 @@
         .draw-container {
             width: 95%;
             max-width: 700px;
-            background: var(--panel-bg);
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
+            background: rgba(25, 26, 35, 0.95);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-radius: 20px;
+            border: var(--glass-border);
             overflow: hidden;
             display: flex;
             flex-direction: column;
             max-height: 90vh;
             max-height: 90dvh;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.8);
+            transform: scale(1);
         }
 
         .draw-header {
@@ -1490,10 +1759,18 @@
         .draw-guess-wrapper {
             display: flex;
             align-items: center;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.08);
+            gap: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 24px;
-            padding: 4px 4px 4px 16px;
+            padding: 6px 6px 6px 20px;
+            transition: all 0.3s ease;
+        }
+
+        .draw-guess-wrapper:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.15);
+            background: rgba(0, 0, 0, 0.4);
         }
 
         .draw-guess-wrapper input {
@@ -1504,7 +1781,7 @@
             padding: 10px 0;
             outline: none;
             font-size: 15px;
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Inter', sans-serif;
         }
 
         .draw-guess-wrapper input::placeholder {
@@ -1512,24 +1789,26 @@
         }
 
         .draw-guess-btn {
-            background: var(--accent);
+            background: var(--accent-gradient);
             border: none;
-            color: #000;
+            color: #fff;
             border-radius: 20px;
-            padding: 8px 18px;
+            padding: 10px 24px;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 4px;
-            font-family: 'Roboto', sans-serif;
+            gap: 6px;
+            font-family: 'Inter', sans-serif;
             white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(77, 171, 247, 0.3);
         }
 
         .draw-guess-btn:hover {
-            background: #5bb8ff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(77, 171, 247, 0.4);
         }
 
         .draw-guess-feedback {
@@ -1571,14 +1850,35 @@
     <div id="login-section" class="login-overlay">
         <div class="login-card">
             <h2>Tham gia luồng trực tiếp</h2>
-            <p>Vui lòng cho biết tên của bạn</p>
+            <p id="login-prompt">Chọn vai trò của bạn để tham gia</p>
 
-            <input type="text" id="username-input" class="login-input" placeholder="Tên hiển thị..."
-                oninput="checkAdminName(this.value)" onkeypress="if(event.key === 'Enter') joinRoom()" required>
+            <div id="role-buttons-wrapper" style="display: flex; gap: 12px; margin-bottom: 16px;">
+                <button type="button" class="login-btn" style="flex: 1; background: rgba(255,255,255,0.1);" onclick="selectRole('user')">
+                    Thành viên
+                </button>
+                <button type="button" class="login-btn" style="flex: 1;" onclick="selectRole('admin')">
+                    Quản trị viên
+                </button>
+            </div>
 
-            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-                <label style="font-size: 14px; color: var(--text-muted); white-space: nowrap;">Màu tên:</label>
-                <div style="display: flex; gap: 6px; flex-wrap: wrap; flex: 1;">
+            <div id="admin-list-wrapper" class="hidden"
+                style="margin-bottom: 16px; background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
+                <p style="margin-bottom: 12px; font-size: 13px; color: var(--text-muted);">Chọn quyền quản trị:</p>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
+                    <button type="button" class="action-btn" style="padding: 8px 12px; font-size: 13px;"
+                        onclick="selectAdmin('nthdat')">nthdat</button>
+                    <button type="button" class="action-btn" style="padding: 8px 12px; font-size: 13px;"
+                        onclick="selectAdmin('Doo')">Doo</button>
+                </div>
+            </div>
+
+            <div id="user-details-wrapper" class="hidden">
+                <input type="text" id="username-input" class="login-input" style="margin-bottom: 16px;"
+                    placeholder="Tên hiển thị..." onkeypress="if(event.key === 'Enter') joinRoom()" required>
+
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                    <label style="font-size: 14px; color: var(--text-muted); white-space: nowrap;">Màu tên:</label>
+                    <div style="display: flex; gap: 6px; flex-wrap: wrap; flex: 1;">
                     <input type="color" id="name-color-input" value="#3ea6ff"
                         style="width: 36px; height: 36px; border: none; border-radius: 8px; cursor: pointer; background: transparent; padding: 0;">
                     <button type="button" onclick="document.getElementById('name-color-input').value='#3ea6ff'"
@@ -1604,18 +1904,37 @@
                         title="Trắng"></button>
                 </div>
             </div>
-
-            <div id="password-wrapper" class="hidden">
-                <input type="password" id="password-input" class="login-input" placeholder="Mật khẩu Admin"
-                    onkeypress="if(event.key === 'Enter') joinRoom()">
             </div>
 
-            <button class="login-btn" onclick="joinRoom()">Tham Gia Ngay</button>
+            <div id="password-wrapper" class="hidden" style="margin-bottom: 16px;">
+                <input type="password" id="password-input" class="login-input" style="margin-bottom: 0;"
+                    placeholder="Mật khẩu / Ngày sinh..." onkeypress="if(event.key === 'Enter') joinRoom()">
+            </div>
+
+            <button id="join-btn" class="login-btn hidden" onclick="joinRoom()">Tham Gia Ngay</button>
         </div>
     </div>
 
     <div class="navbar">
-        <div class="logo">2937.ML <span class="live-badge">TRỰC TIẾP</span></div>
+        <div style="display:flex; align-items:center; gap: 12px;">
+            <button class="menu-btn hidden" id="menu-btn" onclick="toggleSidebar()" title="Trình đơn"
+                style="background:transparent; border:none; color:var(--text-main); cursor:pointer; padding:6px; border-radius:50%; display:flex; align-items:center; justify-content:center;">
+                <span class="material-symbols-outlined" style="font-size:24px;">menu</span>
+            </button>
+            <div class="logo">2937.ML <span class="live-badge">TRỰC TIẾP</span></div>
+        </div>
+        
+        <div class="navbar-search hidden" id="navbar-search">
+            <div class="search-bar-wrapper">
+                <span class="material-symbols-outlined search-icon">search</span>
+                <input type="text" id="song-input" placeholder="Tìm kiếm YouTube hoặc dán link..."
+                    onkeypress="if(event.key === 'Enter') addSong()">
+                <button class="btn-add-search" onclick="addSong()" title="Thêm vào hàng đợi">
+                    <span class="material-symbols-outlined" style="font-size:20px;">add</span>
+                </button>
+            </div>
+        </div>
+
         <div id="navbar-right" class="navbar-right hidden">
             <div class="navbar-user">
                 <span class="user-dot"></span>
@@ -1629,7 +1948,18 @@
 
     <div id="main-room" class="main-layout hidden">
 
-        <div class="left-column">
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-item active" onclick="showTab('home')">
+                <span class="material-symbols-outlined">home</span>
+                Trang chủ
+            </div>
+            <div class="sidebar-item" onclick="showTab('history')">
+                <span class="material-symbols-outlined">history</span>
+                Lịch sử phát
+            </div>
+        </div>
+
+        <div class="left-column" id="left-column">
             <div class="video-container" id="player-container">
                 <div id="youtube-player"></div>
             </div>
@@ -1647,23 +1977,23 @@
 
                 <div class="control-box">
                     <div class="volume-control" style="display:flex;align-items:center;gap:4px;">
-                        <span id="volume-icon" class="material-symbols-outlined" style="font-size: 20px; cursor: pointer;" onclick="toggleVideoMute()" title="Bật/Tắt tiếng video">volume_up</span>
-                        <input type="range" id="volume-slider" min="0" max="100" value="50" oninput="changeVolume(this.value)">
+                        <span id="volume-icon" class="material-symbols-outlined"
+                            style="font-size: 20px; cursor: pointer;" onclick="toggleVideoMute()"
+                            title="Bật/Tắt tiếng video">volume_up</span>
+                        <input type="range" id="volume-slider" min="0" max="100" value="50"
+                            oninput="changeVolume(this.value)">
                     </div>
 
                     <div id="song-tools" class="admin-tools">
-                        <input type="text" id="song-input" placeholder="Dán link YouTube, ID hoặc Tên bài hát..." onkeypress="if(event.key === 'Enter') addSong()">
-                        <button class="btn-add" onclick="addSong()"
-                            style="display:flex;align-items:center;gap:4px;justify-content:center;">
-                            <span class="material-symbols-outlined" style="font-size:18px;">add</span>
-                        </button>
                         <button id="btn-next-song" class="btn-next hidden" onclick="nextSong()"
                             style="display:flex;align-items:center;gap:4px;justify-content:center;">
                             <span class="material-symbols-outlined" style="font-size:18px;">skip_next</span>
+                            Qua bài
                         </button>
                         <button id="btn-loop" class="btn-loop hidden" onclick="toggleLoop()"
                             title="Bật/Tắt chế độ lặp lại">
                             <span class="material-symbols-outlined" style="font-size:18px;">repeat</span>
+                            Lặp lại
                         </button>
                     </div>
 
@@ -1681,6 +2011,13 @@
                 </div>
             </div>
         </div>
+        
+        <div class="history-column hidden" id="history-column">
+            <h2 style="margin-bottom: 24px; font-family: 'Outfit'; font-size: 24px;">Lịch sử phát gần đây</h2>
+            <div id="history-list">
+                <div style="color:var(--text-muted);">Đang tải...</div>
+            </div>
+        </div>
 
         <div class="right-column">
             <div class="chat-header">
@@ -1691,7 +2028,8 @@
                 <div style="display:flex; gap: 8px; align-items: center;">
                     <button id="sound-btn" class="sync-btn" onclick="toggleSound()" title="Bật/Tắt âm báo tin nhắn"
                         style="display:flex;align-items:center;justify-content:center;"><span
-                            class="material-symbols-outlined" style="font-size:18px;">notifications_active</span></button>
+                            class="material-symbols-outlined"
+                            style="font-size:18px;">notifications_active</span></button>
                     <button id="sync-btn" class="sync-btn hidden active" onclick="forceSync()"
                         style="display:flex;align-items:center;gap:4px;justify-content:center;"><span
                             class="material-symbols-outlined" style="font-size:18px;">play_arrow</span></button>
@@ -1833,6 +2171,8 @@
         </div>
     </div>
 
+    <!-- Cdn scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
@@ -1849,38 +2189,184 @@
         let myRole = '';
         let initialVideoId = 'jfKfPfyJRdk';
         let myUsername = '';
+
+        // Tab, History, and Sidebar Logic
+        function toggleSidebar() {
+            const sb = document.getElementById('sidebar');
+            if (sb) sb.classList.toggle('mini');
+        }
+
+        function showTab(tab) {
+            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+            if(tab === 'home') {
+                document.getElementById('left-column').classList.remove('hidden');
+                document.getElementById('history-column').classList.add('hidden');
+                document.querySelectorAll('.sidebar-item')[0].classList.add('active');
+            } else {
+                document.getElementById('left-column').classList.add('hidden');
+                document.getElementById('history-column').classList.remove('hidden');
+                document.querySelectorAll('.sidebar-item')[1].classList.add('active');
+                loadHistory();
+            }
+        }
+
+        async function loadHistory() {
+            const list = document.getElementById('history-list');
+            list.innerHTML = '<div style="color:var(--text-muted);">Đang tải...</div>';
+            
+            try {
+                const supabaseClient = supabase.createClient('https://wnioetdrphkdylkoybsu.supabase.co', 'sb_publishable_p0VSduH3epzQVUdvAf2kPQ_aoWk_l1T');
+                const { data, error } = await supabaseClient
+                    .from('music_history')
+                    .select('*')
+                    .order('played_at', { ascending: false })
+                    .limit(50);
+                    
+                if (error) throw error;
+                
+                if (!data || data.length === 0) {
+                    list.innerHTML = '<div style="color:var(--text-muted);">Chưa có lịch sử phát nào.</div>';
+                    return;
+                }
+                
+                let groupedData = [];
+                for (let i = 0; i < data.length; i++) {
+                    const current = data[i];
+                    if (groupedData.length > 0 && groupedData[groupedData.length - 1].video_id === current.video_id) {
+                        groupedData[groupedData.length - 1].count = (groupedData[groupedData.length - 1].count || 1) + 1;
+                    } else {
+                        current.count = 1;
+                        groupedData.push(current);
+                    }
+                }
+
+                list.innerHTML = groupedData.map(song => {
+                    const d = new Date(song.played_at);
+                    const timeStr = d.toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'});
+                    const dateStr = d.toLocaleDateString('vi-VN');
+                    
+                    const isStacked = song.count > 1;
+                    const imgShadow = isStacked ? '3px 3px 0px rgba(255,255,255,0.2), 6px 6px 0px rgba(255,255,255,0.1)' : '0 2px 4px rgba(0,0,0,0.2)';
+                    const badgeHtml = isStacked ? `<div style="position:absolute; top:-6px; right:-6px; background:#e03131; color:white; font-size:10px; font-weight:bold; padding:2px 5px; border-radius:8px; box-shadow: 0 2px 4px rgba(0,0,0,0.3); z-index:2;">x${song.count}</div>` : '';
+
+                    return `
+                        <div class="history-item" style="display:flex; flex-direction:row; justify-content:space-between; align-items:center; gap: 12px; margin-bottom: ${isStacked ? '6px' : '0'};">
+                            <div style="position:relative; flex-shrink:0;">
+                                <img src="https://img.youtube.com/vi/${song.video_id}/mqdefault.jpg" alt="thumbnail" style="width: 56px; height: 42px; object-fit: cover; border-radius: 6px; box-shadow: ${imgShadow};">
+                                ${badgeHtml}
+                            </div>
+                            <div style="flex: 1; min-width:0;">
+                                <div class="history-title" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(song.title)}</div>
+                                <div class="history-meta">
+                                    Thêm bởi: <strong>${escapeHtml(song.added_by)}</strong> • Gần nhất: ${timeStr} ${dateStr}
+                                </div>
+                            </div>
+                            <button class="btn-add-search" style="flex-shrink:0;" onclick="addSongFromHistory('${song.video_id}', this)" title="Thêm vào hàng đợi">
+                                <span class="material-symbols-outlined" style="font-size:20px;">add</span>
+                            </button>
+                        </div>
+                    `;
+                }).join('');
+            } catch (err) {
+                console.error(err);
+                list.innerHTML = '<div style="color:#ff6b6b;">Lỗi tải dữ liệu lịch sử. Xin vui lòng thử lại!</div>';
+            }
+        }
+
+        function addSongFromHistory(videoId, btn) {
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px; animation: spin 1s linear infinite;">sync</span>';
+            btn.disabled = true;
+
+            socket.emit('addSong', videoId, (res) => {
+                if (res && res.success) {
+                    btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:20px;">check</span>';
+                    btn.style.background = '#51cf66'; // Green success
+                } else {
+                    btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:20px;">close</span>';
+                    btn.style.background = '#ff6b6b'; // Red error
+                    alert(res && res.message ? res.message : "Không tìm thấy bài hát hoặc có lỗi xảy ra!");
+                }
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                    btn.disabled = false;
+                    btn.style.background = '';
+                }, 2000);
+            });
+        }
+
         let myNameColor = '#3ea6ff';
         let isLoopMode = false;
+
+        let selectedAdminType = null; // 'main' or 'sub'
 
         (function restoreSavedUser() {
             const savedName = localStorage.getItem('musiclive_username');
             const savedColor = localStorage.getItem('musiclive_namecolor');
+            const savedAdminType = localStorage.getItem('musiclive_admin_type');
+            const savedPassword = localStorage.getItem('musiclive_password');
+
             if (savedName) {
                 document.getElementById('username-input').value = savedName;
-                checkAdminName(savedName);
             }
             if (savedColor) {
                 document.getElementById('name-color-input').value = savedColor;
             }
-            if (savedName && savedName.trim().toLowerCase() !== 'nthdat') {
+
+            if (savedAdminType) {
+                selectAdmin(savedName);
+                if (savedPassword) {
+                    document.getElementById('password-input').value = savedPassword;
+                }
+                setTimeout(() => joinRoom(), 300);
+            } else if (savedName) {
                 setTimeout(() => joinRoom(), 300);
             }
         })();
 
-        function checkAdminName(name) {
-            if (name.trim().toLowerCase() === 'nthdat') {
-                document.getElementById('password-wrapper').classList.remove('hidden');
-            } else {
-                document.getElementById('password-wrapper').classList.add('hidden');
-                document.getElementById('password-input').value = '';
+
+        function selectRole(role) {
+            document.getElementById('role-buttons-wrapper').classList.add('hidden');
+            if (role === 'user') {
+                document.getElementById('login-prompt').innerText = 'Nhập thông tin của bạn';
+                document.getElementById('user-details-wrapper').classList.remove('hidden');
+                document.getElementById('join-btn').classList.remove('hidden');
+                document.getElementById('username-input').readOnly = false;
+                selectedAdminType = null;
+            } else if (role === 'admin') {
+                document.getElementById('login-prompt').innerText = 'Xác thực Quản trị viên';
+                document.getElementById('admin-list-wrapper').classList.remove('hidden');
             }
+        }
+
+        function selectAdmin(name) {
+            document.getElementById('user-details-wrapper').classList.remove('hidden');
+            document.getElementById('username-input').value = name;
+            document.getElementById('username-input').readOnly = true;
+            
+            const pwdInput = document.getElementById('password-input');
+            document.getElementById('password-wrapper').classList.remove('hidden');
+            document.getElementById('join-btn').classList.remove('hidden');
+
+            if (name === 'nthdat') {
+                selectedAdminType = 'main';
+                pwdInput.placeholder = 'Nhập mật khẩu admin...';
+            } else {
+                selectedAdminType = 'sub';
+                pwdInput.placeholder = 'Nhập ngày sinh (vd: 01012001)...';
+            }
+            pwdInput.focus();
+        }
+
+        function checkAdminName(name) {
+            // Deprecated, logic moved to selectAdmin
         }
 
         function joinRoom() {
             const name = document.getElementById('username-input').value;
             const password = document.getElementById('password-input').value;
             const nameColor = document.getElementById('name-color-input').value;
-            const isAdmin = name.trim().toLowerCase() === 'nthdat';
+            const isAdmin = selectedAdminType !== null; // True if an admin was selected from the list
 
             if (!name.trim()) {
                 alert("Vui lòng nhập tên hiển thị!");
@@ -1903,9 +2389,18 @@
         socket.on('authResult', (res) => {
             if (res.success) {
                 myRole = res.role;
+                
+                if (myRole === 'admin') {
+                    localStorage.setItem('musiclive_admin_type', selectedAdminType || 'main');
+                    localStorage.setItem('musiclive_password', document.getElementById('password-input').value);
+                } else {
+                    localStorage.removeItem('musiclive_admin_type');
+                    localStorage.removeItem('musiclive_password');
+                }
+
                 document.getElementById('login-section').classList.add('hidden');
                 document.getElementById('main-room').classList.remove('hidden');
-                
+
                 if (res.currentVideoTitle) {
                     document.title = res.currentVideoTitle;
                     document.getElementById('welcome-title').innerText = res.currentVideoTitle;
@@ -1917,6 +2412,10 @@
                 const navUsername = document.getElementById('navbar-username');
                 navUsername.textContent = myUsername;
                 navUsername.style.color = myNameColor;
+                
+                // Show search bar and menu button
+                document.getElementById('navbar-search').classList.remove('hidden');
+                document.getElementById('menu-btn').classList.remove('hidden');
 
                 if (myRole === 'admin') {
                     document.body.classList.add('admin-mode');
@@ -1967,6 +2466,8 @@
             // Clear saved user data
             localStorage.removeItem('musiclive_username');
             localStorage.removeItem('musiclive_namecolor');
+            localStorage.removeItem('musiclive_admin_type');
+            localStorage.removeItem('musiclive_password');
 
             // Reset state
             myRole = '';
@@ -1977,6 +2478,8 @@
             document.getElementById('main-room').classList.add('hidden');
             document.getElementById('login-section').classList.remove('hidden');
             document.getElementById('navbar-right').classList.add('hidden');
+            document.getElementById('navbar-search').classList.add('hidden');
+            document.getElementById('menu-btn').classList.add('hidden');
 
             // Reset admin mode
             document.body.classList.remove('admin-mode');
@@ -2156,7 +2659,7 @@
                                         document.getElementById('welcome-title').innerText = videoData.title;
                                     }
                                 }
-                            } catch(err) {}
+                            } catch (err) { }
                         }
                         if (myRole === 'admin') {
                             if (e.data == YT.PlayerState.PLAYING) socket.emit('adminPlay', player.getCurrentTime());
@@ -2168,8 +2671,8 @@
             });
         }
 
-        function changeVolume(val) { 
-            if (player && player.setVolume) player.setVolume(val); 
+        function changeVolume(val) {
+            if (player && player.setVolume) player.setVolume(val);
             const icon = document.getElementById('volume-icon');
             if (icon) {
                 if (val == 0) icon.innerText = 'volume_off';
@@ -2178,7 +2681,7 @@
             }
             if (val > 0) isVideoMuted = false;
         }
-        
+
         let isVideoMuted = false;
         let lastVolume = 50;
         function toggleVideoMute() {
@@ -2196,21 +2699,26 @@
         }
         function addSong() {
             const input = document.getElementById('song-input');
-            const btn = document.querySelector('.btn-add');
+            const btn = document.querySelector('.btn-add-search') || document.querySelector('.btn-add');
             if (input.value) {
-                const originalHtml = btn.innerHTML;
-                btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px; animation: spin 1s linear infinite;">sync</span>';
-                btn.disabled = true;
+                let originalHtml = '';
+                if (btn) {
+                    originalHtml = btn.innerHTML;
+                    btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px; animation: spin 1s linear infinite;">sync</span>';
+                    btn.disabled = true;
+                }
                 input.disabled = true;
 
                 socket.emit('addSong', extractVideoID(input.value), (res) => {
-                    btn.innerHTML = originalHtml;
-                    btn.disabled = false;
+                    if (btn) {
+                        btn.innerHTML = originalHtml;
+                        btn.disabled = false;
+                    }
                     input.disabled = false;
                     if (res && res.success) {
                         input.value = '';
                     } else {
-                        alert("Không tìm thấy bài hát hoặc có lỗi xảy ra!");
+                        alert(res && res.message ? res.message : "Không tìm thấy bài hát hoặc có lỗi xảy ra!");
                     }
                 });
             }
@@ -2218,15 +2726,15 @@
         function nextSong() { socket.emit('adminNextSong'); }
 
         socket.on('updatePlaylist', (list) => { updatePlaylistUI(list); });
-        socket.on('changeVideo', (data) => { 
+        socket.on('changeVideo', (data) => {
             const vidId = data.id || data;
             const vidTitle = data.title || 'Trạm Nhạc Live';
-            if (player && player.loadVideoById) player.loadVideoById(vidId); 
+            if (player && player.loadVideoById) player.loadVideoById(vidId);
             document.title = vidTitle;
             document.getElementById('welcome-title').innerText = vidTitle;
         });
-        socket.on('stopVideo', () => { 
-            if (player && player.stopVideo) player.stopVideo(); 
+        socket.on('stopVideo', () => {
+            if (player && player.stopVideo) player.stopVideo();
             document.title = 'Trạm Nhạc Live';
             document.getElementById('welcome-title').innerText = 'Chưa có bài hát nào';
         });
@@ -2551,7 +3059,14 @@
             }
         }
         // ========== DRAW & GUESS GAME ==========
-        const DRAW_COLORS = ['#000000', '#ff0000', '#ff6b00', '#ffd43b', '#51cf66', '#3ea6ff', '#7950f2', '#e64980', '#ffffff', '#8B4513'];
+        const DRAW_COLORS = [
+            '#000000', '#495057', '#adb5bd', '#ffffff', 
+            '#e03131', '#f03e3e', '#e64980', '#c2255c',
+            '#9c36b5', '#6741d9', '#3b5bdb', '#1c7ed6', 
+            '#15aabf', '#0ca678', '#2b8a3e', '#5c940d',
+            '#82c91e', '#fcc419', '#ff922b', '#e67700', 
+            '#d9480f', '#8b4513'
+        ];
         let drawColor = '#000000', drawSize = 6, isEraser = false, isDrawing = false;
         let drawLastX = 0, drawLastY = 0;
         let amIDrawer = false;

@@ -230,6 +230,7 @@
             overflow: hidden;
             /* Do not scroll the whole body */
             min-height: 0;
+            box-sizing: border-box;
         }
 
         @media(min-width: 900px) {
@@ -237,7 +238,6 @@
                 flex-direction: row;
                 padding: 24px;
                 gap: 24px;
-                box-sizing: border-box;
             }
         }
 
@@ -532,6 +532,7 @@
             z-index: 500;
             animation: chatSlideUp 0.25s ease-out;
             padding-bottom: 72px; /* space for bottom nav */
+            box-sizing: border-box;
         }
 
         .right-column.chat-open {
@@ -565,6 +566,7 @@
                 box-shadow: var(--glass-shadow);
                 animation: none;
                 overflow: hidden;
+                padding-bottom: 0;
             }
         }
 

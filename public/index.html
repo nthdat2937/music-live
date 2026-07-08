@@ -2187,8 +2187,11 @@
             }
         });
         let player;
+        let isPlayerReady = false;
+        let isYoutubeApiLoaded = false;
+        let pendingVideoId = null;
         let myRole = '';
-        let initialVideoId = '';
+        let initialVideoId = ''; // No safe default needed anymore since we defer creation
         let myUsername = '';
 
         // Tab, History, and Sidebar Logic
@@ -2441,18 +2444,23 @@
                 }
 
                 initialVideoId = res.currentVideoId;
-                if (player && player.loadVideoById) {
+                if (!player) {
+                    createPlayer();
+                } else if (typeof player.loadVideoById === 'function') {
                     if (initialVideoId) {
-                        player.loadVideoById(initialVideoId);
-                        if (myRole === 'member') {
-                            player.pauseVideo();
+                        window.ignoreNextStateChange = true;
+                        window.lastSyncTime = Date.now() + 2000;
+                        if (isPlayerReady) {
+                            player.loadVideoById(initialVideoId);
                             setTimeout(() => socket.emit('requestSync'), 1000);
-                        } else if (myRole === 'admin') {
-                            setTimeout(() => player.playVideo(), 200);
+                        } else {
+                            pendingVideoId = initialVideoId;
                         }
                     } else {
                         player.stopVideo();
                     }
+                } else if (initialVideoId) {
+                    pendingVideoId = initialVideoId;
                 }
                 updatePlaylistUI(res.playlist);
                 if (res.pinnedMessage) updatePinnedMessageUI(res.pinnedMessage);
@@ -2641,13 +2649,29 @@
         }
 
         function onYouTubeIframeAPIReady() {
-            const playerConfig = {
-                height: '100%', width: '100%',
+            isYoutubeApiLoaded = true;
+            createPlayer();
+        }
+
+        function createPlayer() {
+            if (window.YT && window.YT.Player) isYoutubeApiLoaded = true;
+            if (player || !isYoutubeApiLoaded || myRole === '') return;
+            
+            player = new YT.Player('youtube-player', {
+                height: '100%', width: '100%', videoId: initialVideoId || 'M7lc1UVf-VE',
                 playerVars: { 'controls': 1, 'disablekb': 1, 'origin': window.location.origin, 'rel': 0 },
                 events: {
                     'onReady': () => {
-                        player.setVolume(50);
+                        isPlayerReady = true;
+                        try { if (typeof player.setVolume === 'function') player.setVolume(50); } catch(e) {}
                         document.getElementById('status').innerText = "Trạng thái: Đang phát trực tiếp 🟢";
+                        if (pendingVideoId) {
+                            if (typeof player.loadVideoById === 'function') player.loadVideoById(pendingVideoId);
+                            pendingVideoId = null;
+                            setTimeout(() => socket.emit('requestSync'), 1000);
+                        } else if (initialVideoId) {
+                            setTimeout(() => socket.emit('requestSync'), 1000);
+                        }
                     },
                     'onStateChange': (e) => {
                         if (e.data == YT.PlayerState.PLAYING) {
@@ -2671,11 +2695,7 @@
                         }
                     }
                 }
-            };
-            if (initialVideoId) {
-                playerConfig.videoId = initialVideoId;
-            }
-            player = new YT.Player('youtube-player', playerConfig);
+            });
         }
 
         function changeVolume(val) {
@@ -2738,19 +2758,30 @@
             const vidTitle = data.title || 'Trạm Nhạc Live';
             
             if (player) {
-                if (window.currentVideoId === vidId && typeof player.seekTo === 'function') {
-                    player.seekTo(0);
-                    player.playVideo();
-                } else if (typeof player.loadVideoById === 'function') {
-                    player.loadVideoById(vidId);
+                if (typeof player.loadVideoById === 'function') {
+                    if (window.currentVideoId === vidId && typeof player.seekTo === 'function') {
+                        player.seekTo(0);
+                        if (typeof player.playVideo === 'function') player.playVideo();
+                    } else {
+                        player.loadVideoById(vidId);
+                    }
+                } else {
+                    pendingVideoId = vidId;
                 }
             }
             window.currentVideoId = vidId;
+            initialVideoId = vidId;
             document.title = vidTitle;
             document.getElementById('welcome-title').innerText = vidTitle;
         });
         socket.on('stopVideo', () => {
-            if (player && player.stopVideo) player.stopVideo();
+            if (player && typeof player.stopVideo === 'function') {
+                player.stopVideo();
+            } else {
+                pendingVideoId = null;
+            }
+            initialVideoId = '';
+            window.currentVideoId = '';
             document.title = 'Trạm Nhạc Live';
             document.getElementById('welcome-title').innerText = 'Chưa có bài hát nào';
         });
@@ -2834,13 +2865,26 @@
 
         socket.on('memberPlay', (time) => {
             if (player) {
-                const diff = Math.abs(player.getCurrentTime() - time);
-                const state = typeof player.getPlayerState === 'function' ? player.getPlayerState() : -1;
+                let isLive = false;
+                try {
+                    const duration = typeof player.getDuration === 'function' ? player.getDuration() : 0;
+                    isLive = duration === 0 || (player.getVideoData && player.getVideoData().isLive);
+                } catch(e) {}
                 
-                if (diff > 1.5) {
+                let state = -1;
+                try {
+                    state = typeof player.getPlayerState === 'function' ? player.getPlayerState() : -1;
+                } catch(e) {}
+                
+                let diff = 0;
+                try {
+                    diff = Math.abs(player.getCurrentTime() - time);
+                } catch(e) {}
+                
+                if (diff > 1.5 && !isLive) {
                     window.ignoreNextStateChange = true;
                     window.lastSyncTime = Date.now();
-                    player.seekTo(time);
+                    if (typeof player.seekTo === 'function') player.seekTo(time);
                 }
                 
                 if (state !== YT.PlayerState.PLAYING) {

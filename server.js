@@ -48,6 +48,39 @@ let drawGame = {
     word: '', scores: {}, timeLeft: 90, timer: null,
     guessedPlayers: [], canvasHistory: []
 };
+// Caro state
+let caroGame = {
+    board: Array(15).fill(null).map(() => Array(15).fill(null)),
+    playerX: null, playerO: null,
+    playerXName: '', playerOName: '',
+    turn: 'X', winner: null
+};
+// Chess state
+let chessGame = {
+    fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+    playerW: null, playerB: null,
+    playerWName: '', playerBName: '',
+    winner: null
+};
+function checkCaroWinner(row, col, player) {
+    const board = caroGame.board;
+    const dirs = [[0, 1], [1, 0], [1, 1], [1, -1]];
+    for (let [dr, dc] of dirs) {
+        let count = 1;
+        for (let i = 1; i <= 4; i++) {
+            const r = row + dr * i, c = col + dc * i;
+            if (r < 0 || r >= 15 || c < 0 || c >= 15 || board[r][c] !== player) break;
+            count++;
+        }
+        for (let i = 1; i <= 4; i++) {
+            const r = row - dr * i, c = col - dc * i;
+            if (r < 0 || r >= 15 || c < 0 || c >= 15 || board[r][c] !== player) break;
+            count++;
+        }
+        if (count >= 5) return true;
+    }
+    return false;
+}
 const DRAW_WORDS = [
     'con mèo', 'con chó', 'ngôi nhà', 'cái cây', 'mặt trời', 'mặt trăng', 'con cá', 'bông hoa',
     'xe đạp', 'ô tô', 'máy bay', 'con bướm', 'quả táo', 'cái bàn', 'cái ghế', 'con gà', 'con voi',
@@ -211,8 +244,9 @@ io.on('connection', (socket) => {
                 socket.role = 'admin';
                 socket.nameColor = nameColor || '#fbbc04';
                 connectedUsers.set(socket.id, { name: socket.username, role: 'admin', nameColor: socket.nameColor });
-                socket.emit('authResult', { success: true, role: 'admin', currentVideoId, currentVideoTitle, playlist, pinnedMessage, loopMode, drawGame: drawGame.active ? { active: true, state: drawGame.state, scores: drawGame.scores } : null });
+                socket.emit('authResult', { success: true, role: 'admin', currentVideoId, currentVideoTitle, playlist, pinnedMessage, loopMode, drawGame: drawGame.active ? { active: true, state: drawGame.state, scores: drawGame.scores } : null, caroGame, chessGame });
                 io.emit('newMessage', { id: 'sys-' + Date.now(), name: 'Hệ thống 🤖', text: `👑 Admin [${socket.username}] đã lên sàn điều khiển nhạc!`, role: 'system' });
+                io.emit('activeUsersList', getDrawUserList());
             } else {
                 socket.emit('authResult', { success: false, message: 'Sai mật khẩu hoặc ngày sinh rồi ông chủ ơi! ❌' });
             }
@@ -221,8 +255,9 @@ io.on('connection', (socket) => {
             socket.role = 'member';
             socket.nameColor = nameColor || '#aaaaaa';
             connectedUsers.set(socket.id, { name: socket.username, role: 'member', nameColor: socket.nameColor });
-            socket.emit('authResult', { success: true, role: 'member', currentVideoId, currentVideoTitle, playlist, pinnedMessage, loopMode, drawGame: drawGame.active ? { active: true, state: drawGame.state, scores: drawGame.scores } : null });
+            socket.emit('authResult', { success: true, role: 'member', currentVideoId, currentVideoTitle, playlist, pinnedMessage, loopMode, drawGame: drawGame.active ? { active: true, state: drawGame.state, scores: drawGame.scores } : null, caroGame, chessGame });
             io.emit('newMessage', { id: 'sys-' + Date.now(), name: 'Hệ thống 🤖', text: `👋 Chào mừng [${socket.username}] đã tham gia phòng nhạc!`, role: 'system' });
+            io.emit('activeUsersList', getDrawUserList());
         }
         if (drawGame.active) io.emit('drawUsersUpdate', getDrawUserList());
     });
@@ -651,8 +686,166 @@ io.on('connection', (socket) => {
         if (drawGame.canvasHistory.length > 0) socket.emit('drawCanvasHistory', drawGame.canvasHistory);
     });
 
+    // Caro game events
+    socket.on('caroChallenge', (targetId) => {
+        if (!connectedUsers.has(targetId) || targetId === socket.id) return;
+        if (caroGame.playerX || caroGame.playerO) return;
+        
+        io.to(targetId).emit('caroChallengeReceived', {
+            challengerId: socket.id,
+            challengerName: socket.username
+        });
+        socket.emit('newMessage', { id: 'sys-' + Date.now(), name: 'Hệ thống 🤖', text: `Đã gửi lời thách đấu Cờ Caro đến **${connectedUsers.get(targetId).name}**. Đang chờ phản hồi...`, role: 'system' });
+    });
+
+    socket.on('caroChallengeRespond', ({ challengerId, accept }) => {
+        if (!connectedUsers.has(challengerId)) {
+            socket.emit('newMessage', { id: 'sys-' + Date.now(), name: 'Hệ thống 🤖', text: 'Người thách đấu đã rời phòng!', role: 'system' });
+            return;
+        }
+
+        if (accept) {
+            if (caroGame.playerX || caroGame.playerO) {
+                socket.emit('newMessage', { id: 'sys-' + Date.now(), name: 'Hệ thống 🤖', text: 'Bàn cờ hiện đã có người chơi!', role: 'system' });
+                return;
+            }
+            
+            const challengerX = Math.random() < 0.5;
+            const challengerName = connectedUsers.get(challengerId).name;
+
+            if (challengerX) {
+                caroGame.playerX = challengerId;
+                caroGame.playerXName = challengerName;
+                caroGame.playerO = socket.id;
+                caroGame.playerOName = socket.username;
+            } else {
+                caroGame.playerO = challengerId;
+                caroGame.playerOName = challengerName;
+                caroGame.playerX = socket.id;
+                caroGame.playerXName = socket.username;
+            }
+            caroGame.board = Array(15).fill(null).map(() => Array(15).fill(null));
+            caroGame.turn = 'X';
+            caroGame.winner = null;
+
+            io.emit('caroUpdate', caroGame);
+            io.emit('newMessage', { id: 'sys-' + Date.now(), name: 'Cờ Caro ❌⭕', text: `⚔️ **${socket.username}** đã chấp nhận thách đấu của **${challengerName}**! Ván cờ bắt đầu!`, role: 'system' });
+        } else {
+            io.to(challengerId).emit('newMessage', { id: 'sys-' + Date.now(), name: 'Cờ Caro ❌⭕', text: `❌ **${socket.username}** đã từ chối lời thách đấu cờ caro của bạn!`, role: 'system' });
+        }
+    });
+
+    socket.on('caroLeave', () => {
+        if (caroGame.playerX === socket.id) { caroGame.playerX = null; caroGame.playerXName = ''; }
+        if (caroGame.playerO === socket.id) { caroGame.playerO = null; caroGame.playerOName = ''; }
+        if (!caroGame.playerX && !caroGame.playerO) {
+            caroGame.board = Array(15).fill(null).map(() => Array(15).fill(null));
+            caroGame.turn = 'X';
+            caroGame.winner = null;
+        }
+        io.emit('caroUpdate', caroGame);
+    });
+
+    socket.on('caroMove', ({ row, col }) => {
+        if (caroGame.winner) return;
+        if (row < 0 || row >= 15 || col < 0 || col >= 15) return;
+        if (caroGame.board[row][col] !== null) return;
+        
+        let playerSide = null;
+        if (socket.id === caroGame.playerX) playerSide = 'X';
+        if (socket.id === caroGame.playerO) playerSide = 'O';
+        
+        if (!playerSide || playerSide !== caroGame.turn) return;
+
+        caroGame.board[row][col] = playerSide;
+        if (checkCaroWinner(row, col, playerSide)) {
+            caroGame.winner = playerSide;
+            io.emit('newMessage', { id: 'sys-' + Date.now(), name: 'Cờ Caro ❌⭕', text: `🎉 Người chơi **${playerSide === 'X' ? caroGame.playerXName : caroGame.playerOName} (${playerSide})** đã thắng ván Caro!`, role: 'system' });
+        } else {
+            caroGame.turn = caroGame.turn === 'X' ? 'O' : 'X';
+        }
+        io.emit('caroUpdate', caroGame);
+    });
+
+    // Chess game events
+    socket.on('chessChallenge', (targetId) => {
+        if (!connectedUsers.has(targetId) || targetId === socket.id) return;
+        if (chessGame.playerW || chessGame.playerB) return;
+        
+        io.to(targetId).emit('chessChallengeReceived', {
+            challengerId: socket.id,
+            challengerName: socket.username
+        });
+        socket.emit('newMessage', { id: 'sys-' + Date.now(), name: 'Hệ thống 🤖', text: `Đã gửi lời thách đấu Cờ Vua đến **${connectedUsers.get(targetId).name}**. Đang chờ phản hồi...`, role: 'system' });
+    });
+
+    socket.on('chessChallengeRespond', ({ challengerId, accept }) => {
+        if (!connectedUsers.has(challengerId)) {
+            socket.emit('newMessage', { id: 'sys-' + Date.now(), name: 'Hệ thống 🤖', text: 'Người thách đấu đã rời phòng!', role: 'system' });
+            return;
+        }
+
+        if (accept) {
+            if (chessGame.playerW || chessGame.playerB) {
+                socket.emit('newMessage', { id: 'sys-' + Date.now(), name: 'Hệ thống 🤖', text: 'Bàn cờ hiện đã có người chơi!', role: 'system' });
+                return;
+            }
+            
+            const challengerW = Math.random() < 0.5;
+            const challengerName = connectedUsers.get(challengerId).name;
+
+            if (challengerW) {
+                chessGame.playerW = challengerId;
+                chessGame.playerWName = challengerName;
+                chessGame.playerB = socket.id;
+                chessGame.playerBName = socket.username;
+            } else {
+                chessGame.playerB = challengerId;
+                chessGame.playerBName = challengerName;
+                chessGame.playerW = socket.id;
+                chessGame.playerWName = socket.username;
+            }
+            chessGame.fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+            chessGame.winner = null;
+
+            io.emit('chessUpdate', chessGame);
+            io.emit('newMessage', { id: 'sys-' + Date.now(), name: 'Cờ Vua ♔♛', text: `⚔️ **${socket.username}** đã chấp nhận thách đấu của **${challengerName}**! Ván cờ bắt đầu!`, role: 'system' });
+        } else {
+            io.to(challengerId).emit('newMessage', { id: 'sys-' + Date.now(), name: 'Cờ Vua ♔♛', text: `❌ **${socket.username}** đã từ chối lời thách đấu cờ vua của bạn!`, role: 'system' });
+        }
+    });
+
+    socket.on('chessLeave', () => {
+        if (chessGame.playerW === socket.id) { chessGame.playerW = null; chessGame.playerWName = ''; }
+        if (chessGame.playerB === socket.id) { chessGame.playerB = null; chessGame.playerBName = ''; }
+        if (!chessGame.playerW && !chessGame.playerB) {
+            chessGame.fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+            chessGame.winner = null;
+        }
+        io.emit('chessUpdate', chessGame);
+    });
+
+    socket.on('chessMove', ({ fen, winner }) => {
+        if (chessGame.winner) return;
+        let playerSide = null;
+        if (socket.id === chessGame.playerW) playerSide = 'w';
+        if (socket.id === chessGame.playerB) playerSide = 'b';
+        if (!playerSide) return;
+
+        chessGame.fen = fen;
+        if (winner) {
+            chessGame.winner = winner; // 'w', 'b', or 'd'
+            let msg = '';
+            if (winner === 'd') msg = 'Cờ hòa! 🤝';
+            else msg = `🎉 Người chơi **${winner === 'w' ? chessGame.playerWName : chessGame.playerBName} (${winner === 'w' ? 'Trắng' : 'Đen'})** đã chiến thắng ván Cờ Vua!`;
+            io.emit('newMessage', { id: 'sys-' + Date.now(), name: 'Cờ Vua ♔♛', text: msg, role: 'system' });
+        }
+        io.emit('chessUpdate', chessGame);
+    });
+
     socket.on('disconnect', () => {
         connectedUsers.delete(socket.id);
+        io.emit('activeUsersList', getDrawUserList());
         io.emit('viewersUpdate', io.engine.clientsCount);
         if (drawGame.active && socket.id === drawGame.drawerId && drawGame.state === 'playing') {
             io.emit('newMessage', { id: 'sys-' + Date.now(), name: 'Trò chơi 🎨', text: `😢 Người vẽ đã rời phòng! Kết thúc lượt.`, role: 'system' });
@@ -661,6 +854,27 @@ io.on('connection', (socket) => {
         if (drawGame.active) io.emit('drawUsersUpdate', getDrawUserList());
         if (socket.username) {
             io.emit('newMessage', { id: 'sys-' + Date.now(), name: 'Hệ thống 🤖', text: `🏃‍♂️ [${socket.username}] đã rời phòng.`, role: 'system' });
+        }
+
+        if (caroGame.playerX === socket.id || caroGame.playerO === socket.id) {
+            if (caroGame.playerX === socket.id) { caroGame.playerX = null; caroGame.playerXName = ''; }
+            if (caroGame.playerO === socket.id) { caroGame.playerO = null; caroGame.playerOName = ''; }
+            if (!caroGame.playerX && !caroGame.playerO) {
+                caroGame.board = Array(15).fill(null).map(() => Array(15).fill(null));
+                caroGame.turn = 'X';
+                caroGame.winner = null;
+            }
+            io.emit('caroUpdate', caroGame);
+        }
+
+        if (chessGame.playerW === socket.id || chessGame.playerB === socket.id) {
+            if (chessGame.playerW === socket.id) { chessGame.playerW = null; chessGame.playerWName = ''; }
+            if (chessGame.playerB === socket.id) { chessGame.playerB = null; chessGame.playerBName = ''; }
+            if (!chessGame.playerW && !chessGame.playerB) {
+                chessGame.fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+                chessGame.winner = null;
+            }
+            io.emit('chessUpdate', chessGame);
         }
     });
 });

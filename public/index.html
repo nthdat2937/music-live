@@ -1470,6 +1470,142 @@
             }
         }
 
+        /* Chess Styles */
+        .chess-square {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .chess-square.light {
+            background-color: #eeddcc;
+        }
+        .chess-square.dark {
+            background-color: #996633;
+        }
+        .chess-square.selected {
+            background-color: rgba(255, 255, 100, 0.4) !important;
+        }
+        .chess-square.highlight {
+            position: relative;
+        }
+        .chess-square.highlight::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 14px;
+            height: 14px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .challenge-btn {
+            flex: 1;
+            padding: 14px 0;
+            border-radius: 12px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+        .decline-btn {
+            background: rgba(255, 255, 255, 0.05);
+            color: #aaa;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+        }
+        .decline-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+        }
+        .accept-btn {
+            background: linear-gradient(135deg, #0a84ff, #0050a0);
+            color: white;
+            box-shadow: 0 8px 16px rgba(10, 132, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+        .accept-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px rgba(10, 132, 255, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+        .challenge-modal-container {
+            animation: challengePop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes challengePop {
+            0% { opacity: 0; transform: scale(0.8) translateY(20px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* Caro Styles */
+        .caro-cell {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            font-family: 'Outfit', sans-serif;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+        }
+        .caro-cell:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.05);
+            z-index: 2;
+        }
+        .caro-cell.x-cell {
+            color: #ff4757;
+            text-shadow: 0 0 10px rgba(255, 71, 87, 0.6);
+        }
+        .caro-cell.o-cell {
+            color: #1e90ff;
+            text-shadow: 0 0 10px rgba(30, 144, 255, 0.6);
+        }
+        .caro-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+        .caro-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .caro-btn.x-btn {
+            border-color: rgba(255, 71, 87, 0.3);
+            color: #ff4757;
+        }
+        .caro-btn.x-btn:hover {
+            background: rgba(255, 71, 87, 0.15);
+            box-shadow: 0 4px 15px rgba(255, 71, 87, 0.2);
+        }
+        .caro-btn.o-btn {
+            border-color: rgba(30, 144, 255, 0.3);
+            color: #1e90ff;
+        }
+        .caro-btn.o-btn:hover {
+            background: rgba(30, 144, 255, 0.15);
+            box-shadow: 0 4px 15px rgba(30, 144, 255, 0.2);
+        }
+        .caro-board-container {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 8px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+            overflow: auto;
+        }
+
         .draw-container {
             width: 95%;
             max-width: 700px;
@@ -2098,10 +2234,20 @@
                         </div>
                     </div>
 
-                    <button id="btn-start-game" class="btn-start-game hidden" onclick="startDrawGame()">
-                        <span class="material-symbols-outlined" style="font-size:20px;">brush</span>
-                        Bắt đầu Vẽ & Đoán
-                    </button>
+                    <div style="display: flex; gap: 8px;">
+                        <button id="btn-start-game" class="btn-start-game hidden" onclick="startDrawGame()">
+                            <span class="material-symbols-outlined" style="font-size:20px;">brush</span>
+                            Vẽ & Đoán
+                        </button>
+                        <button id="btn-open-caro" class="btn-start-game" style="background: rgba(62,166,255,0.1); color: #3ea6ff; border: 1px solid rgba(62,166,255,0.2);" onclick="openCaroGame()">
+                            <span class="material-symbols-outlined" style="font-size:20px;">grid_4x4</span>
+                            Cờ Caro
+                        </button>
+                        <button id="btn-open-chess" class="btn-start-game" style="background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2);" onclick="openChessGame()">
+                            <span class="material-symbols-outlined" style="font-size:20px;">chess</span>
+                            Cờ Vua
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2215,6 +2361,106 @@
 
     </div>
 
+    <!-- Chess Challenge Modal -->
+    <div id="chess-challenge-modal" class="draw-overlay hidden" style="z-index: 1000;">
+        <div class="draw-container challenge-modal-container" style="max-width: 360px; padding: 0; text-align: center; border: none; background: rgba(20, 20, 25, 0.85); backdrop-filter: blur(24px); box-shadow: 0 0 0 1px rgba(255,255,255,0.05), 0 20px 40px rgba(0,0,0,0.5); overflow: hidden; border-radius: 24px;">
+            <div style="background: linear-gradient(135deg, rgba(10, 132, 255, 0.2), rgba(255, 71, 87, 0.1)); padding: 40px 24px 24px 24px;">
+                <div style="font-size: 56px; margin-bottom: 16px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));">⚔️</div>
+                <h3 style="margin-bottom: 8px; color: white; font-family: 'Outfit'; font-size: 26px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">THÁCH ĐẤU</h3>
+                <div style="width: 40px; height: 3px; background: var(--accent); margin: 0 auto 16px auto; border-radius: 2px;"></div>
+                <p style="margin-bottom: 0; color: var(--text-muted); font-size: 16px; line-height: 1.5;">
+                    <strong id="chess-challenger-name" style="color: white; font-size: 20px; display: block; margin-bottom: 4px;">Ai đó</strong>
+                    đang gửi chiến thư đến bạn!
+                </p>
+            </div>
+            <div style="padding: 24px; display: flex; gap: 12px; justify-content: center;">
+                <button class="challenge-btn decline-btn" onclick="respondChessChallenge(false)">Từ chối</button>
+                <button class="challenge-btn accept-btn" onclick="respondChessChallenge(true)">Tiếp chiêu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chess Game Overlay -->
+    <div id="chess-game-overlay" class="draw-overlay hidden">
+        <div class="draw-container" style="max-width: 600px; padding: 24px; position: relative; max-height: 90vh;">
+            <div class="draw-header" style="justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 16px;">
+                <div class="draw-header-title" style="display:flex; align-items:center; gap: 8px;">
+                    <span class="material-symbols-outlined" style="color: #fff;">chess</span>
+                    Cờ Vua
+                </div>
+                <button style="background:rgba(255,255,255,0.1); border:none; color:white; cursor:pointer; width: 32px; height: 32px; border-radius: 50%; display:flex; align-items:center; justify-content:center; transition: background 0.2s;" onclick="closeChessGame()" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+                    <span class="material-symbols-outlined" style="font-size:20px;">close</span>
+                </button>
+            </div>
+            
+            <div id="chess-status" style="margin-bottom: 20px; font-size: 16px; color: var(--text-main); text-align: center; font-weight: 500;">Đang tải bàn cờ...</div>
+            <div style="display: flex; gap: 12px; margin-bottom: 24px; justify-content: center; flex-wrap: wrap; align-items: center;" id="chess-actions">
+                <select id="chess-challenge-target" style="padding: 10px 16px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; font-family: 'Outfit'; outline: none;">
+                    <option value="">-- Chọn đối thủ --</option>
+                </select>
+                <button class="caro-btn" style="color: #fff; border-color: var(--accent); background: rgba(10, 132, 255, 0.2);" onclick="sendChessChallenge()" id="btn-send-challenge">
+                    ⚔️ Thách đấu
+                </button>
+                <button class="caro-btn hidden" style="border-color: #ff4757; color: #ff4757;" onclick="leaveChess()" id="btn-leave-chess">Rời bàn / Hủy</button>
+            </div>
+            <div class="caro-board-container hidden" id="chess-board-wrapper">
+                <div id="chess-board" style="display: grid; grid-template-columns: repeat(8, 40px); grid-template-rows: repeat(8, 40px); gap: 0; margin: 0 auto; width: fit-content; border: 4px solid #553311; border-radius: 4px;">
+                    <!-- Generated by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Caro Challenge Modal -->
+    <div id="caro-challenge-modal" class="draw-overlay hidden" style="z-index: 1000;">
+        <div class="draw-container challenge-modal-container" style="max-width: 360px; padding: 0; text-align: center; border: none; background: rgba(20, 20, 25, 0.85); backdrop-filter: blur(24px); box-shadow: 0 0 0 1px rgba(255,255,255,0.05), 0 20px 40px rgba(0,0,0,0.5); overflow: hidden; border-radius: 24px;">
+            <div style="background: linear-gradient(135deg, rgba(62, 166, 255, 0.2), rgba(255, 71, 87, 0.1)); padding: 40px 24px 24px 24px;">
+                <div style="font-size: 56px; margin-bottom: 16px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));">⭕❌</div>
+                <h3 style="margin-bottom: 8px; color: white; font-family: 'Outfit'; font-size: 26px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">THÁCH ĐẤU</h3>
+                <div style="width: 40px; height: 3px; background: #3ea6ff; margin: 0 auto 16px auto; border-radius: 2px;"></div>
+                <p style="margin-bottom: 0; color: var(--text-muted); font-size: 16px; line-height: 1.5;">
+                    <strong id="caro-challenger-name" style="color: white; font-size: 20px; display: block; margin-bottom: 4px;">Ai đó</strong>
+                    đang gửi chiến thư Cờ Caro đến bạn!
+                </p>
+            </div>
+            <div style="padding: 24px; display: flex; gap: 12px; justify-content: center;">
+                <button class="challenge-btn decline-btn" onclick="respondCaroChallenge(false)">Từ chối</button>
+                <button class="challenge-btn accept-btn" onclick="respondCaroChallenge(true)">Tiếp chiêu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Caro Game Overlay -->
+    <div id="caro-game-overlay" class="draw-overlay hidden">
+        <div class="draw-container" style="max-width: 600px; padding: 24px; position: relative; max-height: 90vh;">
+            <div class="draw-header" style="justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 16px;">
+                <div class="draw-header-title" style="display:flex; align-items:center; gap: 8px;">
+                    <span class="material-symbols-outlined" style="color: var(--accent);">grid_4x4</span>
+                    Cờ Caro
+                </div>
+                <button style="background:rgba(255,255,255,0.1); border:none; color:white; cursor:pointer; width: 32px; height: 32px; border-radius: 50%; display:flex; align-items:center; justify-content:center; transition: background 0.2s;" onclick="closeCaroGame()" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+                    <span class="material-symbols-outlined" style="font-size:20px;">close</span>
+                </button>
+            </div>
+            
+            <div id="caro-status" style="margin-bottom: 20px; font-size: 16px; color: var(--text-main); text-align: center; font-weight: 500;">Đang tải bàn cờ...</div>
+            <div style="display: flex; gap: 12px; margin-bottom: 24px; justify-content: center; flex-wrap: wrap; align-items: center;" id="caro-actions">
+                <select id="caro-challenge-target" style="padding: 10px 16px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; font-family: 'Outfit'; outline: none;">
+                    <option value="">-- Chọn đối thủ --</option>
+                </select>
+                <button class="caro-btn" style="color: #3ea6ff; border-color: #3ea6ff; background: rgba(62,166,255,0.1);" onclick="sendCaroChallenge()" id="btn-send-caro-challenge">
+                    ⚔️ Thách đấu
+                </button>
+                <button class="caro-btn hidden" style="border-color: #ff4757; color: #ff4757;" onclick="leaveCaro()" id="btn-leave-caro">Rời bàn / Hủy</button>
+            </div>
+            <div class="caro-board-container hidden" id="caro-board-wrapper">
+                <div id="caro-board" style="display: grid; grid-template-columns: repeat(15, 32px); grid-template-rows: repeat(15, 32px); gap: 4px; margin: 0 auto; width: fit-content;">
+                    <!-- Generated by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Draw Game Overlay -->
     <div id="draw-game-overlay" class="draw-overlay hidden">
         <div class="draw-container">
@@ -2284,6 +2530,7 @@
     <!-- Cdn scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
@@ -2623,6 +2870,8 @@
                 }
                 updatePlaylistUI(res.playlist);
                 if (res.pinnedMessage) updatePinnedMessageUI(res.pinnedMessage);
+                if (res.caroGame) updateCaroUI(res.caroGame);
+                if (res.chessGame) socket._callbacks['$chessUpdate'][0](res.chessGame);
             } else {
                 alert(res.message);
             }
@@ -3656,6 +3905,269 @@
                 }
             });
         })();
+        // Chess Game Logic
+        let myChessSide = null;
+        let currentChessGame = null;
+        let localChess = new Chess();
+        let chessSelectedSquare = null;
+        
+        const pieceUnicode = {
+            'p': '♟', 'n': '♞', 'b': '♝', 'r': '♜', 'q': '♛', 'k': '♚'
+        };
+
+        function openChessGame() { document.getElementById('chess-game-overlay').classList.remove('hidden'); }
+        function closeChessGame() { document.getElementById('chess-game-overlay').classList.add('hidden'); }
+        
+        function sendChessChallenge() {
+            const targetId = document.getElementById('chess-challenge-target').value;
+            if (!targetId) { alert('Vui lòng chọn một đối thủ để thách đấu!'); return; }
+            socket.emit('chessChallenge', targetId);
+        }
+        function leaveChess() { socket.emit('chessLeave'); }
+
+        let currentChallengerId = null;
+        socket.on('chessChallengeReceived', ({ challengerId, challengerName }) => {
+            currentChallengerId = challengerId;
+            document.getElementById('chess-challenger-name').innerText = challengerName;
+            document.getElementById('chess-challenge-modal').classList.remove('hidden');
+        });
+
+        function respondChessChallenge(accept) {
+            document.getElementById('chess-challenge-modal').classList.add('hidden');
+            if (currentChallengerId) {
+                socket.emit('chessChallengeRespond', { challengerId: currentChallengerId, accept });
+                if (accept) openChessGame();
+                currentChallengerId = null;
+            }
+        }
+
+        socket.on('activeUsersList', (users) => {
+            ['chess-challenge-target', 'caro-challenge-target'].forEach(id => {
+                const select = document.getElementById(id);
+                if (select) {
+                    const prevVal = select.value;
+                    select.innerHTML = '<option value="">-- Chọn đối thủ --</option>';
+                    users.forEach(u => {
+                        if (u.id !== socket.id) {
+                            const opt = document.createElement('option');
+                            opt.value = u.id;
+                            opt.innerText = u.name;
+                            select.appendChild(opt);
+                        }
+                    });
+                    if (Array.from(select.options).some(o => o.value === prevVal)) {
+                        select.value = prevVal;
+                    }
+                }
+            });
+        });
+
+        function onChessSquareClick(square) {
+            if (!currentChessGame || currentChessGame.winner) return;
+            if (myChessSide !== (localChess.turn() === 'w' ? 'W' : 'B')) return;
+
+            const piece = localChess.get(square);
+
+            if (chessSelectedSquare) {
+                // Try to move
+                const move = localChess.move({
+                    from: chessSelectedSquare,
+                    to: square,
+                    promotion: 'q' // always promote to queen for simplicity
+                });
+
+                if (move) {
+                    // Valid move
+                    chessSelectedSquare = null;
+                    let winner = null;
+                    if (localChess.in_checkmate()) winner = localChess.turn() === 'w' ? 'b' : 'w';
+                    else if (localChess.in_draw() || localChess.in_stalemate()) winner = 'd';
+                    
+                    socket.emit('chessMove', { fen: localChess.fen(), winner });
+                    renderChessBoard();
+                } else {
+                    // Invalid move, maybe selecting another piece
+                    if (piece && piece.color === localChess.turn()) {
+                        chessSelectedSquare = square;
+                        renderChessBoard();
+                    } else {
+                        chessSelectedSquare = null;
+                        renderChessBoard();
+                    }
+                }
+            } else {
+                if (piece && piece.color === localChess.turn()) {
+                    chessSelectedSquare = square;
+                    renderChessBoard();
+                }
+            }
+        }
+
+        function renderChessBoard() {
+            const boardEl = document.getElementById('chess-board');
+            boardEl.innerHTML = '';
+            
+            // If playing as black, flip board
+            const ranks = myChessSide === 'B' ? ['1','2','3','4','5','6','7','8'] : ['8','7','6','5','4','3','2','1'];
+            const files = myChessSide === 'B' ? ['h','g','f','e','d','c','b','a'] : ['a','b','c','d','e','f','g','h'];
+            
+            // Get valid moves for highlight
+            let validMoves = [];
+            if (chessSelectedSquare) {
+                validMoves = localChess.moves({ square: chessSelectedSquare, verbose: true }).map(m => m.to);
+            }
+
+            for (let r = 0; r < 8; r++) {
+                for (let c = 0; c < 8; c++) {
+                    const square = files[c] + ranks[r];
+                    const cell = document.createElement('div');
+                    cell.className = 'chess-square ' + ((r + c) % 2 === 0 ? 'light' : 'dark');
+                    if (square === chessSelectedSquare) cell.classList.add('selected');
+                    if (validMoves.includes(square)) cell.classList.add('highlight');
+                    
+                    const piece = localChess.get(square);
+                    if (piece) {
+                        cell.innerText = pieceUnicode[piece.type];
+                        if (piece.color === 'w') {
+                            cell.style.color = '#ffffff';
+                            cell.style.textShadow = '0 1px 4px rgba(0,0,0,0.8), 0 0 2px rgba(0,0,0,0.8)';
+                        } else {
+                            cell.style.color = '#000000';
+                            cell.style.textShadow = '0 1px 2px rgba(255,255,255,0.4)';
+                        }
+                    }
+                    
+                    cell.onclick = () => onChessSquareClick(square);
+                    boardEl.appendChild(cell);
+                }
+            }
+        }
+
+        socket.on('chessUpdate', (game) => {
+            currentChessGame = game;
+            myChessSide = (game.playerW === socket.id) ? 'W' : (game.playerB === socket.id ? 'B' : null);
+            localChess.load(game.fen);
+            chessSelectedSquare = null; // reset selection on update
+
+            const isPlaying = game.playerW || game.playerB;
+
+            document.getElementById('chess-challenge-target').classList.toggle('hidden', isPlaying || myChessSide !== null);
+            document.getElementById('btn-send-challenge').classList.toggle('hidden', isPlaying || myChessSide !== null);
+            document.getElementById('btn-leave-chess').classList.toggle('hidden', myChessSide === null && myRole !== 'admin');
+
+            document.getElementById('chess-board-wrapper').classList.toggle('hidden', !isPlaying);
+
+            let status = '';
+            if (game.winner) {
+                if (game.winner === 'd') status = `🤝 TRẬN HÒA!`;
+                else status = `🎉 <span style="color: ${game.winner === 'w' ? '#fff' : '#aaa'};">${game.winner === 'w' ? game.playerWName : game.playerBName} (${game.winner === 'w' ? 'Trắng' : 'Đen'})</span> ĐÃ CHIẾN THẮNG!`;
+            } else if (!game.playerW || !game.playerB) {
+                status = `Chọn một đối thủ trong phòng để Thách đấu Cờ Vua<br><span style="font-size: 13px; color: var(--text-muted); font-weight: 400; display: inline-block; margin-top: 8px;">Khán giả có thể theo dõi trực tiếp trận đấu</span>`;
+            } else {
+                const turnStr = localChess.turn() === 'w' ? 'W' : 'B';
+                const isMyTurn = myChessSide === turnStr;
+                status = `Lượt của: <span style="color: ${turnStr === 'W' ? '#fff' : '#aaa'};">${turnStr === 'W' ? game.playerWName : game.playerBName} (${turnStr === 'W' ? 'Trắng' : 'Đen'})</span> ${isMyTurn ? '(Đến lượt bạn!)' : ''}`;
+            }
+            document.getElementById('chess-status').innerHTML = status;
+            
+            renderChessBoard();
+        });
+
+        // Caro Game Logic
+        let myCaroSide = null;
+        let currentCaroGame = null;
+
+        function initCaroBoard() {
+            const boardEl = document.getElementById('caro-board');
+            boardEl.innerHTML = '';
+            for (let r = 0; r < 15; r++) {
+                for (let c = 0; c < 15; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'caro-cell';
+                    cell.style.display = 'flex';
+                    cell.style.alignItems = 'center';
+                    cell.style.justifyContent = 'center';
+                    cell.style.fontSize = '22px';
+                    cell.style.cursor = 'pointer';
+                    cell.style.userSelect = 'none';
+                    cell.id = `caro-cell-${r}-${c}`;
+                    cell.onclick = () => caroMove(r, c);
+                    boardEl.appendChild(cell);
+                }
+            }
+        }
+
+        function openCaroGame() { document.getElementById('caro-game-overlay').classList.remove('hidden'); }
+        function closeCaroGame() { document.getElementById('caro-game-overlay').classList.add('hidden'); }
+
+        function sendCaroChallenge() {
+            const targetId = document.getElementById('caro-challenge-target').value;
+            if (!targetId) { alert('Vui lòng chọn một đối thủ để thách đấu!'); return; }
+            socket.emit('caroChallenge', targetId);
+        }
+        function leaveCaro() { socket.emit('caroLeave'); }
+
+        let currentCaroChallengerId = null;
+        socket.on('caroChallengeReceived', ({ challengerId, challengerName }) => {
+            currentCaroChallengerId = challengerId;
+            document.getElementById('caro-challenger-name').innerText = challengerName;
+            document.getElementById('caro-challenge-modal').classList.remove('hidden');
+        });
+
+        function respondCaroChallenge(accept) {
+            document.getElementById('caro-challenge-modal').classList.add('hidden');
+            if (currentCaroChallengerId) {
+                socket.emit('caroChallengeRespond', { challengerId: currentCaroChallengerId, accept });
+                if (accept) openCaroGame();
+                currentCaroChallengerId = null;
+            }
+        }
+
+        function caroMove(r, c) {
+            if (!currentCaroGame || currentCaroGame.winner) return;
+            if (myCaroSide !== currentCaroGame.turn) return;
+            if (currentCaroGame.board[r][c] !== null) return;
+            socket.emit('caroMove', { row: r, col: c });
+        }
+
+        function updateCaroUI(game) {
+            currentCaroGame = game;
+            myCaroSide = (game.playerX === socket.id) ? 'X' : (game.playerO === socket.id ? 'O' : null);
+
+            const isPlaying = game.playerX || game.playerO;
+
+            document.getElementById('caro-challenge-target').classList.toggle('hidden', isPlaying || myCaroSide !== null);
+            document.getElementById('btn-send-caro-challenge').classList.toggle('hidden', isPlaying || myCaroSide !== null);
+            document.getElementById('btn-leave-caro').classList.toggle('hidden', myCaroSide === null && myRole !== 'admin');
+
+            document.getElementById('caro-board-wrapper').classList.toggle('hidden', !isPlaying);
+
+            let status = '';
+            if (game.winner) {
+                status = `🎉 <span style="color: ${game.winner === 'X' ? '#ff4757' : '#1e90ff'};">${game.winner === 'X' ? game.playerXName : game.playerOName} (${game.winner})</span> ĐÃ CHIẾN THẮNG!`;
+            } else if (!game.playerX || !game.playerO) {
+                status = `Chọn một đối thủ trong phòng để Thách đấu Cờ Caro<br><span style="font-size: 13px; color: var(--text-muted); font-weight: 400; display: inline-block; margin-top: 8px;">Khán giả có thể theo dõi trực tiếp trận đấu</span>`;
+            } else {
+                const isMyTurn = myCaroSide === game.turn;
+                status = `Lượt của: <span style="color: ${game.turn === 'X' ? '#ff4757' : '#1e90ff'};">${game.turn === 'X' ? game.playerXName : game.playerOName} (${game.turn})</span> ${isMyTurn ? '(Đến lượt bạn!)' : ''}`;
+            }
+            document.getElementById('caro-status').innerHTML = status;
+
+            for (let r = 0; r < 15; r++) {
+                for (let c = 0; c < 15; c++) {
+                    const cell = document.getElementById(`caro-cell-${r}-${c}`);
+                    if (cell) {
+                        const val = game.board[r][c];
+                        cell.innerText = val === 'X' ? '✕' : (val === 'O' ? '〇' : '');
+                        cell.className = 'caro-cell' + (val === 'X' ? ' x-cell' : (val === 'O' ? ' o-cell' : ''));
+                    }
+                }
+            }
+        }
+        socket.on('caroUpdate', updateCaroUI);
+
+        initCaroBoard();
+
     </script>
 </body>
 

@@ -5,7 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2937.ML</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <style>
@@ -25,7 +27,7 @@
             font-family: 'Inter', sans-serif;
             background: var(--bg-color);
             background-image: radial-gradient(circle at 15% 50%, rgba(77, 171, 247, 0.06), transparent 25%),
-                              radial-gradient(circle at 85% 30%, rgba(59, 91, 219, 0.06), transparent 25%);
+                radial-gradient(circle at 85% 30%, rgba(59, 91, 219, 0.06), transparent 25%);
             color: var(--text-main);
             margin: 0;
             padding: 0;
@@ -197,13 +199,35 @@
         }
 
         @media(max-width: 768px) {
-            .navbar { padding: 0 12px; }
-            .navbar .logo { font-size: 18px; }
-            .navbar .logo .live-badge { display: none; }
-            .navbar-search { margin: 0 12px; max-width: none; }
-            .navbar-user span.user-dot { display: none; }
-            .navbar-user #navbar-username { display: none; }
-            .logout-btn { padding: 6px; border-radius: 50%; }
+            .navbar {
+                padding: 0 12px;
+            }
+
+            .navbar .logo {
+                font-size: 18px;
+            }
+
+            .navbar .logo .live-badge {
+                display: none;
+            }
+
+            .navbar-search {
+                margin: 0 12px;
+                max-width: none;
+            }
+
+            .navbar-user span.user-dot {
+                display: none;
+            }
+
+            .navbar-user #navbar-username {
+                display: none;
+            }
+
+            .logout-btn {
+                padding: 6px;
+                border-radius: 50%;
+            }
         }
 
         .navbar .logo .live-badge {
@@ -214,7 +238,8 @@
             border-radius: 8px;
             font-weight: 600;
             margin-left: 8px;
-            -webkit-text-fill-color: white; /* override gradient */
+            -webkit-text-fill-color: white;
+            /* override gradient */
             box-shadow: 0 2px 10px rgba(224, 49, 49, 0.4);
             font-family: 'Inter', sans-serif;
         }
@@ -242,7 +267,8 @@
         }
 
         .sidebar {
-            display: none; /* controlled by JS on desktop, fixed bottom on mobile */
+            display: none;
+            /* controlled by JS on desktop, fixed bottom on mobile */
             flex-direction: column;
             gap: 8px;
             flex-shrink: 0;
@@ -256,13 +282,14 @@
             width: 72px;
             padding-right: 8px;
         }
-        
+
         .sidebar.mini .sidebar-item {
             flex-direction: column;
             padding: 16px 0;
             font-size: 0;
             justify-content: center;
         }
+
         .sidebar.mini .sidebar-item .material-symbols-outlined {
             font-size: 24px;
         }
@@ -272,7 +299,7 @@
                 display: flex;
             }
         }
-        
+
         @media(max-width: 899px) {
             .sidebar {
                 display: flex !important;
@@ -292,6 +319,7 @@
                 margin: 0;
                 z-index: 1000;
             }
+
             .sidebar-item {
                 flex-direction: column !important;
                 gap: 4px !important;
@@ -300,13 +328,17 @@
                 background: transparent !important;
                 border-radius: 8px;
             }
+
             .sidebar-item.active {
                 color: var(--accent) !important;
                 font-weight: 700 !important;
             }
+
             .main-layout {
-                padding-bottom: 72px; /* space for bottom nav + safe area */
+                padding-bottom: 72px;
+                /* space for bottom nav + safe area */
             }
+
             .menu-btn {
                 display: none !important;
             }
@@ -335,28 +367,31 @@
             font-weight: 600;
         }
 
-        .left-column, .history-column {
+        .left-column,
+        .history-column {
             flex: 1;
             display: flex;
             flex-direction: column;
             min-width: 0;
             overflow-y: auto;
         }
-        
+
         .history-item {
             display: flex;
             flex-direction: column;
             padding: 16px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            background: rgba(0,0,0,0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.2);
             border-radius: 12px;
             margin-bottom: 8px;
         }
+
         .history-title {
             font-weight: 600;
             font-size: 16px;
             color: var(--text-main);
         }
+
         .history-meta {
             font-size: 13px;
             color: var(--text-muted);
@@ -531,7 +566,8 @@
             height: 100dvh;
             z-index: 500;
             animation: chatSlideUp 0.25s ease-out;
-            padding-bottom: 72px; /* space for bottom nav */
+            padding-bottom: 72px;
+            /* space for bottom nav */
             box-sizing: border-box;
         }
 
@@ -802,10 +838,17 @@
             transform: translateY(0);
             animation: cardFloat 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
-        
+
         @keyframes cardFloat {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .login-card h2 {
@@ -863,7 +906,7 @@
             transform: translateY(-2px);
             box-shadow: 0 6px 24px rgba(77, 171, 247, 0.4);
         }
-        
+
         .login-btn:active {
             transform: translateY(0);
         }
@@ -884,7 +927,7 @@
             outline: none;
             transition: all 0.3s ease;
         }
-        
+
         .admin-tools input:focus {
             border-color: var(--accent);
             box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2);
@@ -991,7 +1034,7 @@
             background: rgba(0, 0, 0, 0.3);
             border-radius: 12px;
             padding: 12px;
-            border: 1px solid rgba(255,255,255,0.05);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .playlist-ui div {
@@ -1002,7 +1045,7 @@
             border-radius: 8px;
             transition: background 0.2s;
         }
-        
+
         .playlist-ui div:hover {
             background: rgba(255, 255, 255, 0.05);
         }
@@ -1040,25 +1083,68 @@
             top: 50%;
             transform: translateY(-50%);
             display: none;
-            gap: 6px;
+            z-index: 10;
         }
 
         .chat-message:hover .chat-actions {
+            display: block;
+        }
+
+        .chat-actions-btn {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            border-radius: 50%;
+            cursor: pointer;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-actions-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+        }
+
+        .chat-actions-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            flex-direction: column;
+            gap: 2px;
+            min-width: 140px;
+            z-index: 20;
+        }
+
+        .chat-actions:hover .chat-actions-menu {
             display: flex;
         }
 
-        .action-btn {
-            background: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            color: white;
-            border-radius: 4px;
+        .action-menu-item {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 11px;
-            padding: 2px 6px;
+            font-size: 13px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-align: left;
+            width: 100%;
         }
 
-        .action-btn:hover {
-            background: #333;
+        .action-menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
 
         /* GIF in chat message */
@@ -1856,7 +1942,8 @@
             <p id="login-prompt">Chọn vai trò của bạn để tham gia</p>
 
             <div id="role-buttons-wrapper" style="display: flex; gap: 12px; margin-bottom: 16px;">
-                <button type="button" class="login-btn" style="flex: 1; background: rgba(255,255,255,0.1);" onclick="selectRole('user')">
+                <button type="button" class="login-btn" style="flex: 1; background: rgba(255,255,255,0.1);"
+                    onclick="selectRole('user')">
                     Thành viên
                 </button>
                 <button type="button" class="login-btn" style="flex: 1;" onclick="selectRole('admin')">
@@ -1882,31 +1969,31 @@
                 <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
                     <label style="font-size: 14px; color: var(--text-muted); white-space: nowrap;">Màu tên:</label>
                     <div style="display: flex; gap: 6px; flex-wrap: wrap; flex: 1;">
-                    <input type="color" id="name-color-input" value="#3ea6ff"
-                        style="width: 36px; height: 36px; border: none; border-radius: 8px; cursor: pointer; background: transparent; padding: 0;">
-                    <button type="button" onclick="document.getElementById('name-color-input').value='#3ea6ff'"
-                        style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; background: #3ea6ff;"
-                        title="Xanh dương"></button>
-                    <button type="button" onclick="document.getElementById('name-color-input').value='#ff6b6b'"
-                        style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; background: #ff6b6b;"
-                        title="Đỏ"></button>
-                    <button type="button" onclick="document.getElementById('name-color-input').value='#51cf66'"
-                        style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; background: #51cf66;"
-                        title="Xanh lá"></button>
-                    <button type="button" onclick="document.getElementById('name-color-input').value='#ffd43b'"
-                        style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; background: #ffd43b;"
-                        title="Vàng"></button>
-                    <button type="button" onclick="document.getElementById('name-color-input').value='#cc5de8'"
-                        style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; background: #cc5de8;"
-                        title="Tím"></button>
-                    <button type="button" onclick="document.getElementById('name-color-input').value='#ff922b'"
-                        style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; background: #ff922b;"
-                        title="Cam"></button>
-                    <button type="button" onclick="document.getElementById('name-color-input').value='#f1f1f1'"
-                        style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--border-color); cursor: pointer; background: #f1f1f1;"
-                        title="Trắng"></button>
+                        <input type="color" id="name-color-input" value="#3ea6ff"
+                            style="width: 36px; height: 36px; border: none; border-radius: 8px; cursor: pointer; background: transparent; padding: 0;">
+                        <button type="button" onclick="document.getElementById('name-color-input').value='#3ea6ff'"
+                            style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; background: #3ea6ff;"
+                            title="Xanh dương"></button>
+                        <button type="button" onclick="document.getElementById('name-color-input').value='#ff6b6b'"
+                            style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; background: #ff6b6b;"
+                            title="Đỏ"></button>
+                        <button type="button" onclick="document.getElementById('name-color-input').value='#51cf66'"
+                            style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; background: #51cf66;"
+                            title="Xanh lá"></button>
+                        <button type="button" onclick="document.getElementById('name-color-input').value='#ffd43b'"
+                            style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; background: #ffd43b;"
+                            title="Vàng"></button>
+                        <button type="button" onclick="document.getElementById('name-color-input').value='#cc5de8'"
+                            style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; background: #cc5de8;"
+                            title="Tím"></button>
+                        <button type="button" onclick="document.getElementById('name-color-input').value='#ff922b'"
+                            style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; background: #ff922b;"
+                            title="Cam"></button>
+                        <button type="button" onclick="document.getElementById('name-color-input').value='#f1f1f1'"
+                            style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--border-color); cursor: pointer; background: #f1f1f1;"
+                            title="Trắng"></button>
+                    </div>
                 </div>
-            </div>
             </div>
 
             <div id="password-wrapper" class="hidden" style="margin-bottom: 16px;">
@@ -1926,7 +2013,7 @@
             </button>
             <div class="logo">2937.ML <span class="live-badge">TRỰC TIẾP</span></div>
         </div>
-        
+
         <div class="navbar-search hidden" id="navbar-search">
             <div class="search-bar-wrapper">
                 <span class="material-symbols-outlined search-icon">search</span>
@@ -1952,13 +2039,17 @@
     <div id="main-room" class="main-layout hidden">
 
         <div class="sidebar" id="sidebar">
-            <div class="sidebar-item active" onclick="showTab('home')">
+            <div class="sidebar-item active" onclick="showTab('home')" data-tab="home">
                 <span class="material-symbols-outlined">home</span>
                 Trang chủ
             </div>
-            <div class="sidebar-item" onclick="showTab('history')">
+            <div class="sidebar-item" onclick="showTab('history')" data-tab="history">
                 <span class="material-symbols-outlined">history</span>
                 Lịch sử phát
+            </div>
+            <div class="sidebar-item" onclick="showTab('top')" data-tab="top">
+                <span class="material-symbols-outlined">local_fire_department</span>
+                Top nhạc
             </div>
         </div>
 
@@ -2014,10 +2105,17 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="history-column hidden" id="history-column">
             <h2 style="margin-bottom: 24px; font-family: 'Outfit'; font-size: 24px;">Lịch sử phát gần đây</h2>
             <div id="history-list">
+                <div style="color:var(--text-muted);">Đang tải...</div>
+            </div>
+        </div>
+
+        <div class="history-column hidden" id="top-column">
+            <h2 style="margin-bottom: 24px; font-family: 'Outfit'; font-size: 24px;">Top nhạc</h2>
+            <div id="top-list">
                 <div style="color:var(--text-muted);">Đang tải...</div>
             </div>
         </div>
@@ -2086,6 +2184,15 @@
 
                 <!-- Inline GIF Suggestions Strip -->
                 <div id="gif-suggest-strip" class="gif-suggest-strip"></div>
+
+                <!-- Reply UI -->
+                <div id="reply-container" class="hidden" style="background: rgba(255,255,255,0.05); padding: 8px 12px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 13px; border-top-left-radius: 8px; border-top-right-radius: 8px;">
+                    <div style="display:flex; flex-direction: column; gap: 2px; overflow: hidden; border-left: 3px solid var(--accent); padding-left: 8px;">
+                        <span style="color: var(--accent); font-weight: 500; font-size: 12px;">Đang trả lời <span id="reply-author"></span></span>
+                        <span id="reply-text" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px; color: var(--text-muted);"></span>
+                    </div>
+                    <button style="background:transparent; border:none; color:var(--text-muted); cursor:pointer; display:flex; align-items:center; justify-content:center;" onclick="cancelReply()"><span class="material-symbols-outlined" style="font-size: 18px;">close</span></button>
+                </div>
 
                 <div class="chat-input-wrapper">
                     <button class="picker-btn" id="emoji-toggle-btn" onclick="togglePicker()"
@@ -2204,22 +2311,28 @@
 
         function showTab(tab) {
             document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
-            if(tab === 'home') {
+            const activeTab = document.querySelector(`.sidebar-item[data-tab="${tab}"]`);
+            if (activeTab) activeTab.classList.add('active');
+
+            document.getElementById('left-column').classList.add('hidden');
+            document.getElementById('history-column').classList.add('hidden');
+            document.getElementById('top-column').classList.add('hidden');
+
+            if (tab === 'home') {
                 document.getElementById('left-column').classList.remove('hidden');
-                document.getElementById('history-column').classList.add('hidden');
-                document.querySelectorAll('.sidebar-item')[0].classList.add('active');
-            } else {
-                document.getElementById('left-column').classList.add('hidden');
+            } else if (tab === 'history') {
                 document.getElementById('history-column').classList.remove('hidden');
-                document.querySelectorAll('.sidebar-item')[1].classList.add('active');
                 loadHistory();
+            } else if (tab === 'top') {
+                document.getElementById('top-column').classList.remove('hidden');
+                loadTopNhac();
             }
         }
 
         async function loadHistory() {
             const list = document.getElementById('history-list');
             list.innerHTML = '<div style="color:var(--text-muted);">Đang tải...</div>';
-            
+
             try {
                 const supabaseClient = supabase.createClient('https://wnioetdrphkdylkoybsu.supabase.co', 'sb_publishable_p0VSduH3epzQVUdvAf2kPQ_aoWk_l1T');
                 const { data, error } = await supabaseClient
@@ -2227,14 +2340,14 @@
                     .select('*')
                     .order('played_at', { ascending: false })
                     .limit(50);
-                    
+
                 if (error) throw error;
-                
+
                 if (!data || data.length === 0) {
                     list.innerHTML = '<div style="color:var(--text-muted);">Chưa có lịch sử phát nào.</div>';
                     return;
                 }
-                
+
                 let groupedData = [];
                 for (let i = 0; i < data.length; i++) {
                     const current = data[i];
@@ -2248,9 +2361,9 @@
 
                 list.innerHTML = groupedData.map(song => {
                     const d = new Date(song.played_at);
-                    const timeStr = d.toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'});
+                    const timeStr = d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
                     const dateStr = d.toLocaleDateString('vi-VN');
-                    
+
                     const isStacked = song.count > 1;
                     const imgShadow = isStacked ? '3px 3px 0px rgba(255,255,255,0.2), 6px 6px 0px rgba(255,255,255,0.1)' : '0 2px 4px rgba(0,0,0,0.2)';
                     const badgeHtml = isStacked ? `<div style="position:absolute; top:-6px; right:-6px; background:#e03131; color:white; font-size:10px; font-weight:bold; padding:2px 5px; border-radius:8px; box-shadow: 0 2px 4px rgba(0,0,0,0.3); z-index:2;">x${song.count}</div>` : '';
@@ -2276,6 +2389,50 @@
             } catch (err) {
                 console.error(err);
                 list.innerHTML = '<div style="color:#ff6b6b;">Lỗi tải dữ liệu lịch sử. Xin vui lòng thử lại!</div>';
+            }
+        }
+
+        async function loadTopNhac() {
+            const list = document.getElementById('top-list');
+            list.innerHTML = '<div style="color:var(--text-muted);">Đang tải Top nhạc...</div>';
+
+            try {
+                const supabaseClient = supabase.createClient('https://ktqdzlhvdkerjajffgfi.supabase.co', 'sb_publishable_1wm-eXETyu07vl61sY4mBQ_xwYZVOCj');
+                const { data, error } = await supabaseClient
+                    .from('songs')
+                    .select('*')
+                    .order('Tên', { ascending: true })
+                    .limit(50);
+
+                if (error) throw error;
+
+                if (!data || data.length === 0) {
+                    list.innerHTML = '<div style="color:var(--text-muted);">Chưa có bài hát nào trong Top.</div>';
+                    return;
+                }
+
+                list.innerHTML = data.map((song, index) => {
+                    const avatarUrl = song.avatar || 'https://via.placeholder.com/120x68?text=No+Image';
+                    return `
+                        <div class="history-item" style="display:flex; flex-direction:row; justify-content:space-between; align-items:center; gap: 12px; margin-bottom: 8px;">
+                            <div style="position:relative; flex-shrink:0;">
+                                <img src="${escapeHtml(avatarUrl)}" alt="thumbnail" style="width: 56px; height: 42px; object-fit: cover; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                            </div>
+                            <div style="flex: 1; min-width:0;">
+                                <div class="history-title" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-size: 15px;">${escapeHtml(song['Tên'])} <span style="font-size: 13px; color: var(--text-muted);">- ${escapeHtml(song['Ca sĩ'] || '')}</span></div>
+                                <div class="history-meta" style="margin-top: 4px;">
+                                    Thêm bởi: <span style="color:#e0e0e0;font-weight:500;">${escapeHtml(song.add_by || 'Unknown')}</span>
+                                </div>
+                            </div>
+                            <button class="btn-add-search" style="flex-shrink:0;" onclick="addSongFromHistory('${escapeHtml(song['Tên'] + ' ' + (song['Ca sĩ'] || ''))}', this)" title="Thêm vào hàng đợi">
+                                <span class="material-symbols-outlined" style="font-size:20px;">add</span>
+                            </button>
+                        </div>
+                    `;
+                }).join('');
+            } catch (err) {
+                console.error(err);
+                list.innerHTML = '<div style="color:#ff6b6b;">Lỗi tải Top nhạc: ' + err.message + '</div>';
             }
         }
 
@@ -2349,7 +2506,7 @@
             document.getElementById('user-details-wrapper').classList.remove('hidden');
             document.getElementById('username-input').value = name;
             document.getElementById('username-input').readOnly = true;
-            
+
             const pwdInput = document.getElementById('password-input');
             document.getElementById('password-wrapper').classList.remove('hidden');
             document.getElementById('join-btn').classList.remove('hidden');
@@ -2395,7 +2552,7 @@
         socket.on('authResult', (res) => {
             if (res.success) {
                 myRole = res.role;
-                
+
                 if (myRole === 'admin') {
                     localStorage.setItem('musiclive_admin_type', selectedAdminType || 'main');
                     localStorage.setItem('musiclive_password', document.getElementById('password-input').value);
@@ -2418,7 +2575,7 @@
                 const navUsername = document.getElementById('navbar-username');
                 navUsername.textContent = myUsername;
                 navUsername.style.color = myNameColor;
-                
+
                 // Show search bar and menu button
                 document.getElementById('navbar-search').classList.remove('hidden');
                 document.getElementById('menu-btn').classList.remove('hidden');
@@ -2533,10 +2690,30 @@
             } catch (e) { }
         }
 
+        let currentReply = null;
+
+        function setReply(id, name, text) {
+            currentReply = { id, name, text };
+            document.getElementById('reply-container').classList.remove('hidden');
+            document.getElementById('reply-author').innerText = name;
+            document.getElementById('reply-text').innerText = text;
+            document.getElementById('chat-input').focus();
+        }
+
+        function cancelReply() {
+            currentReply = null;
+            document.getElementById('reply-container').classList.add('hidden');
+        }
+
         function sendChat() {
             const input = document.getElementById('chat-input');
             if (input.value.trim() !== "") {
-                socket.emit('sendMessage', input.value);
+                if (currentReply) {
+                    socket.emit('sendMessage', { type: 'text', text: input.value, replyTo: currentReply });
+                    cancelReply();
+                } else {
+                    socket.emit('sendMessage', input.value);
+                }
                 input.value = '';
             }
             hideGifSuggestions();
@@ -2575,12 +2752,22 @@
             if (isAdminMsg) msgClass += ' admin-msg';
 
             let actionsHtml = '';
-            if (myRole === 'admin' && !isSystem) {
+            if (!isSystem) {
                 const safeName = (data.name || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
                 const safeText = (data.text || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                let adminBtns = '';
+                if (myRole === 'admin') {
+                    adminBtns = `
+                        <button class="action-menu-item" onclick="pinMessage('${safeName}', '${safeText}')"><span class="material-symbols-outlined" style="font-size:16px;">push_pin</span> Ghim tin nhắn</button>
+                        <button class="action-menu-item" style="color: #ff6b6b;" onclick="deleteMessage('${data.id}')"><span class="material-symbols-outlined" style="font-size:16px;">delete</span> Xóa tin nhắn</button>
+                    `;
+                }
                 actionsHtml = `<div class="chat-actions">
-                    <button class="action-btn" onclick="pinMessage('${safeName}', '${safeText}')"><span class="material-symbols-outlined" style="font-size:16px;">push_pin</span></button>
-                    <button class="action-btn" onclick="deleteMessage('${data.id}')"><span class="material-symbols-outlined" style="font-size:16px;">delete</span></button>
+                    <button class="chat-actions-btn"><span class="material-symbols-outlined" style="font-size:18px;">more_vert</span></button>
+                    <div class="chat-actions-menu">
+                        <button class="action-menu-item" onclick="setReply('${data.id}', '${safeName}', '${safeText}')"><span class="material-symbols-outlined" style="font-size:16px;">reply</span> Trả lời</button>
+                        ${adminBtns}
+                    </div>
                 </div>`;
             }
 
@@ -2614,7 +2801,17 @@
                 authorStyle = `style="color: ${escapeHtml(data.nameColor)}"`;
             }
 
+            let replyHtml = '';
+            if (data.replyTo) {
+                const safeReplyName = escapeHtml(data.replyTo.name || '');
+                const safeReplyText = escapeHtml(data.replyTo.text || '');
+                replyHtml = `<div style="font-size: 11px; color: var(--text-muted); border-left: 2px solid var(--border-color); padding-left: 6px; margin-bottom: 4px; background: rgba(255,255,255,0.02); padding-top: 2px; padding-bottom: 2px; border-radius: 4px; cursor: pointer;" onclick="document.getElementById('msg-${data.replyTo.id}')?.scrollIntoView({behavior: 'smooth', block: 'center'})">
+                    <strong style="color: var(--text-main);">${safeReplyName}</strong>: ${safeReplyText}
+                </div>`;
+            }
+
             const msgHtml = `<div class="${msgClass}" id="msg-${data.id}">
+                ${replyHtml}
                 <span class="chat-author" ${authorStyle}>${finalName}</span>
                 ${contentHtml}
                 ${actionsHtml}
@@ -2658,14 +2855,14 @@
         function createPlayer() {
             if (window.YT && window.YT.Player) isYoutubeApiLoaded = true;
             if (player || !isYoutubeApiLoaded || myRole === '') return;
-            
+
             player = new YT.Player('youtube-player', {
                 height: '100%', width: '100%', videoId: initialVideoId || 'M7lc1UVf-VE',
                 playerVars: { 'controls': 1, 'disablekb': 1, 'origin': window.location.origin, 'rel': 0 },
                 events: {
                     'onReady': () => {
                         isPlayerReady = true;
-                        try { if (typeof player.setVolume === 'function') player.setVolume(50); } catch(e) {}
+                        try { if (typeof player.setVolume === 'function') player.setVolume(50); } catch (e) { }
                         document.getElementById('status').innerText = "Trạng thái: Đang phát trực tiếp 🟢";
                         if (pendingVideoId) {
                             if (typeof player.loadVideoById === 'function') player.loadVideoById(pendingVideoId);
@@ -2693,7 +2890,7 @@
                             }
                             if (e.data == YT.PlayerState.PLAYING) socket.emit('adminPlay', player.getCurrentTime());
                             if (e.data == YT.PlayerState.PAUSED) socket.emit('adminPause');
-                            if (e.data == YT.PlayerState.ENDED) socket.emit('videoEnded');
+                            if (e.data == YT.PlayerState.ENDED) socket.emit('videoEnded', window.currentVideoId);
                         }
                     }
                 }
@@ -2758,7 +2955,7 @@
         socket.on('changeVideo', (data) => {
             const vidId = data.id || data;
             const vidTitle = data.title || 'Trạm Nhạc Live';
-            
+
             if (player) {
                 if (typeof player.loadVideoById === 'function') {
                     if (window.currentVideoId === vidId && typeof player.seekTo === 'function') {
@@ -2871,24 +3068,24 @@
                 try {
                     const duration = typeof player.getDuration === 'function' ? player.getDuration() : 0;
                     isLive = duration === 0 || (player.getVideoData && player.getVideoData().isLive);
-                } catch(e) {}
-                
+                } catch (e) { }
+
                 let state = -1;
                 try {
                     state = typeof player.getPlayerState === 'function' ? player.getPlayerState() : -1;
-                } catch(e) {}
-                
+                } catch (e) { }
+
                 let diff = 0;
                 try {
                     diff = Math.abs(player.getCurrentTime() - time);
-                } catch(e) {}
-                
+                } catch (e) { }
+
                 if (diff > 1.5 && !isLive) {
                     window.ignoreNextStateChange = true;
                     window.lastSyncTime = Date.now();
                     if (typeof player.seekTo === 'function') player.seekTo(time);
                 }
-                
+
                 if (state !== YT.PlayerState.PLAYING) {
                     window.ignoreNextStateChange = true;
                     window.lastSyncTime = Date.now();
@@ -2896,16 +3093,16 @@
                 }
             }
         });
-        
-        socket.on('memberPause', () => { 
+
+        socket.on('memberPause', () => {
             if (player) {
                 const state = typeof player.getPlayerState === 'function' ? player.getPlayerState() : -1;
                 if (state !== YT.PlayerState.PAUSED) {
                     window.ignoreNextStateChange = true;
                     window.lastSyncTime = Date.now();
-                    player.pauseVideo(); 
+                    player.pauseVideo();
                 }
-            } 
+            }
         });
 
 
@@ -3150,11 +3347,11 @@
         }
         // ========== DRAW & GUESS GAME ==========
         const DRAW_COLORS = [
-            '#000000', '#495057', '#adb5bd', '#ffffff', 
+            '#000000', '#495057', '#adb5bd', '#ffffff',
             '#e03131', '#f03e3e', '#e64980', '#c2255c',
-            '#9c36b5', '#6741d9', '#3b5bdb', '#1c7ed6', 
+            '#9c36b5', '#6741d9', '#3b5bdb', '#1c7ed6',
             '#15aabf', '#0ca678', '#2b8a3e', '#5c940d',
-            '#82c91e', '#fcc419', '#ff922b', '#e67700', 
+            '#82c91e', '#fcc419', '#ff922b', '#e67700',
             '#d9480f', '#8b4513'
         ];
         let drawColor = '#000000', drawSize = 6, isEraser = false, isDrawing = false;

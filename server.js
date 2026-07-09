@@ -39,6 +39,7 @@ let currentVideoTitle = 'Chưa có bài hát nào';
 let pinnedMessage = null;
 let loopMode = false;
 let isPlayerIdle = true;
+let lastGlobalVideoEndedTime = 0;
 
 // Draw game state
 let connectedUsers = new Map();
@@ -248,10 +249,13 @@ io.on('connection', (socket) => {
         }
 
         // Handle plain text messages
-        if (typeof msg === 'string' && msg.trim() !== '') {
+        let textMsg = typeof msg === 'string' ? msg : (msg.type === 'text' ? msg.text : '');
+        let replyTo = typeof msg === 'object' && msg.replyTo ? msg.replyTo : null;
+
+        if (textMsg && textMsg.trim() !== '') {
             // Check draw game guess
             if (drawGame.active && drawGame.state === 'playing' && socket.id !== drawGame.drawerId && !drawGame.guessedPlayers.includes(socket.id)) {
-                const guess = msg.trim().toLowerCase();
+                const guess = textMsg.trim().toLowerCase();
                 if (guess === drawGame.word.toLowerCase()) {
                     drawGame.guessedPlayers.push(socket.id);
                     const pts = Math.max(10, Math.ceil(drawGame.timeLeft / 90 * 100));
@@ -270,7 +274,7 @@ io.on('connection', (socket) => {
                 }
             }
 
-            const textLower = msg.trim().toLowerCase();
+            const textLower = textMsg.trim().toLowerCase();
 
             if (textLower.startsWith('/') && !textLower.startsWith('/ai')) {
                 if (socket.role !== 'admin') {
@@ -286,7 +290,8 @@ io.on('connection', (socket) => {
 
             io.emit('newMessage', {
                 id: msgId, senderId: socket.id, name: senderName,
-                nameColor: senderColor, text: msg, role: senderRole
+                nameColor: senderColor, text: textMsg, role: senderRole,
+                replyTo: replyTo
             });
 
             if (textLower === '/skip') {
@@ -390,7 +395,7 @@ io.on('connection', (socket) => {
             }
 
             if (textLower.startsWith('/add ')) {
-                const query = msg.trim().substring(5).trim();
+                const query = textMsg.trim().substring(5).trim();
                 if (query) {
                     try {
                         let videoId = query;
@@ -436,8 +441,8 @@ io.on('connection', (socket) => {
                 return;
             }
 
-            if (msg.trim().toLowerCase().startsWith('/ai ')) {
-                const query = msg.trim().substring(4).trim();
+            if (textMsg.trim().toLowerCase().startsWith('/ai ')) {
+                const query = textMsg.trim().substring(4).trim();
                 if (query) callGroqAI(query, senderName);
             }
         }
@@ -557,8 +562,16 @@ io.on('connection', (socket) => {
     });
 
     // When a video ends on admin's player, handle auto-play logic
-    socket.on('videoEnded', () => {
+    socket.on('videoEnded', (clientVideoId) => {
         if (socket.role === 'admin') {
+            // Ignore if the client is reporting an end for a video that is no longer current
+            if (clientVideoId && clientVideoId !== currentVideoId) return;
+
+            // Debounce to prevent multiple admins triggering this almost simultaneously
+            const now = Date.now();
+            if (now - lastGlobalVideoEndedTime < 3000) return;
+            lastGlobalVideoEndedTime = now;
+
             if (loopMode) {
                 // Replay the current video
                 io.emit('changeVideo', { id: currentVideoId, title: currentVideoTitle });

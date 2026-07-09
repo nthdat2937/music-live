@@ -110,7 +110,7 @@ function endDrawRound() {
 }
 
 // Mẹ mày tính ăn cắp pass của tao à?
-const ADMIN_PASSWORD = 'admin123';
+const ADMIN_PASSWORD = 'Dat-la.ai?123';
 
 function getYoutubeInfo(videoId) {
     return new Promise((resolve) => {

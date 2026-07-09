@@ -1117,7 +1117,7 @@
             border: 1px solid var(--border-color);
             border-radius: 8px;
             padding: 4px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
             flex-direction: column;
             gap: 2px;
             min-width: 140px;
@@ -1481,18 +1481,23 @@
             cursor: pointer;
             user-select: none;
         }
+
         .chess-square.light {
             background-color: #eeddcc;
         }
+
         .chess-square.dark {
             background-color: #996633;
         }
+
         .chess-square.selected {
             background-color: rgba(255, 255, 100, 0.4) !important;
         }
+
         .chess-square.highlight {
             position: relative;
         }
+
         .chess-square.highlight::before {
             content: '';
             position: absolute;
@@ -1517,30 +1522,43 @@
             transition: all 0.2s ease;
             border: none;
         }
+
         .decline-btn {
             background: rgba(255, 255, 255, 0.05);
             color: #aaa;
             box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
         }
+
         .decline-btn:hover {
             background: rgba(255, 255, 255, 0.15);
             color: #fff;
         }
+
         .accept-btn {
             background: linear-gradient(135deg, #0a84ff, #0050a0);
             color: white;
             box-shadow: 0 8px 16px rgba(10, 132, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
         }
+
         .accept-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 12px 20px rgba(10, 132, 255, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
         }
+
         .challenge-modal-container {
             animation: challengePop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
+
         @keyframes challengePop {
-            0% { opacity: 0; transform: scale(0.8) translateY(20px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
+            0% {
+                opacity: 0;
+                transform: scale(0.8) translateY(20px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
 
         /* Caro Styles */
@@ -1551,19 +1569,23 @@
             font-family: 'Outfit', sans-serif;
             box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
         }
+
         .caro-cell:hover {
             background: rgba(255, 255, 255, 0.1);
             transform: scale(1.05);
             z-index: 2;
         }
+
         .caro-cell.x-cell {
             color: #ff4757;
             text-shadow: 0 0 10px rgba(255, 71, 87, 0.6);
         }
+
         .caro-cell.o-cell {
             color: #1e90ff;
             text-shadow: 0 0 10px rgba(30, 144, 255, 0.6);
         }
+
         .caro-btn {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1576,33 +1598,39 @@
             transition: all 0.2s ease;
             font-weight: 500;
         }
+
         .caro-btn:hover {
             background: rgba(255, 255, 255, 0.15);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
+
         .caro-btn.x-btn {
             border-color: rgba(255, 71, 87, 0.3);
             color: #ff4757;
         }
+
         .caro-btn.x-btn:hover {
             background: rgba(255, 71, 87, 0.15);
             box-shadow: 0 4px 15px rgba(255, 71, 87, 0.2);
         }
+
         .caro-btn.o-btn {
             border-color: rgba(30, 144, 255, 0.3);
             color: #1e90ff;
         }
+
         .caro-btn.o-btn:hover {
             background: rgba(30, 144, 255, 0.15);
             box-shadow: 0 4px 15px rgba(30, 144, 255, 0.2);
         }
+
         .caro-board-container {
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 8px;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
             overflow: auto;
         }
 
@@ -2239,11 +2267,15 @@
                             <span class="material-symbols-outlined" style="font-size:20px;">brush</span>
                             Vẽ & Đoán
                         </button>
-                        <button id="btn-open-caro" class="btn-start-game" style="background: rgba(62,166,255,0.1); color: #3ea6ff; border: 1px solid rgba(62,166,255,0.2);" onclick="openCaroGame()">
+                        <button id="btn-open-caro" class="btn-start-game"
+                            style="background: rgba(62,166,255,0.1); color: #3ea6ff; border: 1px solid rgba(62,166,255,0.2);"
+                            onclick="openCaroGame()">
                             <span class="material-symbols-outlined" style="font-size:20px;">grid_4x4</span>
                             Cờ Caro
                         </button>
-                        <button id="btn-open-chess" class="btn-start-game" style="background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2);" onclick="openChessGame()">
+                        <button id="btn-open-chess" class="btn-start-game"
+                            style="background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2);"
+                            onclick="openChessGame()">
                             <span class="material-symbols-outlined" style="font-size:20px;">chess</span>
                             Cờ Vua
                         </button>
@@ -2302,11 +2334,11 @@
             </div>
 
             <div class="chat-messages" id="chat-box-ui">
-                <!-- Messages will appear here -->
+
             </div>
 
             <div class="chat-input-area" style="position: relative;">
-                <!-- Emoji & GIF Picker Popup -->
+
                 <div id="picker-popup" class="picker-overlay hidden">
                     <div class="picker-tabs">
                         <button class="picker-tab active" id="tab-emoji" onclick="switchPickerTab('emoji')">😊
@@ -2314,7 +2346,7 @@
                         <button class="picker-tab" id="tab-gif" onclick="switchPickerTab('gif')">GIF</button>
                     </div>
                     <div id="emoji-panel" class="emoji-grid">
-                        <!-- Emoji grid populated by JS -->
+
                     </div>
                     <div id="gif-panel" class="gif-panel hidden">
                         <div class="gif-search-bar">
@@ -2328,16 +2360,23 @@
                     </div>
                 </div>
 
-                <!-- Inline GIF Suggestions Strip -->
+
                 <div id="gif-suggest-strip" class="gif-suggest-strip"></div>
 
-                <!-- Reply UI -->
-                <div id="reply-container" class="hidden" style="background: rgba(255,255,255,0.05); padding: 8px 12px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 13px; border-top-left-radius: 8px; border-top-right-radius: 8px;">
-                    <div style="display:flex; flex-direction: column; gap: 2px; overflow: hidden; border-left: 3px solid var(--accent); padding-left: 8px;">
-                        <span style="color: var(--accent); font-weight: 500; font-size: 12px;">Đang trả lời <span id="reply-author"></span></span>
-                        <span id="reply-text" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px; color: var(--text-muted);"></span>
+
+                <div id="reply-container" class="hidden"
+                    style="background: rgba(255,255,255,0.05); padding: 8px 12px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 13px; border-top-left-radius: 8px; border-top-right-radius: 8px;">
+                    <div
+                        style="display:flex; flex-direction: column; gap: 2px; overflow: hidden; border-left: 3px solid var(--accent); padding-left: 8px;">
+                        <span style="color: var(--accent); font-weight: 500; font-size: 12px;">Đang trả lời <span
+                                id="reply-author"></span></span>
+                        <span id="reply-text"
+                            style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px; color: var(--text-muted);"></span>
                     </div>
-                    <button style="background:transparent; border:none; color:var(--text-muted); cursor:pointer; display:flex; align-items:center; justify-content:center;" onclick="cancelReply()"><span class="material-symbols-outlined" style="font-size: 18px;">close</span></button>
+                    <button
+                        style="background:transparent; border:none; color:var(--text-muted); cursor:pointer; display:flex; align-items:center; justify-content:center;"
+                        onclick="cancelReply()"><span class="material-symbols-outlined"
+                            style="font-size: 18px;">close</span></button>
                 </div>
 
                 <div class="chat-input-wrapper">
@@ -2352,7 +2391,7 @@
             </div>
         </div>
 
-        <!-- Chat Bubble Button (mobile only) -->
+
         <button id="chat-bubble-btn" class="chat-bubble-btn" onclick="toggleChatBubble()">
             <span class="bubble-icon-chat" style="display:flex;align-items:center;justify-content:center;"><span
                     class="material-symbols-outlined" style="font-size:28px;">chat</span></span>
@@ -2361,15 +2400,23 @@
 
     </div>
 
-    <!-- Chess Challenge Modal -->
+
     <div id="chess-challenge-modal" class="draw-overlay hidden" style="z-index: 1000;">
-        <div class="draw-container challenge-modal-container" style="max-width: 360px; padding: 0; text-align: center; border: none; background: rgba(20, 20, 25, 0.85); backdrop-filter: blur(24px); box-shadow: 0 0 0 1px rgba(255,255,255,0.05), 0 20px 40px rgba(0,0,0,0.5); overflow: hidden; border-radius: 24px;">
-            <div style="background: linear-gradient(135deg, rgba(10, 132, 255, 0.2), rgba(255, 71, 87, 0.1)); padding: 40px 24px 24px 24px;">
-                <div style="font-size: 56px; margin-bottom: 16px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));">⚔️</div>
-                <h3 style="margin-bottom: 8px; color: white; font-family: 'Outfit'; font-size: 26px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">THÁCH ĐẤU</h3>
-                <div style="width: 40px; height: 3px; background: var(--accent); margin: 0 auto 16px auto; border-radius: 2px;"></div>
+        <div class="draw-container challenge-modal-container"
+            style="max-width: 360px; padding: 0; text-align: center; border: none; background: rgba(20, 20, 25, 0.85); backdrop-filter: blur(24px); box-shadow: 0 0 0 1px rgba(255,255,255,0.05), 0 20px 40px rgba(0,0,0,0.5); overflow: hidden; border-radius: 24px;">
+            <div
+                style="background: linear-gradient(135deg, rgba(10, 132, 255, 0.2), rgba(255, 71, 87, 0.1)); padding: 40px 24px 24px 24px;">
+                <div style="font-size: 56px; margin-bottom: 16px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));">⚔️
+                </div>
+                <h3
+                    style="margin-bottom: 8px; color: white; font-family: 'Outfit'; font-size: 26px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+                    THÁCH ĐẤU</h3>
+                <div
+                    style="width: 40px; height: 3px; background: var(--accent); margin: 0 auto 16px auto; border-radius: 2px;">
+                </div>
                 <p style="margin-bottom: 0; color: var(--text-muted); font-size: 16px; line-height: 1.5;">
-                    <strong id="chess-challenger-name" style="color: white; font-size: 20px; display: block; margin-bottom: 4px;">Ai đó</strong>
+                    <strong id="chess-challenger-name"
+                        style="color: white; font-size: 20px; display: block; margin-bottom: 4px;">Ai đó</strong>
                     đang gửi chiến thư đến bạn!
                 </p>
             </div>
@@ -2380,46 +2427,66 @@
         </div>
     </div>
 
-    <!-- Chess Game Overlay -->
+
     <div id="chess-game-overlay" class="draw-overlay hidden">
         <div class="draw-container" style="max-width: 600px; padding: 24px; position: relative; max-height: 90vh;">
-            <div class="draw-header" style="justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 16px;">
+            <div class="draw-header"
+                style="justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 16px;">
                 <div class="draw-header-title" style="display:flex; align-items:center; gap: 8px;">
                     <span class="material-symbols-outlined" style="color: #fff;">chess</span>
                     Cờ Vua
                 </div>
-                <button style="background:rgba(255,255,255,0.1); border:none; color:white; cursor:pointer; width: 32px; height: 32px; border-radius: 50%; display:flex; align-items:center; justify-content:center; transition: background 0.2s;" onclick="closeChessGame()" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+                <button
+                    style="background:rgba(255,255,255,0.1); border:none; color:white; cursor:pointer; width: 32px; height: 32px; border-radius: 50%; display:flex; align-items:center; justify-content:center; transition: background 0.2s;"
+                    onclick="closeChessGame()" onmouseover="this.style.background='rgba(255,255,255,0.2)'"
+                    onmouseout="this.style.background='rgba(255,255,255,0.1)'">
                     <span class="material-symbols-outlined" style="font-size:20px;">close</span>
                 </button>
             </div>
-            
-            <div id="chess-status" style="margin-bottom: 20px; font-size: 16px; color: var(--text-main); text-align: center; font-weight: 500;">Đang tải bàn cờ...</div>
-            <div style="display: flex; gap: 12px; margin-bottom: 24px; justify-content: center; flex-wrap: wrap; align-items: center;" id="chess-actions">
-                <select id="chess-challenge-target" style="padding: 10px 16px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; font-family: 'Outfit'; outline: none;">
+
+            <div id="chess-status"
+                style="margin-bottom: 20px; font-size: 16px; color: var(--text-main); text-align: center; font-weight: 500;">
+                Đang tải bàn cờ...</div>
+            <div style="display: flex; gap: 12px; margin-bottom: 24px; justify-content: center; flex-wrap: wrap; align-items: center;"
+                id="chess-actions">
+                <select id="chess-challenge-target"
+                    style="padding: 10px 16px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; font-family: 'Outfit'; outline: none;">
                     <option value="">-- Chọn đối thủ --</option>
                 </select>
-                <button class="caro-btn" style="color: #fff; border-color: var(--accent); background: rgba(10, 132, 255, 0.2);" onclick="sendChessChallenge()" id="btn-send-challenge">
+                <button class="caro-btn"
+                    style="color: #fff; border-color: var(--accent); background: rgba(10, 132, 255, 0.2);"
+                    onclick="sendChessChallenge()" id="btn-send-challenge">
                     ⚔️ Thách đấu
                 </button>
-                <button class="caro-btn hidden" style="border-color: #ff4757; color: #ff4757;" onclick="leaveChess()" id="btn-leave-chess">Rời bàn / Hủy</button>
+                <button class="caro-btn hidden" style="border-color: #ff4757; color: #ff4757;" onclick="leaveChess()"
+                    id="btn-leave-chess">Rời bàn / Hủy</button>
             </div>
             <div class="caro-board-container hidden" id="chess-board-wrapper">
-                <div id="chess-board" style="display: grid; grid-template-columns: repeat(8, 40px); grid-template-rows: repeat(8, 40px); gap: 0; margin: 0 auto; width: fit-content; border: 4px solid #553311; border-radius: 4px;">
-                    <!-- Generated by JS -->
+                <div id="chess-board"
+                    style="display: grid; grid-template-columns: repeat(8, 40px); grid-template-rows: repeat(8, 40px); gap: 0; margin: 0 auto; width: fit-content; border: 4px solid #553311; border-radius: 4px;">
+
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Caro Challenge Modal -->
+
     <div id="caro-challenge-modal" class="draw-overlay hidden" style="z-index: 1000;">
-        <div class="draw-container challenge-modal-container" style="max-width: 360px; padding: 0; text-align: center; border: none; background: rgba(20, 20, 25, 0.85); backdrop-filter: blur(24px); box-shadow: 0 0 0 1px rgba(255,255,255,0.05), 0 20px 40px rgba(0,0,0,0.5); overflow: hidden; border-radius: 24px;">
-            <div style="background: linear-gradient(135deg, rgba(62, 166, 255, 0.2), rgba(255, 71, 87, 0.1)); padding: 40px 24px 24px 24px;">
-                <div style="font-size: 56px; margin-bottom: 16px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));">⭕❌</div>
-                <h3 style="margin-bottom: 8px; color: white; font-family: 'Outfit'; font-size: 26px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">THÁCH ĐẤU</h3>
-                <div style="width: 40px; height: 3px; background: #3ea6ff; margin: 0 auto 16px auto; border-radius: 2px;"></div>
+        <div class="draw-container challenge-modal-container"
+            style="max-width: 360px; padding: 0; text-align: center; border: none; background: rgba(20, 20, 25, 0.85); backdrop-filter: blur(24px); box-shadow: 0 0 0 1px rgba(255,255,255,0.05), 0 20px 40px rgba(0,0,0,0.5); overflow: hidden; border-radius: 24px;">
+            <div
+                style="background: linear-gradient(135deg, rgba(62, 166, 255, 0.2), rgba(255, 71, 87, 0.1)); padding: 40px 24px 24px 24px;">
+                <div style="font-size: 56px; margin-bottom: 16px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));">⭕❌
+                </div>
+                <h3
+                    style="margin-bottom: 8px; color: white; font-family: 'Outfit'; font-size: 26px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+                    THÁCH ĐẤU</h3>
+                <div
+                    style="width: 40px; height: 3px; background: #3ea6ff; margin: 0 auto 16px auto; border-radius: 2px;">
+                </div>
                 <p style="margin-bottom: 0; color: var(--text-muted); font-size: 16px; line-height: 1.5;">
-                    <strong id="caro-challenger-name" style="color: white; font-size: 20px; display: block; margin-bottom: 4px;">Ai đó</strong>
+                    <strong id="caro-challenger-name"
+                        style="color: white; font-size: 20px; display: block; margin-bottom: 4px;">Ai đó</strong>
                     đang gửi chiến thư Cờ Caro đến bạn!
                 </p>
             </div>
@@ -2430,38 +2497,50 @@
         </div>
     </div>
 
-    <!-- Caro Game Overlay -->
+
     <div id="caro-game-overlay" class="draw-overlay hidden">
         <div class="draw-container" style="max-width: 600px; padding: 24px; position: relative; max-height: 90vh;">
-            <div class="draw-header" style="justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 16px;">
+            <div class="draw-header"
+                style="justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 16px;">
                 <div class="draw-header-title" style="display:flex; align-items:center; gap: 8px;">
                     <span class="material-symbols-outlined" style="color: var(--accent);">grid_4x4</span>
                     Cờ Caro
                 </div>
-                <button style="background:rgba(255,255,255,0.1); border:none; color:white; cursor:pointer; width: 32px; height: 32px; border-radius: 50%; display:flex; align-items:center; justify-content:center; transition: background 0.2s;" onclick="closeCaroGame()" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+                <button
+                    style="background:rgba(255,255,255,0.1); border:none; color:white; cursor:pointer; width: 32px; height: 32px; border-radius: 50%; display:flex; align-items:center; justify-content:center; transition: background 0.2s;"
+                    onclick="closeCaroGame()" onmouseover="this.style.background='rgba(255,255,255,0.2)'"
+                    onmouseout="this.style.background='rgba(255,255,255,0.1)'">
                     <span class="material-symbols-outlined" style="font-size:20px;">close</span>
                 </button>
             </div>
-            
-            <div id="caro-status" style="margin-bottom: 20px; font-size: 16px; color: var(--text-main); text-align: center; font-weight: 500;">Đang tải bàn cờ...</div>
-            <div style="display: flex; gap: 12px; margin-bottom: 24px; justify-content: center; flex-wrap: wrap; align-items: center;" id="caro-actions">
-                <select id="caro-challenge-target" style="padding: 10px 16px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; font-family: 'Outfit'; outline: none;">
+
+            <div id="caro-status"
+                style="margin-bottom: 20px; font-size: 16px; color: var(--text-main); text-align: center; font-weight: 500;">
+                Đang tải bàn cờ...</div>
+            <div style="display: flex; gap: 12px; margin-bottom: 24px; justify-content: center; flex-wrap: wrap; align-items: center;"
+                id="caro-actions">
+                <select id="caro-challenge-target"
+                    style="padding: 10px 16px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; font-family: 'Outfit'; outline: none;">
                     <option value="">-- Chọn đối thủ --</option>
                 </select>
-                <button class="caro-btn" style="color: #3ea6ff; border-color: #3ea6ff; background: rgba(62,166,255,0.1);" onclick="sendCaroChallenge()" id="btn-send-caro-challenge">
+                <button class="caro-btn"
+                    style="color: #3ea6ff; border-color: #3ea6ff; background: rgba(62,166,255,0.1);"
+                    onclick="sendCaroChallenge()" id="btn-send-caro-challenge">
                     ⚔️ Thách đấu
                 </button>
-                <button class="caro-btn hidden" style="border-color: #ff4757; color: #ff4757;" onclick="leaveCaro()" id="btn-leave-caro">Rời bàn / Hủy</button>
+                <button class="caro-btn hidden" style="border-color: #ff4757; color: #ff4757;" onclick="leaveCaro()"
+                    id="btn-leave-caro">Rời bàn / Hủy</button>
             </div>
             <div class="caro-board-container hidden" id="caro-board-wrapper">
-                <div id="caro-board" style="display: grid; grid-template-columns: repeat(15, 32px); grid-template-rows: repeat(15, 32px); gap: 4px; margin: 0 auto; width: fit-content;">
-                    <!-- Generated by JS -->
+                <div id="caro-board"
+                    style="display: grid; grid-template-columns: repeat(15, 32px); grid-template-rows: repeat(15, 32px); gap: 4px; margin: 0 auto; width: fit-content;">
+
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Draw Game Overlay -->
+
     <div id="draw-game-overlay" class="draw-overlay hidden">
         <div class="draw-container">
             <div class="draw-header">
@@ -2527,7 +2606,7 @@
         </div>
     </div>
 
-    <!-- Cdn scripts -->
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
@@ -2538,7 +2617,7 @@
         const socket = io();
         socket.on('connect', () => {
             if (myRole) {
-                // If socket reconnects (e.g. server restart), re-authenticate to restore role
+
                 joinRoom();
             }
         });
@@ -2547,10 +2626,10 @@
         let isYoutubeApiLoaded = false;
         let pendingVideoId = null;
         let myRole = '';
-        let initialVideoId = ''; // No safe default needed anymore since we defer creation
+        let initialVideoId = '';
         let myUsername = '';
 
-        // Tab, History, and Sidebar Logic
+
         function toggleSidebar() {
             const sb = document.getElementById('sidebar');
             if (sb) sb.classList.toggle('mini');
@@ -2691,10 +2770,10 @@
             socket.emit('addSong', videoId, (res) => {
                 if (res && res.success) {
                     btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:20px;">check</span>';
-                    btn.style.background = '#51cf66'; // Green success
+                    btn.style.background = '#51cf66';
                 } else {
                     btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:20px;">close</span>';
-                    btn.style.background = '#ff6b6b'; // Red error
+                    btn.style.background = '#ff6b6b';
                     alert(res && res.message ? res.message : "Không tìm thấy bài hát hoặc có lỗi xảy ra!");
                 }
                 setTimeout(() => {
@@ -2708,7 +2787,7 @@
         let myNameColor = '#3ea6ff';
         let isLoopMode = false;
 
-        let selectedAdminType = null; // 'main' or 'sub'
+        let selectedAdminType = null;
 
         (function restoreSavedUser() {
             const savedName = localStorage.getItem('musiclive_username');
@@ -2769,14 +2848,14 @@
         }
 
         function checkAdminName(name) {
-            // Deprecated, logic moved to selectAdmin
+
         }
 
         function joinRoom() {
             const name = document.getElementById('username-input').value;
             const password = document.getElementById('password-input').value;
             const nameColor = document.getElementById('name-color-input').value;
-            const isAdmin = selectedAdminType !== null; // True if an admin was selected from the list
+            const isAdmin = selectedAdminType !== null;
 
             if (!name.trim()) {
                 alert("Vui lòng nhập tên hiển thị!");
@@ -2816,14 +2895,14 @@
                     document.getElementById('welcome-title').innerText = res.currentVideoTitle;
                 }
 
-                // Show user info in navbar
+
                 const navRight = document.getElementById('navbar-right');
                 navRight.classList.remove('hidden');
                 const navUsername = document.getElementById('navbar-username');
                 navUsername.textContent = myUsername;
                 navUsername.style.color = myNameColor;
 
-                // Show search bar and menu button
+
                 document.getElementById('navbar-search').classList.remove('hidden');
                 document.getElementById('menu-btn').classList.remove('hidden');
 
@@ -2836,14 +2915,14 @@
                 }
                 document.getElementById('sync-btn').classList.remove('hidden');
 
-                // Rejoin active draw game
+
                 if (res.drawGame && res.drawGame.active) {
                     document.getElementById('draw-game-overlay').classList.remove('hidden');
                     renderDrawScores(res.drawGame.scores || {});
                     socket.emit('requestCanvasHistory');
                 }
 
-                // Initialize loop mode from server state
+
                 if (res.loopMode !== undefined) {
                     isLoopMode = res.loopMode;
                     updateLoopUI();
@@ -2879,39 +2958,39 @@
 
 
         function logout() {
-            // Clear saved user data
+
             localStorage.removeItem('musiclive_username');
             localStorage.removeItem('musiclive_namecolor');
             localStorage.removeItem('musiclive_admin_type');
             localStorage.removeItem('musiclive_password');
 
-            // Reset state
+
             myRole = '';
             myUsername = '';
             myNameColor = '#3ea6ff';
 
-            // Hide main room, show login
+
             document.getElementById('main-room').classList.add('hidden');
             document.getElementById('login-section').classList.remove('hidden');
             document.getElementById('navbar-right').classList.add('hidden');
             document.getElementById('navbar-search').classList.add('hidden');
             document.getElementById('menu-btn').classList.add('hidden');
 
-            // Reset admin mode
+
             document.body.classList.remove('admin-mode');
             document.getElementById('btn-next-song').classList.add('hidden');
             document.getElementById('sync-btn').classList.add('hidden');
 
-            // Clear login inputs for fresh entry
+
             document.getElementById('username-input').value = '';
             document.getElementById('name-color-input').value = '#3ea6ff';
             document.getElementById('password-input').value = '';
             document.getElementById('password-wrapper').classList.add('hidden');
 
-            // Clear chat
+
             document.getElementById('chat-box-ui').innerHTML = '';
 
-            // Disconnect and reconnect socket
+
             socket.disconnect();
             socket.connect();
         }
@@ -3135,7 +3214,7 @@
                         }
                         if (myRole === 'admin') {
                             if (window.ignoreNextStateChange && (Date.now() - window.lastSyncTime < 1500)) {
-                                return; // Prevent infinite sync loops between admins
+                                return;
                             }
                             if (e.data == YT.PlayerState.PLAYING) socket.emit('adminPlay', player.getCurrentTime());
                             if (e.data == YT.PlayerState.PAUSED) socket.emit('adminPause');
@@ -3594,7 +3673,7 @@
                 badge.classList.add('hidden-badge');
             }
         }
-        // ========== DRAW & GUESS GAME ==========
+
         const DRAW_COLORS = [
             '#000000', '#495057', '#adb5bd', '#ffffff',
             '#e03131', '#f03e3e', '#e64980', '#c2255c',
@@ -3609,7 +3688,7 @@
         let drawGameActive = false;
         let drawGuessedCorrectly = false;
 
-        // Init color palette
+
         (function initDrawColors() {
             const container = document.getElementById('draw-colors');
             container.innerHTML = DRAW_COLORS.map((c, i) =>
@@ -3686,7 +3765,7 @@
         }
         function onDrawEnd(e) { isDrawing = false; }
 
-        // Attach canvas events
+
         const dc = getDrawCanvas();
         dc.addEventListener('mousedown', onDrawStart);
         dc.addEventListener('mousemove', onDrawMove);
@@ -3729,7 +3808,7 @@
             }
         }
 
-        // Socket: game started
+
         socket.on('drawGameStarted', (data) => {
             drawGameActive = true; amIDrawer = false; drawGuessedCorrectly = false;
             document.getElementById('draw-game-overlay').classList.remove('hidden');
@@ -3744,7 +3823,7 @@
             document.getElementById('draw-timer').classList.remove('urgent');
         });
 
-        // Socket: round start
+
         socket.on('drawRoundStart', (data) => {
             amIDrawer = (data.drawerId === socket.id);
             drawGuessedCorrectly = false;
@@ -3754,10 +3833,10 @@
             document.getElementById('draw-timer').textContent = data.timeLeft + 's';
             document.getElementById('draw-timer').classList.remove('urgent');
 
-            // Show skip button for drawer ONLY
+
             document.getElementById('draw-drawer-tools').classList.toggle('hidden', !amIDrawer);
 
-            // Show guess input for non-drawers
+
             const guessArea = document.getElementById('draw-guess-area');
             guessArea.classList.toggle('hidden', amIDrawer);
             document.getElementById('draw-guess-input').value = '';
@@ -3774,25 +3853,25 @@
             }
         });
 
-        // Socket: you are the drawer - here's your word
+
         socket.on('drawYourWord', (word) => {
             document.getElementById('draw-info').innerHTML = `<div>Bạn đang vẽ! <span class="draw-word-secret"><span class="material-symbols-outlined" style="font-size:16px;vertical-align:text-bottom;">palette</span> ${escapeHtml(word).toUpperCase()}</span></div>`;
         });
 
-        // Socket: timer update
+
         socket.on('drawTimerUpdate', (t) => {
             const el = document.getElementById('draw-timer');
             el.textContent = t + 's';
             el.classList.toggle('urgent', t <= 15);
         });
 
-        // Socket: receive drawing stroke
+
         socket.on('drawStroke', (data) => { drawLine(data.x0, data.y0, data.x1, data.y1, data.color, data.size); });
 
-        // Socket: clear canvas
+
         socket.on('drawClear', () => { resizeDrawCanvas(); });
 
-        // Socket: new word (admin skipped)
+
         socket.on('drawNewWord', (data) => {
             resizeDrawCanvas();
             if (!amIDrawer) {
@@ -3804,10 +3883,10 @@
             document.getElementById('draw-timer').classList.remove('urgent');
         });
 
-        // Socket: score update
+
         socket.on('drawScoreUpdate', (scores) => { renderDrawScores(scores); });
 
-        // Socket: round end
+
         socket.on('drawRoundEnd', (data) => {
             amIDrawer = false;
             showDrawPanel('result');
@@ -3819,7 +3898,7 @@
             renderDrawScores(data.scores);
         });
 
-        // Socket: waiting for new drawer
+
         socket.on('drawWaitingForDrawer', (data) => {
             showDrawPanel('waiting');
             document.getElementById('draw-guess-area').classList.add('hidden');
@@ -3830,7 +3909,7 @@
             document.getElementById('draw-timer').classList.remove('urgent');
         });
 
-        // Socket: random pick animation
+
         socket.on('drawRandomPickAnimation', (data) => {
             showDrawPanel('random');
             document.getElementById('draw-info').innerHTML = '<div>Đang tìm kiếm người may mắn...</div>';
@@ -3843,7 +3922,7 @@
                 const u = users[i % users.length];
                 nameEl.textContent = u.name;
                 nameEl.style.color = u.nameColor || 'var(--text-main)';
-                // Force reflow for animation restart
+
                 nameEl.classList.remove('draw-random-name');
                 void nameEl.offsetWidth;
                 nameEl.classList.add('draw-random-name');
@@ -3856,17 +3935,17 @@
                     nameEl.textContent = winner.name;
                     nameEl.style.color = winner.nameColor || 'var(--accent)';
                 }
-            }, 2500); // Stop cycling slightly before round actually starts
+            }, 2500);
         });
 
-        // Socket: users list update
+
         socket.on('drawUsersUpdate', (users) => {
             if (drawGameActive && document.getElementById('draw-waiting-panel') && !document.getElementById('draw-waiting-panel').classList.contains('hidden')) {
                 renderDrawUserList(users);
             }
         });
 
-        // Socket: game ended
+
         socket.on('drawGameEnded', () => {
             drawGameActive = false; amIDrawer = false;
             document.getElementById('draw-game-overlay').classList.add('hidden');
@@ -3874,13 +3953,13 @@
             document.getElementById('draw-drawer-tools').classList.add('hidden');
         });
 
-        // Socket: canvas history (for late joiners)
+
         socket.on('drawCanvasHistory', (history) => {
             resizeDrawCanvas();
             history.forEach(s => drawLine(s.x0, s.y0, s.x1, s.y1, s.color, s.size));
         });
 
-        // Send draw guess (uses main chat socket, server checks for correct answer)
+
         function sendDrawGuess() {
             if (drawGuessedCorrectly) return;
             const input = document.getElementById('draw-guess-input');
@@ -3891,7 +3970,7 @@
             input.focus();
         }
 
-        // Listen for correct guess feedback (system message with our name)
+
         (function () {
             const origHandler = socket.listeners('newMessage').find(f => true);
             socket.on('newMessage', (data) => {
@@ -3905,19 +3984,19 @@
                 }
             });
         })();
-        // Chess Game Logic
+
         let myChessSide = null;
         let currentChessGame = null;
         let localChess = new Chess();
         let chessSelectedSquare = null;
-        
+
         const pieceUnicode = {
             'p': '♟', 'n': '♞', 'b': '♝', 'r': '♜', 'q': '♛', 'k': '♚'
         };
 
         function openChessGame() { document.getElementById('chess-game-overlay').classList.remove('hidden'); }
         function closeChessGame() { document.getElementById('chess-game-overlay').classList.add('hidden'); }
-        
+
         function sendChessChallenge() {
             const targetId = document.getElementById('chess-challenge-target').value;
             if (!targetId) { alert('Vui lòng chọn một đối thủ để thách đấu!'); return; }
@@ -3969,24 +4048,24 @@
             const piece = localChess.get(square);
 
             if (chessSelectedSquare) {
-                // Try to move
+
                 const move = localChess.move({
                     from: chessSelectedSquare,
                     to: square,
-                    promotion: 'q' // always promote to queen for simplicity
+                    promotion: 'q'
                 });
 
                 if (move) {
-                    // Valid move
+
                     chessSelectedSquare = null;
                     let winner = null;
                     if (localChess.in_checkmate()) winner = localChess.turn() === 'w' ? 'b' : 'w';
                     else if (localChess.in_draw() || localChess.in_stalemate()) winner = 'd';
-                    
+
                     socket.emit('chessMove', { fen: localChess.fen(), winner });
                     renderChessBoard();
                 } else {
-                    // Invalid move, maybe selecting another piece
+
                     if (piece && piece.color === localChess.turn()) {
                         chessSelectedSquare = square;
                         renderChessBoard();
@@ -4006,12 +4085,12 @@
         function renderChessBoard() {
             const boardEl = document.getElementById('chess-board');
             boardEl.innerHTML = '';
-            
-            // If playing as black, flip board
-            const ranks = myChessSide === 'B' ? ['1','2','3','4','5','6','7','8'] : ['8','7','6','5','4','3','2','1'];
-            const files = myChessSide === 'B' ? ['h','g','f','e','d','c','b','a'] : ['a','b','c','d','e','f','g','h'];
-            
-            // Get valid moves for highlight
+
+
+            const ranks = myChessSide === 'B' ? ['1', '2', '3', '4', '5', '6', '7', '8'] : ['8', '7', '6', '5', '4', '3', '2', '1'];
+            const files = myChessSide === 'B' ? ['h', 'g', 'f', 'e', 'd', 'c', 'b', 'a'] : ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+
+
             let validMoves = [];
             if (chessSelectedSquare) {
                 validMoves = localChess.moves({ square: chessSelectedSquare, verbose: true }).map(m => m.to);
@@ -4024,7 +4103,7 @@
                     cell.className = 'chess-square ' + ((r + c) % 2 === 0 ? 'light' : 'dark');
                     if (square === chessSelectedSquare) cell.classList.add('selected');
                     if (validMoves.includes(square)) cell.classList.add('highlight');
-                    
+
                     const piece = localChess.get(square);
                     if (piece) {
                         cell.innerText = pieceUnicode[piece.type];
@@ -4036,7 +4115,7 @@
                             cell.style.textShadow = '0 1px 2px rgba(255,255,255,0.4)';
                         }
                     }
-                    
+
                     cell.onclick = () => onChessSquareClick(square);
                     boardEl.appendChild(cell);
                 }
@@ -4047,7 +4126,7 @@
             currentChessGame = game;
             myChessSide = (game.playerW === socket.id) ? 'W' : (game.playerB === socket.id ? 'B' : null);
             localChess.load(game.fen);
-            chessSelectedSquare = null; // reset selection on update
+            chessSelectedSquare = null;
 
             const isPlaying = game.playerW || game.playerB;
 
@@ -4069,11 +4148,11 @@
                 status = `Lượt của: <span style="color: ${turnStr === 'W' ? '#fff' : '#aaa'};">${turnStr === 'W' ? game.playerWName : game.playerBName} (${turnStr === 'W' ? 'Trắng' : 'Đen'})</span> ${isMyTurn ? '(Đến lượt bạn!)' : ''}`;
             }
             document.getElementById('chess-status').innerHTML = status;
-            
+
             renderChessBoard();
         });
 
-        // Caro Game Logic
+
         let myCaroSide = null;
         let currentCaroGame = null;
 

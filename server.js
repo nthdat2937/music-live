@@ -41,21 +41,21 @@ let loopMode = false;
 let isPlayerIdle = true;
 let lastGlobalVideoEndedTime = 0;
 
-// Draw game state
+
 let connectedUsers = new Map();
 let drawGame = {
     active: false, state: 'inactive', drawerId: null, drawerName: '',
     word: '', scores: {}, timeLeft: 90, timer: null,
     guessedPlayers: [], canvasHistory: []
 };
-// Caro state
+
 let caroGame = {
     board: Array(15).fill(null).map(() => Array(15).fill(null)),
     playerX: null, playerO: null,
     playerXName: '', playerOName: '',
     turn: 'X', winner: null
 };
-// Chess state
+
 let chessGame = {
     fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
     playerW: null, playerB: null,
@@ -109,6 +109,7 @@ function endDrawRound() {
     }, 3000);
 }
 
+// Mẹ mày tính ăn cắp pass của tao à?
 const ADMIN_PASSWORD = 'admin123';
 
 function getYoutubeInfo(videoId) {
@@ -134,7 +135,7 @@ async function quickWebSearch(query) {
     try {
         const currentYear = new Date().getFullYear();
         const lowerQuery = query.toLowerCase();
-        // Only append year if they are asking for something "new" or "latest" to avoid ruining generic searches
+
         const needsYear = lowerQuery.includes('mới') || lowerQuery.includes('gần đây') || lowerQuery.includes('hiện tại');
         const searchQuery = (!query.includes(currentYear.toString()) && needsYear) ? query + ' ' + currentYear : query;
 
@@ -158,7 +159,7 @@ async function quickWebSearch(query) {
 
 async function callGroqAI(query, userName) {
     try {
-        // Fetch web context to prevent hallucinations
+
         const webContext = await quickWebSearch(query);
         const currentDate = new Date().toLocaleDateString('vi-VN');
         const sysPrompt = `Bạn là trợ lý AI âm nhạc siêu việt. Hôm nay: ${currentDate}. Người hỏi: ${userName}.
@@ -199,9 +200,9 @@ ${webContext}`;
                 id: 'ai-' + Date.now(),
                 senderId: 'ai-bot',
                 name: 'AI Assistant 🤖',
-                nameColor: '#10a37f', // AI Color
+                nameColor: '#10a37f',
                 text: aiMsg,
-                role: 'system' // Broadcast as system message so it has a distinct look
+                role: 'system'
             });
         } else {
             console.error('Groq AI Error:', data);
@@ -231,6 +232,7 @@ io.on('connection', (socket) => {
             let isValid = false;
             let adminLabel = 'Admin';
 
+            // Sao mày tìm tới đây chi vậy, thích stalk không?
             if (username.toLowerCase() === 'nthdat') {
                 if (password === ADMIN_PASSWORD) isValid = true;
                 adminLabel = 'Admin Chính';
@@ -269,7 +271,7 @@ io.on('connection', (socket) => {
         const senderRole = socket.role || 'member';
         const senderColor = socket.nameColor || '#aaaaaa';
 
-        // Handle GIF messages
+
         if (typeof msg === 'object' && msg.type === 'gif' && msg.gifUrl) {
             io.emit('newMessage', {
                 id: msgId,
@@ -283,12 +285,12 @@ io.on('connection', (socket) => {
             return;
         }
 
-        // Handle plain text messages
+
         let textMsg = typeof msg === 'string' ? msg : (msg.type === 'text' ? msg.text : '');
         let replyTo = typeof msg === 'object' && msg.replyTo ? msg.replyTo : null;
 
         if (textMsg && textMsg.trim() !== '') {
-            // Check draw game guess
+
             if (drawGame.active && drawGame.state === 'playing' && socket.id !== drawGame.drawerId && !drawGame.guessedPlayers.includes(socket.id)) {
                 const guess = textMsg.trim().toLowerCase();
                 if (guess === drawGame.word.toLowerCase()) {
@@ -521,7 +523,7 @@ io.on('connection', (socket) => {
                 }
             }
 
-            // Anti-spam duplicate check
+
             if (videoId === currentVideoId || playlist.some(song => song.id === videoId)) {
                 if (typeof callback === 'function') {
                     callback({ success: false, message: 'Bài hát đã có trong hàng đợi hoặc đang phát!' });
@@ -588,7 +590,7 @@ io.on('connection', (socket) => {
         }
     });
 
-    // Toggle loop mode (admin only)
+
     socket.on('adminToggleLoop', () => {
         if (socket.role === 'admin') {
             loopMode = !loopMode;
@@ -596,23 +598,23 @@ io.on('connection', (socket) => {
         }
     });
 
-    // When a video ends on admin's player, handle auto-play logic
+
     socket.on('videoEnded', (clientVideoId) => {
         if (socket.role === 'admin') {
-            // Ignore if the client is reporting an end for a video that is no longer current
+
             if (clientVideoId && clientVideoId !== currentVideoId) return;
 
-            // Debounce to prevent multiple admins triggering this almost simultaneously
+
             const now = Date.now();
             if (now - lastGlobalVideoEndedTime < 3000) return;
             lastGlobalVideoEndedTime = now;
 
             if (loopMode) {
-                // Replay the current video
+
                 io.emit('changeVideo', { id: currentVideoId, title: currentVideoTitle });
                 isPlayerIdle = false;
             } else if (playlist.length > 0) {
-                // Auto-play next song from queue
+
                 const nextSong = playlist.shift();
                 currentVideoId = nextSong.id;
                 currentVideoTitle = nextSong.title;
@@ -629,7 +631,7 @@ io.on('connection', (socket) => {
     socket.on('adminPlay', (time) => { if (socket.role === 'admin') socket.broadcast.emit('memberPlay', time); });
     socket.on('adminPause', () => { if (socket.role === 'admin') socket.broadcast.emit('memberPause'); });
 
-    // Draw game events
+
     socket.on('adminStartDrawGame', () => {
         if (socket.role !== 'admin') return;
         drawGame.active = true; drawGame.state = 'waiting'; drawGame.scores = {}; drawGame.canvasHistory = [];
@@ -643,7 +645,7 @@ io.on('connection', (socket) => {
         if (drawGame.timer) clearInterval(drawGame.timer);
         drawGame.timer = setInterval(() => { drawGame.timeLeft--; io.emit('drawTimerUpdate', drawGame.timeLeft); if (drawGame.timeLeft <= 0) endDrawRound(); }, 1000);
         io.emit('drawRoundStart', { drawerId, drawerName: user.name, hint: generateHint(drawGame.word), timeLeft: 90 });
-        // Send word AFTER roundStart so it doesn't get overwritten
+
         setTimeout(() => {
             io.to(drawerId).emit('drawYourWord', drawGame.word);
         }, 100);
@@ -676,7 +678,7 @@ io.on('connection', (socket) => {
     });
     socket.on('skipWord', () => {
         if (drawGame.state !== 'playing') return;
-        if (socket.id !== drawGame.drawerId) return; // ONLY drawer can skip
+        if (socket.id !== drawGame.drawerId) return;
         drawGame.word = getRandomWord(); drawGame.canvasHistory = []; drawGame.guessedPlayers = []; drawGame.timeLeft = 90;
         io.to(drawGame.drawerId).emit('drawYourWord', drawGame.word);
         io.emit('drawNewWord', { hint: generateHint(drawGame.word), timeLeft: 90 });
@@ -686,11 +688,11 @@ io.on('connection', (socket) => {
         if (drawGame.canvasHistory.length > 0) socket.emit('drawCanvasHistory', drawGame.canvasHistory);
     });
 
-    // Caro game events
+
     socket.on('caroChallenge', (targetId) => {
         if (!connectedUsers.has(targetId) || targetId === socket.id) return;
         if (caroGame.playerX || caroGame.playerO) return;
-        
+
         io.to(targetId).emit('caroChallengeReceived', {
             challengerId: socket.id,
             challengerName: socket.username
@@ -709,7 +711,7 @@ io.on('connection', (socket) => {
                 socket.emit('newMessage', { id: 'sys-' + Date.now(), name: 'Hệ thống 🤖', text: 'Bàn cờ hiện đã có người chơi!', role: 'system' });
                 return;
             }
-            
+
             const challengerX = Math.random() < 0.5;
             const challengerName = connectedUsers.get(challengerId).name;
 
@@ -750,11 +752,11 @@ io.on('connection', (socket) => {
         if (caroGame.winner) return;
         if (row < 0 || row >= 15 || col < 0 || col >= 15) return;
         if (caroGame.board[row][col] !== null) return;
-        
+
         let playerSide = null;
         if (socket.id === caroGame.playerX) playerSide = 'X';
         if (socket.id === caroGame.playerO) playerSide = 'O';
-        
+
         if (!playerSide || playerSide !== caroGame.turn) return;
 
         caroGame.board[row][col] = playerSide;
@@ -767,11 +769,11 @@ io.on('connection', (socket) => {
         io.emit('caroUpdate', caroGame);
     });
 
-    // Chess game events
+
     socket.on('chessChallenge', (targetId) => {
         if (!connectedUsers.has(targetId) || targetId === socket.id) return;
         if (chessGame.playerW || chessGame.playerB) return;
-        
+
         io.to(targetId).emit('chessChallengeReceived', {
             challengerId: socket.id,
             challengerName: socket.username
@@ -790,7 +792,7 @@ io.on('connection', (socket) => {
                 socket.emit('newMessage', { id: 'sys-' + Date.now(), name: 'Hệ thống 🤖', text: 'Bàn cờ hiện đã có người chơi!', role: 'system' });
                 return;
             }
-            
+
             const challengerW = Math.random() < 0.5;
             const challengerName = connectedUsers.get(challengerId).name;
 
@@ -834,7 +836,7 @@ io.on('connection', (socket) => {
 
         chessGame.fen = fen;
         if (winner) {
-            chessGame.winner = winner; // 'w', 'b', or 'd'
+            chessGame.winner = winner;
             let msg = '';
             if (winner === 'd') msg = 'Cờ hòa! 🤝';
             else msg = `🎉 Người chơi **${winner === 'w' ? chessGame.playerWName : chessGame.playerBName} (${winner === 'w' ? 'Trắng' : 'Đen'})** đã chiến thắng ván Cờ Vua!`;

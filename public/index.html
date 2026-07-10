@@ -505,6 +505,50 @@
             color: var(--text-muted);
         }
 
+        .lyric-box {
+            padding: 24px;
+            background: transparent;
+            overflow-y: auto;
+            text-align: left;
+            position: relative;
+            scroll-behavior: smooth;
+        }
+
+        .lyric-box::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .lyric-box::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+
+        .lyric-line {
+            font-size: 26px;
+            font-weight: 800;
+            color: #ffffff;
+            padding: 12px 0;
+            transition: opacity 0.3s ease;
+            min-height: 28px;
+            opacity: 0.3;
+            cursor: pointer;
+            line-height: 1.4;
+        }
+
+        .lyric-line:hover {
+            opacity: 0.6;
+        }
+
+        .lyric-line.active {
+            opacity: 1;
+        }
+
+        .lyric-loading {
+            color: var(--text-muted);
+            font-style: italic;
+            font-size: 14px;
+        }
+
         /* Control Panel */
         .control-box {
             background: var(--panel-bg);
@@ -2299,11 +2343,11 @@
         </div>
 
         <div class="right-column">
-            <div class="chat-header">
-                <span>Chat <span id="viewer-count"
-                        style="color:var(--text-muted); font-size:13px; margin-left: 8px;">(<span
-                            class="material-symbols-outlined"
-                            style="font-size:14px; vertical-align:text-bottom;">visibility</span> 1)</span></span>
+            <div class="chat-header" style="display:flex; justify-content:space-between; align-items:center;">
+                <div class="chat-tabs" style="display:flex; gap: 16px;">
+                    <span id="tab-chat" class="active" onclick="switchRightTab('chat')" style="cursor:pointer; font-weight:600; color:var(--accent); transition:0.2s;">Chat <span id="viewer-count" style="color:var(--text-muted); font-size:13px; margin-left: 4px; font-weight:400;">(<span class="material-symbols-outlined" style="font-size:14px; vertical-align:text-bottom;">visibility</span> 1)</span></span>
+                    <span id="tab-lyric" onclick="switchRightTab('lyric')" style="cursor:pointer; font-weight:500; color:var(--text-muted); transition:0.2s;">Lời bài hát</span>
+                </div>
                 <div style="display:flex; gap: 8px; align-items: center;">
                     <button id="sound-btn" class="sync-btn" onclick="toggleSound()" title="Bật/Tắt âm báo tin nhắn"
                         style="display:flex;align-items:center;justify-content:center;"><span
@@ -2318,6 +2362,7 @@
                 </div>
             </div>
 
+            <div id="chat-area-container" style="display:flex; flex-direction:column; flex:1; overflow:hidden;">
             <div id="pinned-message-container" class="hidden"
                 style="background: rgba(255,255,255,0.05); padding: 10px 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 13px;">
                 <div style="display:flex; flex-direction: column; gap: 4px; overflow: hidden;">
@@ -2389,9 +2434,19 @@
                             class="material-symbols-outlined" style="font-size:20px;">send</span></button>
                 </div>
             </div>
+            </div>
+
+            <div id="lyric-area-container" class="hidden" style="display:flex; flex-direction:column; flex:1; overflow:hidden;">
+                <div class="lyric-box" id="lyric-box" style="flex:1; margin:0; border-radius:0; border:none; max-height:none; background:transparent;">
+                    <div id="lyric-content"></div>
+                </div>
+            </div>
         </div>
 
 
+        <button id="lyric-bubble-btn" class="chat-bubble-btn" onclick="toggleLyricBubble()" style="bottom: 152px; background: rgb(220, 53, 69);">
+            <span class="material-symbols-outlined" style="font-size:28px;">lyrics</span>
+        </button>
         <button id="chat-bubble-btn" class="chat-bubble-btn" onclick="toggleChatBubble()">
             <span class="bubble-icon-chat" style="display:flex;align-items:center;justify-content:center;"><span
                     class="material-symbols-outlined" style="font-size:28px;">chat</span></span>
@@ -2893,6 +2948,7 @@
                 if (res.currentVideoTitle) {
                     document.title = res.currentVideoTitle;
                     document.getElementById('welcome-title').innerText = res.currentVideoTitle;
+                    fetchLyrics(res.currentVideoTitle);
                 }
 
 
@@ -3300,6 +3356,7 @@
             initialVideoId = vidId;
             document.title = vidTitle;
             document.getElementById('welcome-title').innerText = vidTitle;
+            fetchLyrics(vidTitle);
         });
         socket.on('stopVideo', () => {
             if (player && typeof player.stopVideo === 'function') {
@@ -3311,6 +3368,8 @@
             window.currentVideoId = '';
             document.title = 'Trạm Nhạc Live';
             document.getElementById('welcome-title').innerText = 'Chưa có bài hát nào';
+            document.getElementById('lyric-content').innerHTML = '<div class="lyric-loading">Chưa có bài hát nào</div>';
+            stopLyricSync();
         });
         socket.on('loopModeUpdate', (mode) => {
             isLoopMode = mode;
@@ -3644,6 +3703,44 @@
 
         let chatBubbleOpen = false;
         let unreadCount = 0;
+
+        function switchRightTab(tabName) {
+            const tabChat = document.getElementById('tab-chat');
+            const tabLyric = document.getElementById('tab-lyric');
+            const chatArea = document.getElementById('chat-area-container');
+            const lyricArea = document.getElementById('lyric-area-container');
+            
+            if (tabName === 'chat') {
+                tabChat.style.fontWeight = '600';
+                tabChat.style.color = 'var(--accent)';
+                tabLyric.style.fontWeight = '500';
+                tabLyric.style.color = 'var(--text-muted)';
+                chatArea.classList.remove('hidden');
+                lyricArea.classList.add('hidden');
+            } else {
+                tabLyric.style.fontWeight = '600';
+                tabLyric.style.color = 'var(--accent)';
+                tabChat.style.fontWeight = '500';
+                tabChat.style.color = 'var(--text-muted)';
+                lyricArea.classList.remove('hidden');
+                chatArea.classList.add('hidden');
+            }
+        }
+
+        function toggleLyricBubble() {
+            const chatPanel = document.querySelector('.right-column');
+            if (chatBubbleOpen && document.getElementById('lyric-area-container').classList.contains('hidden')) {
+                // Chat is open, but looking at chat -> switch to lyric
+                switchRightTab('lyric');
+            } else if (chatBubbleOpen) {
+                // Lyric is open -> close entirely
+                toggleChatBubble();
+            } else {
+                // Closed -> open and switch to lyric
+                toggleChatBubble();
+                switchRightTab('lyric');
+            }
+        }
 
         function toggleChatBubble() {
             chatBubbleOpen = !chatBubbleOpen;
@@ -4152,6 +4249,184 @@
             renderChessBoard();
         });
 
+
+        let currentLyricData = null;
+        let lyricInterval = null;
+        let parsedLyrics = [];
+
+        async function fetchLyrics(title) {
+            document.getElementById('lyric-box').classList.remove('hidden');
+            document.getElementById('lyric-content').innerHTML = '<div class="lyric-loading">Đang tìm lời bài hát...</div>';
+
+            try {
+                let cleanTitle = title.replace(/\(.*?\)|\[.*?\]|\{.*?\}/g, ' ')
+                    .replace(/\b(official|music video|lyric|lyrics|audio|mv|vietsub|4k|hd|studio version)\b/gi, ' ')
+                    .replace(/[-|~"']/g, ' ')
+                    .replace(/\s+/g, ' ')
+                    .trim();
+
+                if (cleanTitle.length < 2) cleanTitle = title.split('-')[0].trim();
+
+                console.log("--- LYRIC SEARCH DEBUG ---");
+                console.log("Original Title:", title);
+                console.log("Clean Title for Search:", cleanTitle);
+                const searchUrl = `https://lrclib.net/api/search?q=${encodeURIComponent(cleanTitle)}`;
+                console.log("API URL:", searchUrl);
+
+                let res = await fetch(searchUrl);
+                let data = await res.json();
+
+                console.log("Results found:", data ? data.length : 0);
+
+                if ((!data || data.length === 0) && cleanTitle.match(/\b(ft|feat)\b/i)) {
+                    let noFeatTitle = cleanTitle.replace(/\b(ft\.?|feat\.?)\b.*/gi, '').trim();
+                    console.log("Retry without 'feat':", noFeatTitle);
+                    res = await fetch(`https://lrclib.net/api/search?q=${encodeURIComponent(noFeatTitle)}`);
+                    data = await res.json();
+                    console.log("Retry Results found:", data ? data.length : 0);
+                }
+
+                if (data && data.length > 0) {
+                    console.log(`First API Result: ${data[0].trackName} - ${data[0].artistName} (Duration: ${data[0].duration}s)`);
+
+                    let videoDuration = 0;
+                    for (let i = 0; i < 15; i++) {
+                        if (player && typeof player.getDuration === 'function') {
+                            videoDuration = player.getDuration();
+                            if (videoDuration > 0) break;
+                        }
+                        await new Promise(r => setTimeout(r, 200));
+                    }
+
+                    console.log("YouTube Video Duration:", videoDuration, "seconds");
+
+                    let found = null;
+                    if (videoDuration > 0) {
+                        let minDiff = Infinity;
+                        for (let item of data) {
+                            if (item.syncedLyrics && item.duration) {
+                                let diff = Math.abs(item.duration - videoDuration);
+                                if (diff < minDiff) {
+                                    minDiff = diff;
+                                    found = item;
+                                }
+                            }
+                        }
+                        if (found) {
+                            console.log(`Closest duration match found with diff: ${minDiff}s`);
+                        }
+                    }
+
+                    if (!found) {
+                        console.log("No duration info available, falling back to first synced lyrics...");
+                        found = data.find(item => item.syncedLyrics);
+                    }
+                    if (!found) {
+                        console.log("No synced lyrics found, falling back to first plain lyrics...");
+                        found = data[0];
+                    }
+
+                    if (found) {
+                        console.log(`Chosen Lyric: ${found.trackName} - ${found.artistName} (Duration: ${found.duration}s, Synced: ${!!found.syncedLyrics})`);
+                    }
+                    console.log("--------------------------");
+
+                    if (found.syncedLyrics) {
+                        parseLyrics(found.syncedLyrics);
+                        startLyricSync();
+                    } else if (found.plainLyrics) {
+                        document.getElementById('lyric-content').innerHTML = `<div style="white-space: pre-line; color: var(--text-muted); font-size: 15px;">${found.plainLyrics}</div>`;
+                        stopLyricSync();
+                    } else {
+                        document.getElementById('lyric-content').innerHTML = '<div class="lyric-loading">Không tìm thấy lời bài hát</div>';
+                        stopLyricSync();
+                    }
+                } else {
+                    document.getElementById('lyric-content').innerHTML = '<div class="lyric-loading">Không tìm thấy lời bài hát</div>';
+                    stopLyricSync();
+                }
+            } catch (e) {
+                console.error("Lỗi khi tải lyric", e);
+                document.getElementById('lyric-content').innerHTML = '<div class="lyric-loading">Lỗi khi tải lời bài hát</div>';
+                stopLyricSync();
+            }
+        }
+
+        function parseLyrics(lrc) {
+            const lines = lrc.split('\n');
+            parsedLyrics = [];
+            let html = '';
+
+            lines.forEach((line, index) => {
+                const match = line.match(/\[(\d{2}):(\d{2})\.(\d{2,3})\](.*)/);
+                if (match) {
+                    const min = parseInt(match[1]);
+                    const sec = parseInt(match[2]);
+                    const ms = parseInt(match[3].padEnd(3, '0'));
+                    const time = min * 60 + sec + ms / 1000;
+                    const text = match[4].trim();
+                    if (text) {
+                        parsedLyrics.push({ time, text, index: parsedLyrics.length });
+                        html += `<div class="lyric-line" id="lyric-line-${parsedLyrics.length - 1}" onclick="seekLyric(${time})">${text}</div>`;
+                    }
+                }
+            });
+
+            if (parsedLyrics.length === 0) {
+                document.getElementById('lyric-content').innerHTML = '<div class="lyric-loading">Không thể đồng bộ lời bài hát</div>';
+            } else {
+                document.getElementById('lyric-content').innerHTML = html;
+            }
+        }
+
+        function seekLyric(time) {
+            if (myRole === 'admin' && player && typeof player.seekTo === 'function') {
+                player.seekTo(time, true);
+                socket.emit('adminPlay', time);
+            }
+        }
+
+        function startLyricSync() {
+            stopLyricSync();
+            lyricInterval = setInterval(() => {
+                if (!player || typeof player.getCurrentTime !== 'function') return;
+                const currentTime = player.getCurrentTime();
+
+                let activeIndex = -1;
+                for (let i = 0; i < parsedLyrics.length; i++) {
+                    if (currentTime >= parsedLyrics[i].time) {
+                        activeIndex = i;
+                    } else {
+                        break;
+                    }
+                }
+
+                if (activeIndex !== -1) {
+                    const currentActive = document.querySelector('.lyric-line.active');
+                    const newActive = document.getElementById(`lyric-line-${activeIndex}`);
+
+                    if (currentActive !== newActive) {
+                        if (currentActive) currentActive.classList.remove('active');
+                        if (newActive) {
+                            newActive.classList.add('active');
+                            const box = document.getElementById('lyric-box');
+                            const offsetTop = newActive.offsetTop - box.offsetTop;
+                            box.scrollTo({
+                                top: offsetTop - box.clientHeight / 3,
+                                behavior: 'smooth'
+                            });
+                        }
+                    }
+                }
+            }, 200);
+        }
+
+        function stopLyricSync() {
+            if (lyricInterval) {
+                clearInterval(lyricInterval);
+                lyricInterval = null;
+            }
+        }
 
         let myCaroSide = null;
         let currentCaroGame = null;

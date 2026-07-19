@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
     <title>2937.ML</title>
     <!-- Display font for headings/logo (character), body relies on the
          native system font stack instead of loading Inter for everything -->
@@ -567,6 +567,9 @@
                 <div style="display: flex; justify-content: center; gap: 40px; margin-bottom: 40px; align-items: center;">
                     <div id="uno-deck" onclick="drawUnoCard()" style="width: 80px; height: 120px; background: #222; border: 2px solid white; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: white; font-weight: bold;">
                         Bốc bài
+                    </div>
+                    <div id="uno-pass" onclick="passUnoTurn()" style="width: 80px; height: 120px; background: #555; border: 2px solid white; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: white; font-weight: bold;">
+                        Bỏ lượt
                     </div>
                     <div id="uno-discard" style="width: 80px; height: 120px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 24px; color: white;">
                         --

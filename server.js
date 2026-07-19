@@ -57,11 +57,158 @@ let caroGame = {
 };
 
 let chessGame = {
-    fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-    playerW: null, playerB: null,
-    playerWName: '', playerBName: '',
-    winner: null
+    playerW: null, playerB: null, playerWName: '', playerBName: '',
+    fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', turn: 'w', winner: null
 };
+
+// --- XIANGQI STATE & RULES ---
+function initXiangqiBoard() {
+    const b = Array(10).fill(null).map(() => Array(9).fill(null));
+    b[0] = ['b_r', 'b_h', 'b_e', 'b_a', 'b_k', 'b_a', 'b_e', 'b_h', 'b_r'];
+    b[2][1] = 'b_c'; b[2][7] = 'b_c';
+    b[3][0] = 'b_p'; b[3][2] = 'b_p'; b[3][4] = 'b_p'; b[3][6] = 'b_p'; b[3][8] = 'b_p';
+    b[9] = ['r_r', 'r_h', 'r_e', 'r_a', 'r_k', 'r_a', 'r_e', 'r_h', 'r_r'];
+    b[7][1] = 'r_c'; b[7][7] = 'r_c';
+    b[6][0] = 'r_p'; b[6][2] = 'r_p'; b[6][4] = 'r_p'; b[6][6] = 'r_p'; b[6][8] = 'r_p';
+    return b;
+}
+
+function checkFlyingGeneral(board) {
+    let r_k, b_k;
+    for (let r = 0; r < 10; r++) {
+        for (let c = 0; c < 9; c++) {
+            if (board[r][c] === 'r_k') r_k = {r, c};
+            if (board[r][c] === 'b_k') b_k = {r, c};
+        }
+    }
+    if (r_k && b_k && r_k.c === b_k.c) {
+        let count = 0;
+        for (let r = b_k.r + 1; r < r_k.r; r++) {
+            if (board[r][r_k.c]) count++;
+        }
+        if (count === 0) return true; // invalid state
+    }
+    return false;
+}
+
+function isValidXiangqiMove(board, piece, from, to) {
+    const isRed = piece.startsWith('r_');
+    const type = piece.split('_')[1];
+    
+    const dr = to.r - from.r;
+    const dc = to.c - from.c;
+    const absDr = Math.abs(dr);
+    const absDc = Math.abs(dc);
+    
+    if (dr === 0 && dc === 0) return false;
+    
+    const targetPiece = board[to.r][to.c];
+    if (targetPiece && targetPiece.startsWith(isRed ? 'r_' : 'b_')) return false;
+
+    const countPiecesBetween = () => {
+        if (dr !== 0 && dc !== 0) return -1;
+        let count = 0;
+        if (dr === 0) {
+            const minC = Math.min(from.c, to.c) + 1;
+            const maxC = Math.max(from.c, to.c) - 1;
+            for (let c = minC; c <= maxC; c++) if (board[from.r][c]) count++;
+        } else {
+            const minR = Math.min(from.r, to.r) + 1;
+            const maxR = Math.max(from.r, to.r) - 1;
+            for (let r = minR; r <= maxR; r++) if (board[r][from.c]) count++;
+        }
+        return count;
+    };
+    
+    const isRedPalace = (r, c) => r >= 7 && r <= 9 && c >= 3 && c <= 5;
+    const isBlackPalace = (r, c) => r >= 0 && r <= 2 && c >= 3 && c <= 5;
+
+    switch (type) {
+        case 'p':
+            if (isRed) {
+                if (from.r >= 5) return dr === -1 && dc === 0;
+                return (dr === -1 && dc === 0) || (dr === 0 && absDc === 1);
+            } else {
+                if (from.r <= 4) return dr === 1 && dc === 0;
+                return (dr === 1 && dc === 0) || (dr === 0 && absDc === 1);
+            }
+        case 'c':
+            const cBetween = countPiecesBetween();
+            if (cBetween === -1) return false;
+            return targetPiece ? cBetween === 1 : cBetween === 0;
+        case 'r':
+            return countPiecesBetween() === 0;
+        case 'h':
+            if (absDr === 2 && absDc === 1) return !board[from.r + (dr > 0 ? 1 : -1)][from.c];
+            if (absDr === 1 && absDc === 2) return !board[from.r][from.c + (dc > 0 ? 1 : -1)];
+            return false;
+        case 'e':
+            if (absDr !== 2 || absDc !== 2) return false;
+            if (isRed && to.r <= 4) return false;
+            if (!isRed && to.r >= 5) return false;
+            return !board[from.r + dr / 2][from.c + dc / 2];
+        case 'a':
+            if (absDr !== 1 || absDc !== 1) return false;
+            return isRed ? isRedPalace(to.r, to.c) : isBlackPalace(to.r, to.c);
+        case 'k':
+            if (absDr + absDc !== 1) return false;
+            return isRed ? isRedPalace(to.r, to.c) : isBlackPalace(to.r, to.c);
+    }
+    return false;
+}
+
+let xiangqiGame = {
+    playerR: null, playerB: null, playerRName: '', playerBName: '',
+    board: initXiangqiBoard(), turn: 'R', winner: null
+};
+
+// --- UNO STATE ---
+let unoGame = {
+    players: [], deck: [], discardPile: [], turnIndex: 0, direction: 1,
+    active: false, currentColor: '', winner: null
+};
+let unoHands = {}; // socket.id -> array of cards
+
+function initUnoDeck() {
+    let deck = [];
+    for (const color of ['red', 'green', 'blue', 'yellow']) {
+        deck.push({ color, value: '0' });
+        for (let i = 1; i <= 9; i++) { deck.push({ color, value: i.toString() }); deck.push({ color, value: i.toString() }); }
+        deck.push({ color, value: 'skip' }); deck.push({ color, value: 'skip' });
+        deck.push({ color, value: 'reverse' }); deck.push({ color, value: 'reverse' });
+        deck.push({ color, value: '+2' }); deck.push({ color, value: '+2' });
+    }
+    for (let i = 0; i < 4; i++) deck.push({ color: 'black', value: 'wild' });
+    return deck.sort(() => Math.random() - 0.5);
+}
+function nextUnoTurn() {
+    unoGame.turnIndex += unoGame.direction;
+    if (unoGame.turnIndex >= unoGame.players.length) unoGame.turnIndex = 0;
+    if (unoGame.turnIndex < 0) unoGame.turnIndex = unoGame.players.length - 1;
+}
+function drawCardsForPlayer(id, count) {
+    const p = unoGame.players.find(x => x.id === id);
+    if (!p) return;
+    for (let i = 0; i < count; i++) {
+        if (unoGame.deck.length === 0 && unoGame.discardPile.length > 1) {
+            const topCard = unoGame.discardPile.pop();
+            unoGame.deck = unoGame.discardPile.sort(() => Math.random() - 0.5);
+            unoGame.discardPile = [topCard];
+        }
+        if (unoGame.deck.length > 0) {
+            unoHands[id].push(unoGame.deck.shift());
+            p.handCount++;
+        }
+    }
+}
+function getPublicUnoState() {
+    return {
+        players: unoGame.players, turnIndex: unoGame.turnIndex, currentColor: unoGame.currentColor,
+        topDiscard: unoGame.discardPile.length ? unoGame.discardPile[unoGame.discardPile.length - 1] : null,
+        active: unoGame.active, winner: unoGame.winner, deckCount: unoGame.deck.length
+    };
+}
+
 function checkCaroWinner(row, col, player) {
     const board = caroGame.board;
     const dirs = [[0, 1], [1, 0], [1, 1], [1, -1]];
@@ -246,7 +393,7 @@ io.on('connection', (socket) => {
                 socket.role = 'admin';
                 socket.nameColor = nameColor || '#fbbc04';
                 connectedUsers.set(socket.id, { name: socket.username, role: 'admin', nameColor: socket.nameColor });
-                socket.emit('authResult', { success: true, role: 'admin', currentVideoId, currentVideoTitle, playlist, pinnedMessage, loopMode, drawGame: drawGame.active ? { active: true, state: drawGame.state, scores: drawGame.scores } : null, caroGame, chessGame });
+                socket.emit('authResult', { success: true, role: 'admin', currentVideoId, currentVideoTitle, playlist, pinnedMessage, loopMode, drawGame: drawGame.active ? { active: true, state: drawGame.state, scores: drawGame.scores } : null, caroGame, chessGame, xiangqiGame, unoPublicState: getPublicUnoState() });
                 io.emit('newMessage', { id: 'sys-' + Date.now(), name: 'Hệ thống 🤖', text: `👑 Admin [${socket.username}] đã lên sàn điều khiển nhạc!`, role: 'system' });
                 io.emit('activeUsersList', getDrawUserList());
             } else {
@@ -257,7 +404,7 @@ io.on('connection', (socket) => {
             socket.role = 'member';
             socket.nameColor = nameColor || '#aaaaaa';
             connectedUsers.set(socket.id, { name: socket.username, role: 'member', nameColor: socket.nameColor });
-            socket.emit('authResult', { success: true, role: 'member', currentVideoId, currentVideoTitle, playlist, pinnedMessage, loopMode, drawGame: drawGame.active ? { active: true, state: drawGame.state, scores: drawGame.scores } : null, caroGame, chessGame });
+            socket.emit('authResult', { success: true, role: 'member', currentVideoId, currentVideoTitle, playlist, pinnedMessage, loopMode, drawGame: drawGame.active ? { active: true, state: drawGame.state, scores: drawGame.scores } : null, caroGame, chessGame, xiangqiGame, unoPublicState: getPublicUnoState() });
             io.emit('newMessage', { id: 'sys-' + Date.now(), name: 'Hệ thống 🤖', text: `👋 Chào mừng [${socket.username}] đã tham gia phòng nhạc!`, role: 'system' });
             io.emit('activeUsersList', getDrawUserList());
         }
@@ -857,26 +1004,141 @@ io.on('connection', (socket) => {
     socket.on('xiangqiChallengeRespond', ({ challengerId, accept }) => {
         if (!connectedUsers.has(challengerId)) return;
         if (accept) {
+            xiangqiGame.playerR = challengerId;
+            xiangqiGame.playerRName = connectedUsers.get(challengerId).name;
+            xiangqiGame.playerB = socket.id;
+            xiangqiGame.playerBName = socket.username;
+            xiangqiGame.board = initXiangqiBoard();
+            xiangqiGame.turn = 'R';
+            xiangqiGame.winner = null;
+            io.emit('xiangqiUpdate', xiangqiGame);
             io.emit('newMessage', { id: 'sys-' + Date.now(), name: 'Cờ Tướng 🀄', text: `⚔️ **${socket.username}** đã chấp nhận thách đấu của **${connectedUsers.get(challengerId).name}**!`, role: 'system' });
         } else {
             io.to(challengerId).emit('newMessage', { id: 'sys-' + Date.now(), name: 'Cờ Tướng 🀄', text: `❌ **${socket.username}** đã từ chối lời thách đấu Cờ Tướng của bạn!`, role: 'system' });
         }
     });
 
+    socket.on('xiangqiMove', ({ from, to }) => {
+        if (!xiangqiGame.playerR || !xiangqiGame.playerB || xiangqiGame.winner) return;
+        const isRed = xiangqiGame.playerR === socket.id;
+        const isBlack = xiangqiGame.playerB === socket.id;
+        if (!isRed && !isBlack) return;
+        if ((isRed && xiangqiGame.turn !== 'R') || (isBlack && xiangqiGame.turn !== 'B')) return;
+
+        const piece = xiangqiGame.board[from.r][from.c];
+        if (!piece || (isRed && !piece.startsWith('r_')) || (isBlack && !piece.startsWith('b_'))) return;
+
+        if (!isValidXiangqiMove(xiangqiGame.board, piece, from, to)) return;
+
+        const targetPiece = xiangqiGame.board[to.r][to.c];
+        
+        // Check flying general
+        const tempBoard = xiangqiGame.board.map(row => [...row]);
+        tempBoard[to.r][to.c] = piece;
+        tempBoard[from.r][from.c] = null;
+        if (checkFlyingGeneral(tempBoard)) return;
+
+        if (targetPiece === 'r_k') xiangqiGame.winner = 'B';
+        else if (targetPiece === 'b_k') xiangqiGame.winner = 'R';
+
+        xiangqiGame.board[to.r][to.c] = piece;
+        xiangqiGame.board[from.r][from.c] = null;
+        xiangqiGame.turn = xiangqiGame.turn === 'R' ? 'B' : 'R';
+        io.emit('xiangqiUpdate', xiangqiGame);
+    });
+
     socket.on('xiangqiLeave', () => {
-        io.emit('newMessage', { id: 'sys-' + Date.now(), name: 'Cờ Tướng 🀄', text: `🏃 **${socket.username}** đã rời bàn Cờ Tướng.`, role: 'system' });
+        if (xiangqiGame.playerR === socket.id || xiangqiGame.playerB === socket.id) {
+            xiangqiGame.playerR = null; xiangqiGame.playerB = null;
+            xiangqiGame.winner = null;
+            xiangqiGame.board = initXiangqiBoard();
+            io.emit('xiangqiUpdate', xiangqiGame);
+            io.emit('newMessage', { id: 'sys-' + Date.now(), name: 'Cờ Tướng 🀄', text: `🏃 **${socket.username}** đã rời bàn Cờ Tướng.`, role: 'system' });
+        }
     });
 
     socket.on('unoJoin', () => {
-        io.emit('newMessage', { id: 'sys-' + Date.now(), name: 'UNO 🃏', text: `🎮 **${socket.username}** đã tham gia bàn UNO.`, role: 'system' });
+        if (unoGame.active) return;
+        if (!unoGame.players.find(p => p.id === socket.id)) {
+            unoGame.players.push({ id: socket.id, name: socket.username, handCount: 0 });
+            unoHands[socket.id] = [];
+            io.emit('unoUpdate', getPublicUnoState());
+            io.emit('newMessage', { id: 'sys-' + Date.now(), name: 'UNO 🃏', text: `🎮 **${socket.username}** đã tham gia bàn UNO.`, role: 'system' });
+        }
     });
 
     socket.on('unoStart', () => {
-        io.emit('newMessage', { id: 'sys-' + Date.now(), name: 'UNO 🃏', text: `🚀 Ván UNO đã được bắt đầu! (Tính năng đang được hoàn thiện)`, role: 'system' });
+        if (unoGame.active || unoGame.players.length < 2) return;
+        unoGame.active = true;
+        unoGame.deck = initUnoDeck();
+        unoGame.discardPile = [];
+        unoGame.turnIndex = 0;
+        unoGame.direction = 1;
+        unoGame.winner = null;
+        
+        unoGame.players.forEach(p => {
+            unoHands[p.id] = unoGame.deck.splice(0, 7);
+            p.handCount = 7;
+        });
+        
+        let firstCard = unoGame.deck.shift();
+        while(firstCard.color === 'black') {
+            unoGame.deck.push(firstCard);
+            firstCard = unoGame.deck.shift();
+        }
+        unoGame.discardPile.push(firstCard);
+        unoGame.currentColor = firstCard.color;
+        
+        unoGame.players.forEach(p => io.to(p.id).emit('unoHand', unoHands[p.id]));
+        io.emit('unoUpdate', getPublicUnoState());
+        io.emit('newMessage', { id: 'sys-' + Date.now(), name: 'UNO 🃏', text: `🚀 Ván UNO đã được bắt đầu!`, role: 'system' });
+    });
+
+    socket.on('unoPlayCard', (cardIndex) => {
+        if (!unoGame.active || unoGame.winner) return;
+        const p = unoGame.players[unoGame.turnIndex];
+        if (p.id !== socket.id) return;
+        const hand = unoHands[socket.id];
+        const card = hand[cardIndex];
+        if (!card) return;
+        const topCard = unoGame.discardPile[unoGame.discardPile.length - 1];
+        
+        if (card.color !== 'black' && card.color !== unoGame.currentColor && card.value !== topCard.value) return;
+        
+        hand.splice(cardIndex, 1);
+        unoGame.discardPile.push(card);
+        unoGame.currentColor = card.color === 'black' ? ['red','green','blue','yellow'][Math.floor(Math.random()*4)] : card.color;
+        p.handCount = hand.length;
+        
+        if (hand.length === 0) {
+            unoGame.winner = socket.username;
+            unoGame.active = false;
+        } else {
+            if (card.value === 'reverse') unoGame.direction *= -1;
+            nextUnoTurn();
+            if (card.value === 'skip') nextUnoTurn();
+            if (card.value === '+2') {
+                drawCardsForPlayer(unoGame.players[unoGame.turnIndex].id, 2);
+                nextUnoTurn();
+            }
+        }
+        io.to(socket.id).emit('unoHand', hand);
+        io.emit('unoUpdate', getPublicUnoState());
     });
 
     socket.on('unoDraw', () => {
-        io.emit('newMessage', { id: 'sys-' + Date.now(), name: 'UNO 🃏', text: `🃏 **${socket.username}** vừa bốc một lá bài.`, role: 'system' });
+        if (!unoGame.active || unoGame.winner) return;
+        if (unoGame.players[unoGame.turnIndex].id !== socket.id) return;
+        drawCardsForPlayer(socket.id, 1);
+        io.to(socket.id).emit('unoHand', unoHands[socket.id]);
+        io.emit('unoUpdate', getPublicUnoState());
+    });
+
+    socket.on('unoPass', () => {
+        if (!unoGame.active || unoGame.winner) return;
+        if (unoGame.players[unoGame.turnIndex].id !== socket.id) return;
+        nextUnoTurn();
+        io.emit('unoUpdate', getPublicUnoState());
     });
 
     socket.on('disconnect', () => {
@@ -911,6 +1173,19 @@ io.on('connection', (socket) => {
                 chessGame.winner = null;
             }
             io.emit('chessUpdate', chessGame);
+        }
+        if (xiangqiGame.playerR === socket.id || xiangqiGame.playerB === socket.id) {
+            xiangqiGame.playerR = null; xiangqiGame.playerB = null;
+            xiangqiGame.winner = null;
+            xiangqiGame.board = initXiangqiBoard();
+            io.emit('xiangqiUpdate', xiangqiGame);
+        }
+
+        const unoPlayerIdx = unoGame.players.findIndex(p => p.id === socket.id);
+        if (unoPlayerIdx !== -1) {
+            unoGame.players.splice(unoPlayerIdx, 1);
+            if (unoGame.players.length < 2) unoGame.active = false;
+            io.emit('unoUpdate', getPublicUnoState());
         }
     });
 });

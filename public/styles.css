@@ -404,7 +404,10 @@
         .left-column.mobile-mini .video-container::before {
             content: '';
             position: absolute;
-            top: -4px; left: -4px; right: -4px; bottom: -4px;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
             background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
             z-index: -1;
             border-radius: calc(var(--radius-md) + 2px);
@@ -413,17 +416,33 @@
         }
 
         @keyframes glowing {
-            0% { background-position: 0 0; }
-            50% { background-position: 400% 0; }
-            100% { background-position: 0 0; }
+            0% {
+                background-position: 0 0;
+            }
+
+            50% {
+                background-position: 400% 0;
+            }
+
+            100% {
+                background-position: 0 0;
+            }
         }
 
         @keyframes pulseVisualizer {
-            0% { filter: blur(6px); transform: scale(1); }
-            100% { filter: blur(10px); transform: scale(1.02); }
+            0% {
+                filter: blur(6px);
+                transform: scale(1);
+            }
+
+            100% {
+                filter: blur(10px);
+                transform: scale(1.02);
+            }
         }
 
         @media (max-width: 900px) {
+
             .left-column.not-home .video-container,
             .left-column.mobile-mini .video-container {
                 right: 20px;
@@ -823,6 +842,7 @@
 
         .chat-messages {
             flex: 1;
+            min-height: 0;
             overflow-y: auto;
             padding: 12px 10px;
             display: flex;
@@ -841,8 +861,15 @@
         }
 
         @keyframes msgFadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Other people's messages => left */
@@ -1003,8 +1030,15 @@
         }
 
         @keyframes replySlideIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .reply-bar-content {
@@ -2669,9 +2703,8 @@
                 position: fixed;
                 top: 0;
                 left: 0;
-                width: 100%;
-                height: 100vh;
-                height: 100dvh;
+                right: 0;
+                bottom: 0;
                 z-index: 500;
                 animation: mobileSheetUp 0.35s cubic-bezier(0.32, 0.72, 0, 1);
                 padding-bottom: 0;
@@ -2744,8 +2777,8 @@
             }
 
             .chat-input-area {
-                padding: 10px 12px;
-                padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+                padding: 12px;
+                padding-bottom: max(7vh, env(safe-area-inset-bottom));
                 background: var(--bg-color);
                 border-top: 1px solid rgba(255, 255, 255, 0.06);
             }

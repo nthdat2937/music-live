@@ -341,6 +341,8 @@ socket.on('authResult', (res) => {
         if (res.pinnedMessage) updatePinnedMessageUI(res.pinnedMessage);
         if (res.caroGame) updateCaroUI(res.caroGame);
         if (res.chessGame) socket._callbacks['$chessUpdate'][0](res.chessGame);
+        if (res.xiangqiGame && socket._callbacks['$xiangqiUpdate']) socket._callbacks['$xiangqiUpdate'][0](res.xiangqiGame);
+        if (res.unoPublicState && socket._callbacks['$unoUpdate']) socket._callbacks['$unoUpdate'][0](res.unoPublicState);
     } else {
         alert(res.message);
     }
@@ -1614,7 +1616,7 @@ function respondChessChallenge(accept) {
 }
 
 socket.on('activeUsersList', (users) => {
-    ['chess-challenge-target', 'caro-challenge-target'].forEach(id => {
+    ['chess-challenge-target', 'caro-challenge-target', 'xiangqi-challenge-target'].forEach(id => {
         const select = document.getElementById(id);
         if (select) {
             const prevVal = select.value;
@@ -2016,20 +2018,96 @@ socket.on('caroUpdate', updateCaroUI);
 initCaroBoard();
 
 // --- XIANGQI GAME (Cờ Tướng) ---
+let myXiangqiSide = null;
+let currentXiangqiGame = null;
+let xiangqiSelected = null;
+
+function renderXiangqiBoard(game) {
+    const boardEl = document.getElementById('xiangqi-board');
+    boardEl.innerHTML = '';
+    
+    for (let r = 0; r < 10; r++) {
+        for (let c = 0; c < 9; c++) {
+            const cell = document.createElement('div');
+            cell.style.width = '40px'; cell.style.height = '40px';
+            cell.style.border = '1px solid #c9a67f';
+            cell.style.position = 'relative'; cell.style.display = 'flex';
+            cell.style.alignItems = 'center'; cell.style.justifyContent = 'center';
+            cell.onclick = () => onXiangqiClick(r, c);
+            
+            const piece = game.board[r][c];
+            if (piece) {
+                const isRed = piece.startsWith('r_');
+                const type = piece.split('_')[1];
+                const pieceEl = document.createElement('div');
+                pieceEl.style.width = '34px'; pieceEl.style.height = '34px';
+                pieceEl.style.borderRadius = '50%'; pieceEl.style.background = '#e3c498';
+                pieceEl.style.border = `2px solid ${isRed ? '#d32f2f' : '#333'}`;
+                pieceEl.style.color = isRed ? '#d32f2f' : '#333';
+                pieceEl.style.fontWeight = 'bold'; pieceEl.style.display = 'flex';
+                pieceEl.style.alignItems = 'center'; pieceEl.style.justifyContent = 'center';
+                pieceEl.style.fontSize = '18px'; pieceEl.style.boxShadow = '2px 2px 4px rgba(0,0,0,0.3)';
+                pieceEl.style.cursor = 'pointer';
+                
+                const labels = { 'r': isRed ? '俥' : '車', 'h': isRed ? '傌' : '馬', 'e': isRed ? '相' : '象', 'a': isRed ? '仕' : '士', 'k': isRed ? '帥' : '將', 'c': isRed ? '炮' : '砲', 'p': isRed ? '兵' : '卒' };
+                pieceEl.innerText = labels[type];
+                
+                if (xiangqiSelected && xiangqiSelected.r === r && xiangqiSelected.c === c) {
+                    pieceEl.style.background = '#a67c52'; pieceEl.style.color = '#fff';
+                }
+                cell.appendChild(pieceEl);
+            }
+            if (xiangqiSelected && !piece && (myXiangqiSide === game.turn)) {
+                // simple dot for possible move
+                const dot = document.createElement('div');
+                dot.style.width='10px'; dot.style.height='10px'; dot.style.borderRadius='50%'; dot.style.background='rgba(0,0,0,0.2)';
+                cell.appendChild(dot);
+            }
+            boardEl.appendChild(cell);
+        }
+    }
+}
+function onXiangqiClick(r, c) {
+    if (!currentXiangqiGame || currentXiangqiGame.winner || myXiangqiSide !== currentXiangqiGame.turn) return;
+    const piece = currentXiangqiGame.board[r][c];
+    
+    if (xiangqiSelected) {
+        if (piece && piece.startsWith(myXiangqiSide.toLowerCase() + '_')) {
+            xiangqiSelected = { r, c };
+            renderXiangqiBoard(currentXiangqiGame);
+        } else {
+            socket.emit('xiangqiMove', { from: xiangqiSelected, to: { r, c } });
+            xiangqiSelected = null;
+        }
+    } else {
+        if (piece && piece.startsWith(myXiangqiSide.toLowerCase() + '_')) {
+            xiangqiSelected = { r, c };
+            renderXiangqiBoard(currentXiangqiGame);
+        }
+    }
+}
+
+socket.on('xiangqiUpdate', (game) => {
+    currentXiangqiGame = game;
+    myXiangqiSide = (game.playerR === socket.id) ? 'R' : (game.playerB === socket.id ? 'B' : null);
+    const isPlaying = game.playerR || game.playerB;
+    
+    document.getElementById('xiangqi-challenge-target').classList.toggle('hidden', isPlaying || myXiangqiSide !== null);
+    document.getElementById('btn-send-xiangqi-challenge').classList.toggle('hidden', isPlaying || myXiangqiSide !== null);
+    document.getElementById('btn-leave-xiangqi').classList.toggle('hidden', myXiangqiSide === null && myRole !== 'admin');
+    document.getElementById('xiangqi-board-wrapper').classList.toggle('hidden', !isPlaying);
+    
+    let status = '';
+    if (game.winner) status = `🎉 <span style="color: ${game.winner==='R'?'#d32f2f':'#333'};">${game.winner==='R'?game.playerRName:game.playerBName}</span> ĐÃ CHIẾN THẮNG!`;
+    else if (!game.playerR || !game.playerB) status = 'Chọn người thách đấu Cờ Tướng';
+    else status = `Lượt của: <span style="color: ${game.turn==='R'?'#d32f2f':'#333'};">${game.turn==='R'?game.playerRName:game.playerBName}</span> ${myXiangqiSide===game.turn ? '(Tới bạn!)' : ''}`;
+    
+    document.getElementById('xiangqi-status').innerHTML = status;
+    if (isPlaying) renderXiangqiBoard(game);
+});
+
 function openXiangqiGame() {
     document.getElementById('xiangqi-game-overlay').classList.remove('hidden');
-    const select = document.getElementById('xiangqi-challenge-target');
-    select.innerHTML = '<option value="">-- Chọn đối thủ --</option>';
-    document.querySelectorAll('#draw-user-list .user-item').forEach(el => {
-        const id = el.getAttribute('data-id');
-        const name = el.innerText;
-        if (id && id !== socket.id) {
-            const opt = document.createElement('option');
-            opt.value = id;
-            opt.innerText = name;
-            select.appendChild(opt);
-        }
-    });
 }
 function closeXiangqiGame() {
     document.getElementById('xiangqi-game-overlay').classList.add('hidden');
@@ -2059,6 +2137,53 @@ socket.on('xiangqiChallengeReceived', (data) => {
 });
 
 // --- UNO GAME ---
+let currentUnoState = null;
+socket.on('unoUpdate', (state) => {
+    currentUnoState = state;
+    document.getElementById('uno-players-list').innerText = state.players.map(p => `${p.name} (${p.handCount} lá)`).join(' - ');
+    if (state.active || state.winner) {
+        document.getElementById('uno-lobby').classList.add('hidden');
+        document.getElementById('uno-board').classList.remove('hidden');
+        
+        const topCard = state.topDiscard;
+        const discardEl = document.getElementById('uno-discard');
+        if (topCard) {
+            discardEl.style.background = topCard.color === 'black' ? '#222' : topCard.color;
+            discardEl.innerText = topCard.value === 'skip' ? '⊘' : (topCard.value === 'reverse' ? '⇄' : topCard.value);
+            discardEl.style.border = `4px solid ${state.currentColor === 'black' ? 'white' : state.currentColor}`;
+        }
+        
+        let status = '';
+        if (state.winner) status = `🎉 ${state.winner} ĐÃ THẮNG UNO!`;
+        else {
+            const p = state.players[state.turnIndex];
+            status = `Lượt của: ${p.name}`;
+            if (p.id === socket.id) status += ' (Tới bạn!)';
+        }
+        document.getElementById('uno-status').innerText = status;
+    } else {
+        document.getElementById('uno-lobby').classList.remove('hidden');
+        document.getElementById('uno-board').classList.add('hidden');
+    }
+});
+
+socket.on('unoHand', (hand) => {
+    const handEl = document.getElementById('uno-hand');
+    handEl.innerHTML = '';
+    hand.forEach((card, idx) => {
+        const c = document.createElement('div');
+        c.style.width = '60px'; c.style.height = '90px';
+        c.style.background = card.color === 'black' ? '#222' : card.color;
+        c.style.border = '2px solid white'; c.style.borderRadius = '6px';
+        c.style.display = 'flex'; c.style.alignItems = 'center'; c.style.justifyContent = 'center';
+        c.style.color = 'white'; c.style.fontWeight = 'bold'; c.style.fontSize = '20px';
+        c.style.cursor = 'pointer';
+        c.innerText = card.value === 'skip' ? '⊘' : (card.value === 'reverse' ? '⇄' : card.value);
+        c.onclick = () => socket.emit('unoPlayCard', idx);
+        handEl.appendChild(c);
+    });
+});
+
 function openUnoGame() {
     document.getElementById('uno-game-overlay').classList.remove('hidden');
 }
@@ -2074,6 +2199,10 @@ function startUnoGame() {
 }
 function drawUnoCard() {
     socket.emit('unoDraw');
+}
+
+function passUnoTurn() {
+    socket.emit('unoPass');
 }
 
 // --- MINI PLAYER DRAG LOGIC ---

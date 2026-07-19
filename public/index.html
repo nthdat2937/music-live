@@ -5,8 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2937.ML</title>
+    <!-- Display font for headings/logo (character), body relies on the
+         native system font stack instead of loading Inter for everything -->
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
@@ -190,20 +192,28 @@
                             <span class="material-symbols-outlined" style="font-size:20px;">chess</span>
                             Cờ Vua
                         </button>
+                        <button id="btn-open-xiangqi" class="btn-start-game" onclick="openXiangqiGame()">
+                            <span class="material-symbols-outlined" style="font-size:20px;">sports_esports</span>
+                            Cờ Tướng
+                        </button>
+                        <button id="btn-open-uno" class="btn-start-game" onclick="openUnoGame()">
+                            <span class="material-symbols-outlined" style="font-size:20px;">style</span>
+                            Uno
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="history-column hidden" id="history-column">
-            <h2 style="margin-bottom: 24px; font-family: 'Outfit'; font-size: 24px;">Lịch sử phát gần đây</h2>
+            <h2 style="margin-bottom: 24px; font-family: var(--font-display); font-size: 24px; font-weight: 700;">Lịch sử phát gần đây</h2>
             <div id="history-list">
                 <div style="color:var(--text-muted);">Đang tải...</div>
             </div>
         </div>
 
         <div class="history-column hidden" id="top-column">
-            <h2 style="margin-bottom: 24px; font-family: 'Outfit'; font-size: 24px;">Top nhạc</h2>
+            <h2 style="margin-bottom: 24px; font-family: var(--font-display); font-size: 24px; font-weight: 700;">Top nhạc</h2>
             <div id="top-list">
                 <div style="color:var(--text-muted);">Đang tải...</div>
             </div>
@@ -340,12 +350,12 @@
 
     <div id="chess-challenge-modal" class="draw-overlay hidden" style="z-index: 1000;">
         <div class="draw-container challenge-modal-container"
-            style="max-width: 360px; padding: 0; text-align: center; border: none; background: rgba(20, 20, 25, 0.85); backdrop-filter: blur(24px); box-shadow: 0 0 0 1px rgba(255,255,255,0.05), 0 20px 40px rgba(0,0,0,0.5); overflow: hidden; border-radius: 24px;">
+            style="max-width: 360px; padding: 0; text-align: center; border: 1px solid var(--border-color); background: var(--panel-bg-solid); box-shadow: var(--shadow-elevated); overflow: hidden; border-radius: var(--radius-lg);">
             <div style="background: rgba(77, 171, 247, 0.1); padding: 40px 24px 24px 24px;">
                 <div style="font-size: 56px; margin-bottom: 16px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));">⚔️
                 </div>
                 <h3
-                    style="margin-bottom: 8px; color: white; font-family: 'Outfit'; font-size: 26px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+                    style="margin-bottom: 8px; color: white; font-family: var(--font-display); font-size: 24px; font-weight: 700;">
                     THÁCH ĐẤU</h3>
                 <div
                     style="width: 40px; height: 3px; background: var(--accent); margin: 0 auto 16px auto; border-radius: 2px;">
@@ -386,7 +396,7 @@
             <div style="display: flex; gap: 12px; margin-bottom: 24px; justify-content: center; flex-wrap: wrap; align-items: center;"
                 id="chess-actions">
                 <select id="chess-challenge-target"
-                    style="padding: 10px 16px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; font-family: 'Outfit'; outline: none;">
+                    style="padding: 10px 16px; border-radius: var(--radius-md); background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; font-family: var(--font-body); outline: none;">
                     <option value="">-- Chọn đối thủ --</option>
                 </select>
                 <button class="caro-btn" style="color: #000; border-color: var(--accent); background: var(--accent);"
@@ -408,12 +418,12 @@
 
     <div id="caro-challenge-modal" class="draw-overlay hidden" style="z-index: 1000;">
         <div class="draw-container challenge-modal-container"
-            style="max-width: 360px; padding: 0; text-align: center; border: none; background: rgba(20, 20, 25, 0.85); backdrop-filter: blur(24px); box-shadow: 0 0 0 1px rgba(255,255,255,0.05), 0 20px 40px rgba(0,0,0,0.5); overflow: hidden; border-radius: 24px;">
+            style="max-width: 360px; padding: 0; text-align: center; border: 1px solid var(--border-color); background: var(--panel-bg-solid); box-shadow: var(--shadow-elevated); overflow: hidden; border-radius: var(--radius-lg);">
             <div style="background: rgba(77, 171, 247, 0.1); padding: 40px 24px 24px 24px;">
                 <div style="font-size: 56px; margin-bottom: 16px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));">⭕❌
                 </div>
                 <h3
-                    style="margin-bottom: 8px; color: white; font-family: 'Outfit'; font-size: 26px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+                    style="margin-bottom: 8px; color: white; font-family: var(--font-display); font-size: 24px; font-weight: 700;">
                     THÁCH ĐẤU</h3>
                 <div
                     style="width: 40px; height: 3px; background: var(--accent); margin: 0 auto 16px auto; border-radius: 2px;">
@@ -454,7 +464,7 @@
             <div style="display: flex; gap: 12px; margin-bottom: 24px; justify-content: center; flex-wrap: wrap; align-items: center;"
                 id="caro-actions">
                 <select id="caro-challenge-target"
-                    style="padding: 10px 16px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; font-family: 'Outfit'; outline: none;">
+                    style="padding: 10px 16px; border-radius: var(--radius-md); background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; font-family: var(--font-body); outline: none;">
                     <option value="">-- Chọn đối thủ --</option>
                 </select>
                 <button class="caro-btn"
@@ -474,6 +484,104 @@
         </div>
     </div>
 
+
+    <div id="xiangqi-challenge-modal" class="draw-overlay hidden" style="z-index: 1000;">
+        <div class="draw-container challenge-modal-container"
+            style="max-width: 360px; padding: 0; text-align: center; border: 1px solid var(--border-color); background: var(--panel-bg-solid); box-shadow: var(--shadow-elevated); overflow: hidden; border-radius: var(--radius-lg);">
+            <div style="background: rgba(211, 47, 47, 0.1); padding: 40px 24px 24px 24px;">
+                <div style="font-size: 56px; margin-bottom: 16px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));">🀄
+                </div>
+                <h3 style="margin-bottom: 8px; color: white; font-family: var(--font-display); font-size: 24px; font-weight: 700;">
+                    THÁCH ĐẤU</h3>
+                <div style="width: 40px; height: 3px; background: #d32f2f; margin: 0 auto 16px auto; border-radius: 2px;">
+                </div>
+                <p style="margin-bottom: 0; color: var(--text-muted); font-size: 16px; line-height: 1.5;">
+                    <strong id="xiangqi-challenger-name" style="color: white; font-size: 20px; display: block; margin-bottom: 4px;">Ai đó</strong>
+                    đang gửi chiến thư Cờ Tướng đến bạn!
+                </p>
+            </div>
+            <div style="padding: 24px; display: flex; gap: 12px; justify-content: center;">
+                <button class="challenge-btn decline-btn" onclick="respondXiangqiChallenge(false)">Từ chối</button>
+                <button class="challenge-btn accept-btn" style="background:#d32f2f;" onclick="respondXiangqiChallenge(true)">Tiếp chiêu</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="xiangqi-game-overlay" class="draw-overlay hidden">
+        <div class="draw-container" style="max-width: 600px; padding: 24px; position: relative; max-height: 90vh; overflow-y: auto;">
+            <div class="draw-header" style="justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 16px;">
+                <div class="draw-header-title" style="display:flex; align-items:center; gap: 8px;">
+                    <span class="material-symbols-outlined" style="color: #d32f2f;">sports_esports</span>
+                    Cờ Tướng
+                </div>
+                <button style="background:rgba(255,255,255,0.1); border:none; color:white; cursor:pointer; width: 32px; height: 32px; border-radius: 50%; display:flex; align-items:center; justify-content:center; transition: background 0.2s;"
+                    onclick="closeXiangqiGame()">
+                    <span class="material-symbols-outlined" style="font-size:20px;">close</span>
+                </button>
+            </div>
+
+            <div id="xiangqi-status" style="margin-bottom: 20px; font-size: 16px; color: var(--text-main); text-align: center; font-weight: 500;">
+                Đang tải bàn cờ...</div>
+            <div style="display: flex; gap: 12px; margin-bottom: 24px; justify-content: center; flex-wrap: wrap; align-items: center;"
+                id="xiangqi-actions">
+                <select id="xiangqi-challenge-target" style="padding: 10px 16px; border-radius: var(--radius-md); background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; outline: none;">
+                    <option value="">-- Chọn đối thủ --</option>
+                </select>
+                <button class="caro-btn" style="color: #fff; background: #d32f2f; border-color: #d32f2f;" onclick="sendXiangqiChallenge()" id="btn-send-xiangqi-challenge">
+                    ⚔️ Thách đấu
+                </button>
+                <button class="caro-btn hidden" style="border-color: #ff4757; color: #ff4757;" onclick="leaveXiangqi()" id="btn-leave-xiangqi">Rời bàn / Hủy</button>
+            </div>
+            <div class="caro-board-container hidden" id="xiangqi-board-wrapper">
+                <div id="xiangqi-board" style="display: grid; grid-template-columns: repeat(9, 40px); grid-template-rows: repeat(10, 40px); gap: 0; margin: 0 auto; width: fit-content; border: 2px solid #a67c52; background: #e3c498; position: relative;">
+                    <!-- Grid drawn by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- UNO MODALS -->
+    <div id="uno-game-overlay" class="draw-overlay hidden">
+        <div class="draw-container" style="max-width: 800px; padding: 24px; position: relative; max-height: 90vh; overflow-y: auto;">
+            <div class="draw-header" style="justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 16px;">
+                <div class="draw-header-title" style="display:flex; align-items:center; gap: 8px;">
+                    <span class="material-symbols-outlined" style="color: #fbbc04;">style</span>
+                    UNO Multiplayer
+                </div>
+                <button style="background:rgba(255,255,255,0.1); border:none; color:white; cursor:pointer; width: 32px; height: 32px; border-radius: 50%; display:flex; align-items:center; justify-content:center; transition: background 0.2s;"
+                    onclick="closeUnoGame()">
+                    <span class="material-symbols-outlined" style="font-size:20px;">close</span>
+                </button>
+            </div>
+
+            <div id="uno-lobby" style="text-align: center;">
+                <p>Mọi người đều có thể tham gia ván UNO này!</p>
+                <div id="uno-players-list" style="margin: 20px 0; font-weight: bold; color: var(--accent);">Chưa có ai</div>
+                <button class="caro-btn" style="background: var(--accent); color: #000;" onclick="joinUnoGame()">Tham gia</button>
+                <button class="caro-btn" style="background: #51cf66; color: #000;" onclick="startUnoGame()">Bắt đầu Game</button>
+            </div>
+
+            <div id="uno-board" class="hidden">
+                <div id="uno-status" style="margin-bottom: 20px; font-size: 18px; color: var(--text-main); text-align: center; font-weight: bold;"></div>
+                
+                <div style="display: flex; justify-content: center; gap: 40px; margin-bottom: 40px; align-items: center;">
+                    <div id="uno-deck" onclick="drawUnoCard()" style="width: 80px; height: 120px; background: #222; border: 2px solid white; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: white; font-weight: bold;">
+                        Bốc bài
+                    </div>
+                    <div id="uno-discard" style="width: 80px; height: 120px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 24px; color: white;">
+                        --
+                    </div>
+                </div>
+
+                <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+                    <h4 style="margin-bottom: 12px;">Bài của bạn:</h4>
+                    <div id="uno-hand" style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
+                        <!-- Cards -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div id="draw-game-overlay" class="draw-overlay hidden">
         <div class="draw-container">

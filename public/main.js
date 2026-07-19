@@ -24,18 +24,23 @@ function showTab(tab) {
     const activeTab = document.querySelector(`.sidebar-item[data-tab="${tab}"]`);
     if (activeTab) activeTab.classList.add('active');
 
-    document.getElementById('left-column').classList.add('hidden');
+    document.getElementById('left-column').classList.remove('not-home');
+    document.getElementById('left-column').classList.remove('hidden');
     document.getElementById('history-column').classList.add('hidden');
     document.getElementById('top-column').classList.add('hidden');
 
     if (tab === 'home') {
-        document.getElementById('left-column').classList.remove('hidden');
-    } else if (tab === 'history') {
-        document.getElementById('history-column').classList.remove('hidden');
-        loadHistory();
-    } else if (tab === 'top') {
-        document.getElementById('top-column').classList.remove('hidden');
-        loadTopNhac();
+        // Just home
+        resetMiniPlayerDrag();
+    } else {
+        document.getElementById('left-column').classList.add('not-home');
+        if (tab === 'history') {
+            document.getElementById('history-column').classList.remove('hidden');
+            loadHistory();
+        } else if (tab === 'top') {
+            document.getElementById('top-column').classList.remove('hidden');
+            loadTopNhac();
+        }
     }
 }
 
@@ -1231,6 +1236,9 @@ function toggleChatBubble() {
         const chatBox = document.getElementById('chat-box-ui');
         setTimeout(() => { chatBox.scrollTop = chatBox.scrollHeight; }, 100);
         setTimeout(() => { document.getElementById('chat-input').focus(); }, 200);
+        
+        // Add mobile-mini to trigger mini player on mobile
+        document.getElementById('left-column').classList.add('mobile-mini');
     } else {
         chatPanel.classList.remove('chat-open');
         if (bubbleBtn) bubbleBtn.classList.remove('chat-is-open');
@@ -1243,6 +1251,9 @@ function toggleChatBubble() {
             toggleIcon.style.transform = 'rotate(0deg)';
         }
         if (toggleBtn) toggleBtn.style.background = 'var(--accent)';
+        
+        // Remove mobile-mini
+        document.getElementById('left-column').classList.remove('mobile-mini');
     }
 }
 
@@ -1873,6 +1884,7 @@ function seekLyric(time) {
 
 function startLyricSync() {
     stopLyricSync();
+    let lastScrolledIndex = -1;
     lyricInterval = setInterval(() => {
         if (!player || typeof player.getCurrentTime !== 'function') return;
         const currentTime = player.getCurrentTime();
@@ -1886,21 +1898,17 @@ function startLyricSync() {
             }
         }
 
-        if (activeIndex !== -1) {
-            const currentActive = document.querySelector('.lyric-line.active');
-            const newActive = document.getElementById(`lyric-line-${activeIndex}`);
+        if (activeIndex !== -1 && activeIndex !== lastScrolledIndex) {
+            lastScrolledIndex = activeIndex;
+            const target = document.getElementById(`lyric-line-${activeIndex}`);
 
-            if (currentActive !== newActive) {
-                if (currentActive) currentActive.classList.remove('active');
-                if (newActive) {
-                    newActive.classList.add('active');
-                    const box = document.getElementById('lyric-box');
-                    const offsetTop = newActive.offsetTop - box.offsetTop;
-                    box.scrollTo({
-                        top: offsetTop - box.clientHeight / 3,
-                        behavior: 'smooth'
-                    });
-                }
+            if (target) {
+                const box = document.getElementById('lyric-box');
+                const offsetTop = target.offsetTop - box.offsetTop;
+                box.scrollTo({
+                    top: offsetTop - 24,
+                    behavior: 'smooth'
+                });
             }
         }
     }, 200);
@@ -2006,3 +2014,154 @@ function updateCaroUI(game) {
 socket.on('caroUpdate', updateCaroUI);
 
 initCaroBoard();
+
+// --- XIANGQI GAME (Cờ Tướng) ---
+function openXiangqiGame() {
+    document.getElementById('xiangqi-game-overlay').classList.remove('hidden');
+    const select = document.getElementById('xiangqi-challenge-target');
+    select.innerHTML = '<option value="">-- Chọn đối thủ --</option>';
+    document.querySelectorAll('#draw-user-list .user-item').forEach(el => {
+        const id = el.getAttribute('data-id');
+        const name = el.innerText;
+        if (id && id !== socket.id) {
+            const opt = document.createElement('option');
+            opt.value = id;
+            opt.innerText = name;
+            select.appendChild(opt);
+        }
+    });
+}
+function closeXiangqiGame() {
+    document.getElementById('xiangqi-game-overlay').classList.add('hidden');
+}
+function sendXiangqiChallenge() {
+    const target = document.getElementById('xiangqi-challenge-target').value;
+    if (!target) return alert('Chọn một người để thách đấu!');
+    socket.emit('xiangqiChallenge', target);
+    document.getElementById('btn-send-xiangqi-challenge').classList.add('hidden');
+    document.getElementById('btn-leave-xiangqi').classList.remove('hidden');
+}
+function respondXiangqiChallenge(accept) {
+    document.getElementById('xiangqi-challenge-modal').classList.add('hidden');
+    socket.emit('xiangqiChallengeRespond', { challengerId: window.currentXiangqiChallenger, accept });
+    if (accept) openXiangqiGame();
+}
+function leaveXiangqi() {
+    socket.emit('xiangqiLeave');
+    document.getElementById('btn-leave-xiangqi').classList.add('hidden');
+    document.getElementById('btn-send-xiangqi-challenge').classList.remove('hidden');
+}
+
+socket.on('xiangqiChallengeReceived', (data) => {
+    window.currentXiangqiChallenger = data.challengerId;
+    document.getElementById('xiangqi-challenger-name').innerText = data.challengerName;
+    document.getElementById('xiangqi-challenge-modal').classList.remove('hidden');
+});
+
+// --- UNO GAME ---
+function openUnoGame() {
+    document.getElementById('uno-game-overlay').classList.remove('hidden');
+}
+function closeUnoGame() {
+    document.getElementById('uno-game-overlay').classList.add('hidden');
+}
+function joinUnoGame() {
+    socket.emit('unoJoin');
+    document.getElementById('uno-players-list').innerText = "Đang tham gia...";
+}
+function startUnoGame() {
+    socket.emit('unoStart');
+}
+function drawUnoCard() {
+    socket.emit('unoDraw');
+}
+
+// --- MINI PLAYER DRAG LOGIC ---
+const miniPlayer = document.getElementById('player-container');
+const dragHandle = document.createElement('div');
+dragHandle.style.position = 'absolute';
+dragHandle.style.top = '0';
+dragHandle.style.left = '0';
+dragHandle.style.width = '100%';
+dragHandle.style.height = '32px';
+dragHandle.style.cursor = 'move';
+dragHandle.style.zIndex = '50';
+dragHandle.style.background = 'linear-gradient(to bottom, rgba(0,0,0,0.6), transparent)';
+dragHandle.style.display = 'none';
+dragHandle.innerHTML = '<div style="width: 40px; height: 4px; background: rgba(255,255,255,0.5); border-radius: 2px; margin: 6px auto;"></div>';
+miniPlayer.appendChild(dragHandle);
+
+let isDraggingMini = false;
+let miniDragX = 0;
+let miniDragY = 0;
+let initialMiniX = 0;
+let initialMiniY = 0;
+let dragStartX = 0;
+let dragStartY = 0;
+
+// Show handle only in mini mode
+const observer = new MutationObserver((mutations) => {
+    mutations.forEach((m) => {
+        if (m.attributeName === 'class') {
+            if (document.getElementById('left-column').classList.contains('not-home') || document.getElementById('left-column').classList.contains('mobile-mini')) {
+                dragHandle.style.display = 'block';
+            } else {
+                dragHandle.style.display = 'none';
+            }
+        }
+    });
+});
+observer.observe(document.getElementById('left-column'), { attributes: true });
+
+function resetMiniPlayerDrag() {
+    miniDragX = 0;
+    miniDragY = 0;
+    miniPlayer.style.transform = '';
+}
+
+dragHandle.addEventListener('mousedown', startMiniDrag);
+dragHandle.addEventListener('touchstart', startMiniDrag, { passive: false });
+
+function startMiniDrag(e) {
+    if (e.type === 'mousedown' && e.button !== 0) return;
+    isDraggingMini = true;
+    dragHandle.style.height = '100%'; // cover full player to not lose mouse
+    
+    const clientX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+    const clientY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+    
+    initialMiniX = miniDragX;
+    initialMiniY = miniDragY;
+    dragStartX = clientX;
+    dragStartY = clientY;
+    
+    document.addEventListener('mousemove', onMiniDrag);
+    document.addEventListener('mouseup', endMiniDrag);
+    document.addEventListener('touchmove', onMiniDrag, { passive: false });
+    document.addEventListener('touchend', endMiniDrag);
+}
+
+function onMiniDrag(e) {
+    if (!isDraggingMini) return;
+    e.preventDefault();
+    
+    const clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+    const clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+    
+    const dx = clientX - dragStartX;
+    const dy = clientY - dragStartY;
+    
+    miniDragX = initialMiniX + dx;
+    miniDragY = initialMiniY + dy;
+    
+    miniPlayer.style.transform = `translate(${miniDragX}px, ${miniDragY}px)`;
+}
+
+function endMiniDrag() {
+    isDraggingMini = false;
+    dragHandle.style.height = '32px';
+    document.removeEventListener('mousemove', onMiniDrag);
+    document.removeEventListener('mouseup', endMiniDrag);
+    document.removeEventListener('touchmove', onMiniDrag);
+    document.removeEventListener('touchend', endMiniDrag);
+}

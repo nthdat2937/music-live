@@ -845,6 +845,40 @@ io.on('connection', (socket) => {
         io.emit('chessUpdate', chessGame);
     });
 
+    socket.on('xiangqiChallenge', (targetId) => {
+        if (!connectedUsers.has(targetId) || targetId === socket.id) return;
+        io.to(targetId).emit('xiangqiChallengeReceived', {
+            challengerId: socket.id,
+            challengerName: socket.username
+        });
+        socket.emit('newMessage', { id: 'sys-' + Date.now(), name: 'Hệ thống 🤖', text: `Đã gửi lời thách đấu Cờ Tướng đến **${connectedUsers.get(targetId).name}**. Đang chờ phản hồi...`, role: 'system' });
+    });
+
+    socket.on('xiangqiChallengeRespond', ({ challengerId, accept }) => {
+        if (!connectedUsers.has(challengerId)) return;
+        if (accept) {
+            io.emit('newMessage', { id: 'sys-' + Date.now(), name: 'Cờ Tướng 🀄', text: `⚔️ **${socket.username}** đã chấp nhận thách đấu của **${connectedUsers.get(challengerId).name}**!`, role: 'system' });
+        } else {
+            io.to(challengerId).emit('newMessage', { id: 'sys-' + Date.now(), name: 'Cờ Tướng 🀄', text: `❌ **${socket.username}** đã từ chối lời thách đấu Cờ Tướng của bạn!`, role: 'system' });
+        }
+    });
+
+    socket.on('xiangqiLeave', () => {
+        io.emit('newMessage', { id: 'sys-' + Date.now(), name: 'Cờ Tướng 🀄', text: `🏃 **${socket.username}** đã rời bàn Cờ Tướng.`, role: 'system' });
+    });
+
+    socket.on('unoJoin', () => {
+        io.emit('newMessage', { id: 'sys-' + Date.now(), name: 'UNO 🃏', text: `🎮 **${socket.username}** đã tham gia bàn UNO.`, role: 'system' });
+    });
+
+    socket.on('unoStart', () => {
+        io.emit('newMessage', { id: 'sys-' + Date.now(), name: 'UNO 🃏', text: `🚀 Ván UNO đã được bắt đầu! (Tính năng đang được hoàn thiện)`, role: 'system' });
+    });
+
+    socket.on('unoDraw', () => {
+        io.emit('newMessage', { id: 'sys-' + Date.now(), name: 'UNO 🃏', text: `🃏 **${socket.username}** vừa bốc một lá bài.`, role: 'system' });
+    });
+
     socket.on('disconnect', () => {
         connectedUsers.delete(socket.id);
         io.emit('activeUsersList', getDrawUserList());
